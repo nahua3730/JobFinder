@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('applications/', include('applications.urls')),
     path('', include('jobs.urls')),  # This sends the empty path '/' straight to the jobs app
 ]

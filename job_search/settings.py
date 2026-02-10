@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # New apps for our Job Search Website
     'users.apps.UsersConfig',
-    'jobs.apps.JobsConfig', 
+    'jobs.apps.JobsConfig',
+    'applications.apps.ApplicationsConfig', 
 ]
 
 MIDDLEWARE = [
