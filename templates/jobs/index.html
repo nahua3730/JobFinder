@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+  <div class="container-fluid py-5">
+    <h1 class="display-5 fw-bold">Find Your Next Chapter</h1>
+    <p class="col-md-8 fs-4">Connecting Georgia Tech's top talent with the world's best recruiters.</p>
+    {% if not user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{% url 'users:signup' %}" role="button">Get Started</a>
+        <a class="btn btn-outline-secondary btn-lg" href="{% url 'users:login' %}" role="button">Login</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row align-items-md-stretch">
+  <div class="col-md-6">
+    <div class="h-100 p-5 text-white bg-dark rounded-3">
+      <h2>For Job Seekers</h2>
+      <p>Create a profile, filter jobs by location and skills, and track your applications in real-time.</p>
+      <button class="btn btn-outline-light" type="button">Browse Jobs</button>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="h-100 p-5 bg-light border rounded-3">
+      <h2>For Recruiters</h2>
+      <p>Post jobs, visualize applicant locations on a map, and manage your hiring pipeline efficiently.</p>
+      {% if user.is_recruiter %}
+         <button class="btn btn-outline-secondary" type="button">Post a Job</button>
+      {% else %}
+         <button class="btn btn-outline-secondary" type="button">Recruiter Login</button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
