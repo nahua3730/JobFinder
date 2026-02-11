@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>My Profile</h2>
+
+<p><b>Headline:</b> {{ profile.headline }}</p>
+<p><b>Skills:</b> {{ profile.skills }}</p>
+
+<p><b>Education:</b></p>
+<p>{{ profile.education|linebreaks }}</p>
+
+<p><b>Work Experience:</b></p>
+<p>{{ profile.work_experience|linebreaks }}</p>
+
+<p><b>Links:</b> {{ profile.links }}</p>
+
+<a href="{% url 'profile_edit' %}">Edit</a>
+
+{% endblock %}

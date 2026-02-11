@@ -21,6 +21,12 @@ class JobSeekerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seeker_profile')
     headline = models.CharField(max_length=255, blank=True)
     skills = models.TextField(help_text="Comma-separated skills", blank=True)
+
+    # added for story 1
+    education = models.TextField(blank=True)
+    work_experience = models.TextField(blank=True)
+    links = models.TextField(blank=True, help_text="Comma-separated URLs")
+    
     privacy_enabled = models.BooleanField(default=False, help_text="Hide profile from recruiters")
     
     def __str__(self):
