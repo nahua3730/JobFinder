@@ -6,5 +6,7 @@ app_name = "jobs"
 urlpatterns = [
     path("", views.home, name="home"),
     path("search/", views.search, name="search"),
+    path('edit/<int:job_id>/', views.edit_job, name='edit_job'),
     path("create/", views.create_job, name="create_job"),
+    path('candidate-search/', views.candidate_search, name='candidate_search'),
 ]
