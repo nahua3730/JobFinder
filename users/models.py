@@ -28,7 +28,11 @@ class JobSeekerProfile(models.Model):
     links = models.TextField(blank=True, help_text="Comma-separated URLs")
     
     privacy_enabled = models.BooleanField(default=False, help_text="Hide profile from recruiters")
-    
+    show_headline = models.BooleanField(default=True)
+    show_skills = models.BooleanField(default=True)
+    show_education = models.BooleanField(default=True)
+    show_work_experience = models.BooleanField(default=True)
+    show_links = models.BooleanField(default=True)
     def __str__(self):
         return self.user.username
 #END TEMP

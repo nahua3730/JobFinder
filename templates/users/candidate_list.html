@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Candidates</h1>
+
+<ul>
+  {% for u in candidates %}
+    <li>
+      {{ u.get_full_name|default:u.username }}
+      <a href="{% url 'users:profile_detail' u.username %}">View Profile</a>
+    </li>
+  {% empty %}
+    <li>No candidates found.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

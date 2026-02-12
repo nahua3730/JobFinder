@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Recruiter Profile</h1>
+    <a class="btn btn-dark btn-sm"
+       href="{% url 'users:recruiter_profile_edit' %}">
+       Edit Profile
+    </a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <p class="mb-2">
+        <b>Name:</b><br>
+        {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+      </p>
+
+      <hr>
+
+      <p class="mb-0">
+        <b>Company Name:</b><br>
+        {{ profile.company_name|default:"—" }}
+      </p>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
