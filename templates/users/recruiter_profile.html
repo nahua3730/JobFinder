@@ -14,21 +14,22 @@
 
   <div class="card shadow-sm">
     <div class="card-body">
-
       <p class="mb-2">
         <b>Name:</b><br>
-        {{ request.user.first_name }} {{ request.user.last_name|default:"" }}
+        {{ request.user.get_full_name|default:request.user.username }}
       </p>
+      <hr>
 
+      <p class="mb-2">
+        <b>Title:</b><br>
+        {{ profile.title|default:"—" }}
+      </p>
       <hr>
 
       <p class="mb-0">
-        <b>Company Name:</b><br>
+        <b>Company:</b><br>
         {{ profile.company_name|default:"—" }}
       </p>
-
     </div>
   </div>
-
-</div>
 {% endblock %}
