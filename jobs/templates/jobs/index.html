@@ -1,36 +1,118 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends "base.html" %}
+{% block title %}Jobs{% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3">
-  <div class="container-fluid py-5">
-    <h1 class="display-5 fw-bold">Find Your Next Chapter</h1>
-    <p class="col-md-8 fs-4">Connecting Georgia Tech's top talent with the world's best recruiters.</p>
-    {% if not user.is_authenticated %}
-        <a class="btn btn-primary btn-lg" href="{% url 'users:signup' %}" role="button">Get Started</a>
-        <a class="btn btn-outline-secondary btn-lg" href="{% url 'users:login' %}" role="button">Login</a>
-    {% endif %}
-  </div>
-</div>
+<div class="container py-3">
 
-<div class="row align-items-md-stretch">
-  <div class="col-md-6">
-    <div class="h-100 p-5 text-white bg-dark rounded-3">
-      <h2>For Job Seekers</h2>
-      <p>Create a profile, filter jobs by location and skills, and track your applications in real-time.</p>
-      <button class="btn btn-outline-light" type="button">Browse Jobs</button>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Find Jobs</h1>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+
+        <div class="col-12 col-md-4">
+          <input class="form-control" name="title" placeholder="Title"
+                 value="{{ filters.title }}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <input class="form-control" name="skills" placeholder="Skills"
+                 value="{{ filters.skills }}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <input class="form-control" name="location" placeholder="Location"
+                 value="{{ filters.location }}">
+        </div>
+
+        <div class="col-12 col-md-3">
+          <select class="form-select" name="remote">
+            <option value="" {% if filters.remote == "" %}selected{% endif %}>Remote or On-site</option>
+            <option value="remote" {% if filters.remote == "remote" %}selected{% endif %}>Remote</option>
+            <option value="onsite" {% if filters.remote == "onsite" %}selected{% endif %}>On-site</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <input class="form-control" name="min_salary" placeholder="Min salary"
+                 value="{{ filters.min_salary }}">
+        </div>
+
+        <div class="col-6 col-md-2">
+          <input class="form-control" name="max_salary" placeholder="Max salary"
+                 value="{{ filters.max_salary }}">
+        </div>
+
+        <div class="col-12 col-md-3 d-flex align-items-center">
+          <div class="form-check ms-1">
+            <input class="form-check-input" type="checkbox" id="visa" name="visa" value="true"
+                   {% if filters.visa == "true" %}checked{% endif %}>
+            <label class="form-check-label" for="visa">Visa sponsorship</label>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-2 d-flex gap-2">
+          <button class="btn btn-dark w-100" type="submit">Search</button>
+        </div>
+
+        <div class="col-12 col-md-2">
+          <a class="btn btn-outline-secondary w-100" href="{% url 'jobs:home' %}">Clear</a>
+        </div>
+
+      </form>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="h-100 p-5 bg-light border rounded-3">
-      <h2>For Recruiters</h2>
-      <p>Post jobs, visualize applicant locations on a map, and manage your hiring pipeline efficiently.</p>
-      {% if user.is_recruiter %}
-         <button class="btn btn-outline-secondary" type="button">Post a Job</button>
-      {% else %}
-         <button class="btn btn-outline-secondary" type="button">Recruiter Login</button>
-      {% endif %}
+
+  {% if jobs %}
+    <div class="row g-3">
+      {% for job in jobs %}
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h5 mb-1">{{ job.title }}</h2>
+                  <div class="text-muted small">
+                    {{ job.location }}
+                    {% if job.is_remote %} • Remote{% else %} • On-site{% endif %}
+                    {% if job.visa_sponsorship %} • Visa Sponsorship{% endif %}
+                  </div>
+                </div>
+
+                <div class="text-end small">
+                  {% if job.min_salary or job.max_salary %}
+                    <div class="fw-semibold">
+                      {% if job.min_salary %}${{ job.min_salary }}{% else %}—{% endif %}
+                      -
+                      {% if job.max_salary %}${{ job.max_salary }}{% else %}—{% endif %}
+                    </div>
+                  {% endif %}
+                  <div class="text-muted">{{ job.created_at|date:"M d, Y" }}</div>
+                </div>
+              </div>
+
+              {% if job.skills %}
+                <div class="mt-2">
+                  <span class="badge text-bg-light border">Skills</span>
+                  <span class="ms-2">{{ job.skills }}</span>
+                </div>
+              {% endif %}
+
+              {% if job.description %}
+                <p class="mt-3 mb-0 text-muted">
+                  {{ job.description|truncatechars:220 }}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
     </div>
-  </div>
+  {% else %}
+    <div class="alert alert-info">No jobs found with those filters.</div>
+  {% endif %}
+
 </div>
 {% endblock %}
