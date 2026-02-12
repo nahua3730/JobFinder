@@ -7,7 +7,8 @@ from django.db.models import Q
 
 def home(request):
     # landing page only
-    return render(request, "jobs/home.html")
+    jobs = JobPosting.objects.all().order_by('-created_at')
+    return render(request, "jobs/index.html", {"jobs": jobs})
 
 
 def search(request):
@@ -84,7 +85,7 @@ def candidate_search(request):
         return redirect('jobs:home')
         
     form = CandidateSearchForm(request.GET or None)
-    candidates = JobSeekerProfile.objects.all() 
+    candidates = JobSeekerProfile.objects.filter(user__is_job_seeker=True) 
 
     if form.is_valid():
         query = form.cleaned_data.get('query')
@@ -109,3 +110,14 @@ def candidate_search(request):
                  candidates = candidates.filter(projects__icontains=query)
 
     return render(request, 'jobs/candidate_search.html', {'form': form, 'candidates': candidates})
+
+@login_required
+def my_jobs(request):
+    """ Show only the jobs created by the logged-in recruiter """
+    if not request.user.is_recruiter:
+        return redirect('jobs:home')
+        
+    # Filter jobs where the 'recruiter' field matches the current user
+    my_job_list = JobPosting.objects.filter(recruiter=request.user).order_by('-created_at')
+    
+    return render(request, 'jobs/my_jobs.html', {'jobs': my_job_list})

@@ -38,6 +38,11 @@ class JobSeekerProfileForm(forms.ModelForm):
 
 
 class SignUpForm(UserCreationForm):
+    is_recruiter = forms.BooleanField(
+        required=False, 
+        label="I am a Recruiter (Leave unchecked if you are a Job Seeker)"
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("username", "email", "is_recruiter")
