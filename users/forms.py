@@ -1,0 +1,43 @@
+from django import forms
+from .models import JobSeekerProfile, User
+from django.contrib.auth.forms import UserCreationForm
+
+
+class JobSeekerProfileForm(forms.ModelForm):
+    class Meta:
+        model = JobSeekerProfile
+        fields = ["headline", "skills", "education", "work_experience", "links"]
+        widgets = {
+            "headline": forms.TextInput(attrs={
+                "placeholder": "e.g., CS student seeking Summer 2026 internship"
+            }),
+            "skills": forms.TextInput(attrs={
+                "placeholder": "Python, Java, SQL, React"
+            }),
+            "education": forms.Textarea(attrs={
+                "rows": 4,
+                "placeholder": "School, degree, graduation year, relevant courses"
+            }),
+            "work_experience": forms.Textarea(attrs={
+                "rows": 6,
+                "placeholder": "Role — Company — Dates\n• Impact / project / results"
+            }),
+            "links": forms.Textarea(attrs={
+                "rows": 3,
+                "placeholder": "LinkedIn, GitHub, portfolio links (one per line)"
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Apply Bootstrap styling automatically to all fields
+        for field in self.fields.values():
+            existing_classes = field.widget.attrs.get("class", "")
+            field.widget.attrs["class"] = (existing_classes + " form-control").strip()
+
+
+class SignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username", "email", "is_recruiter")

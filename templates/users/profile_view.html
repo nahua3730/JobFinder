@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0">My Profile</h1>
+        <a class="btn btn-dark btn-sm" href="{% url 'users:profile_edit' %}">
+          Edit Profile
+        </a>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+
+          <p class="mb-2"><b>Headline:</b><br>{{ profile.headline|default:"—" }}</p>
+
+          <hr>
+
+          <p class="mb-2"><b>Skills:</b><br>{{ profile.skills|default:"—" }}</p>
+
+          <hr>
+
+          <p class="mb-2"><b>Education:</b><br>{{ profile.education|linebreaks|default:"—" }}</p>
+
+          <hr>
+
+          <p class="mb-2"><b>Work Experience:</b><br>{{ profile.work_experience|linebreaks|default:"—" }}</p>
+
+          <hr>
+
+          <p class="mb-0"><b>Links:</b><br>{{ profile.links|default:"—" }}</p>
+
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-3">
+        <a class="btn btn-outline-secondary" href="{% url 'jobs:home' %}">Back to Jobs</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
