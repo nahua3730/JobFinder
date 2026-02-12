@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import JobPosting
-from .forms import JobSearchForm  
+from .forms import JobSearchForm 
+from users.models import JobSeekerProfile   
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
