@@ -17,6 +17,7 @@ class JobSeekerProfile(models.Model):
     """
     User Story 1: Profile with headline, skills, etc.
     User Story 5: Privacy options
+    User Story 11: Candidate Search
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seeker_profile')
     headline = models.CharField(max_length=255, blank=True)
@@ -28,6 +29,10 @@ class JobSeekerProfile(models.Model):
     links = models.TextField(blank=True, help_text="Comma-separated URLs")
     
     privacy_enabled = models.BooleanField(default=False, help_text="Hide profile from recruiters")
+    
+    # user story 11
+    location = models.CharField(max_length=255, blank=True, help_text="City, State")
+    projects = models.TextField(blank=True, help_text="List of projects for search")
     
     def __str__(self):
         return self.user.username
