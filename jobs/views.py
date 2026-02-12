@@ -50,3 +50,30 @@ def candidate_search(request):
         results = JobSeekerProfile.objects.filter(skills__icontains=query)
         
     return render(request, 'jobs/candidate_search.html', {'results': results})
+
+@login_required
+def recommended_jobs(request):
+    if not request.user.is_job_seeker:
+        return redirect("jobs:home")
+    profile, _ = JobSeekerProfile.objects.get_or_create(user=request.user)
+    user_skills = {
+        s.strip().lower()
+        for s in (profile.skills or "").split(",")
+        if s.strip()
+    }
+    jobs = JobPosting.objects.all().order_by("-created_at")
+    recommended = [] 
+    for job in jobs:
+        job_skills = {
+            s.strip().lower()
+            for s in (getattr(job, "skills", "") or "").split(",")
+            if s.strip()
+        }
+        score = len(user_skills & job_skills)
+        if score > 0:
+            recommended.append((job, score))
+    recommended.sort(key=lambda pair: pair[1], reverse=True)
+    return render(request, "jobs/recommended_jobs.html", {
+        "recommended": recommended,
+        "user_skills": sorted(user_skills),
+    })

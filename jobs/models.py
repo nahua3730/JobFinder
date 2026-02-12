@@ -16,6 +16,7 @@ class JobPosting(models.Model):
     # Filtering fields (User Case: 2)
     salary_range = models.CharField(max_length=100)
     is_remote = models.BooleanField(default=False)
+    skills = models.TextField(blank=True, help_text="Comma-separated required skills")
     
     # Map fields (User Story: 7, 8, 9)
     latitude = models.FloatField(null=True, blank=True)
