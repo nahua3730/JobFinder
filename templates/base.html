@@ -24,7 +24,7 @@
 
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ms-auto navbar-ml">
-            <a class="nav-link" href="{% url 'jobs:home' %}">Jobs</a>
+            <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
 
             {% if user.is_authenticated %}
                 {% if user.is_recruiter %}
