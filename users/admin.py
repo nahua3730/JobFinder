@@ -20,7 +20,8 @@ class CustomUserAdmin(UserAdmin):
         "is_recruiter",
         "is_staff",
     )
+# Register your models here.
 
-
+admin.site.register(User)
 admin.site.register(JobSeekerProfile)
 admin.site.register(RecruiterProfile)

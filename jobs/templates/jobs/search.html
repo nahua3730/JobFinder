@@ -53,7 +53,14 @@
 {% for job in jobs %}
   <div class="card mb-3">
     <div class="card-body">
-      <h5 class="card-title">{{ job.title }}</h5>
+      <div class="d-flex justify-content-between">
+          <h5 class="card-title">{{ job.title }}</h5>
+          
+          {% if user == job.recruiter %}
+              <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-warning btn-sm" style="height: fit-content;">Edit</a>
+          {% endif %}
+          </div>
+
       <p class="mb-1"><b>Location:</b> {{ job.location }}</p>
 
       <p class="mb-1"><b>Remote:</b> {% if job.is_remote %}Yes{% else %}No{% endif %}</p>
@@ -72,5 +79,5 @@
 {% empty %}
   <p>No jobs match your filters.</p>
 {% endfor %}
-
+</div>
 {% endblock %}

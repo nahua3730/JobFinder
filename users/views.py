@@ -58,7 +58,25 @@ def signup(request):
 
             if not user.is_recruiter:
                 JobSeekerProfile.objects.get_or_create(user=user)
+            user = form.save(commit=False)
 
+            is_recruiter = form.cleaned_data.get('is_recruiter')
+
+            # create profile automatically for non-recruiters
+            if is_recruiter:
+                user.is_recruiter = True
+                user.is_job_seeker = False
+            else:
+                user.is_recruiter = False
+                user.is_job_seeker = True
+            
+            user.save()
+
+            if user.is_recruiter:
+                RecruiterProfile.objects.create(user=user, company_name="Pending Company")
+            else:
+                JobSeekerProfile.objects.create(user=user)
+                
             auth_login(request, user)
             return redirect("users:profile_edit")  
     else:

@@ -29,8 +29,12 @@
             {% if user.is_authenticated %}
                 {% if user.is_recruiter %}
                     <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
+<<<<<<< HEAD
                     <!-- Until Candidate Search is implemented, route to profile so link isn't dead -->
 <<<<<<< HEAD
+=======
+                    <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
+>>>>>>> origin/userstory10-11
                     <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
 =======
                     <a class="nav-link" href="{% url 'users:candidate_list' %}">Candidate Search</a>

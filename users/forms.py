@@ -38,6 +38,11 @@ class JobSeekerProfileForm(forms.ModelForm):
 
 
 class SignUpForm(UserCreationForm):
+    is_recruiter = forms.BooleanField(
+        required=False, 
+        label="I am a Recruiter (Leave unchecked if you are a Job Seeker)"
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ("first_name", "last_name", "username", "email", "is_recruiter")
@@ -71,3 +76,4 @@ class RecruiterProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs["class"] = "form-control"
+        fields = ("username", "email", "is_recruiter")
