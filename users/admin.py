@@ -1,8 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, JobSeekerProfile, RecruiterProfile
-
-
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
@@ -21,7 +19,5 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
     )
 # Register your models here.
-
-admin.site.register(User)
 admin.site.register(JobSeekerProfile)
 admin.site.register(RecruiterProfile)

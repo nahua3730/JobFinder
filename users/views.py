@@ -28,6 +28,8 @@ def _get_profile(user):
 
 @login_required
 def profile_view(request):
+    if not request.user.is_job_seeker:
+        return redirect("users:recruiter_profile")
     profile = _get_profile(request.user)
     return render(request, "users/profile_view.html", {"profile": profile, "is_owner": True})
 @login_required

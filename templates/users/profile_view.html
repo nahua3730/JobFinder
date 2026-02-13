@@ -11,13 +11,11 @@
 
         {% if is_owner %}
           <div class="d-flex gap-2">
-            <a class="btn btn-dark btn-sm"
-               href="{% url 'users:profile_edit' %}">
+            <a class="btn btn-dark btn-sm" href="{% url 'users:profile_edit' %}">
               Edit Profile
             </a>
 
-            <a class="btn btn-outline-secondary btn-sm"
-               href="{% url 'users:privacy_settings' %}">
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'users:privacy_settings' %}">
               Privacy Settings
             </a>
           </div>
@@ -27,63 +25,72 @@
       <div class="card shadow-sm">
         <div class="card-body p-4">
 
-          {% if not is_owner and profile.privacy_enabled %}
-            <p class="text-muted mb-0">This profile is hidden.</p>
+          {# ---------- HARD GUARD: profile might be None ---------- #}
+          {% if not profile %}
+            <p class="text-muted mb-0">
+              Profile not found. If you’re a recruiter, use your recruiter profile page.
+            </p>
+
           {% else %}
 
-            <p class="mb-2">
-              <b>Name:</b><br>
-              {{ profile.user.get_full_name|default:profile.user.username }}
-            </p>
-            <hr>
+            {# ---------- Privacy guard (only evaluate if profile exists) ---------- #}
+            {% if not is_owner and profile.privacy_enabled %}
+              <p class="text-muted mb-0">This profile is hidden.</p>
+            {% else %}
 
-            {% if is_owner or profile.show_headline %}
               <p class="mb-2">
-                <b>Headline:</b><br>
-                {{ profile.headline|default:"—" }}
+                <b>Name:</b><br>
+                {{ profile.user.get_full_name|default:profile.user.username }}
               </p>
               <hr>
-            {% endif %}
 
-            {% if is_owner or profile.show_skills %}
-              <p class="mb-2">
-                <b>Skills:</b><br>
-                {{ profile.skills|default:"—" }}
-              </p>
-              <hr>
-            {% endif %}
+              {% if is_owner or profile.show_headline %}
+                <p class="mb-2">
+                  <b>Headline:</b><br>
+                  {{ profile.headline|default:"—" }}
+                </p>
+                <hr>
+              {% endif %}
 
-            {% if is_owner or profile.show_education %}
-              <p class="mb-2">
-                <b>Education:</b><br>
-                {{ profile.education|linebreaks|default:"—" }}
-              </p>
-              <hr>
-            {% endif %}
+              {% if is_owner or profile.show_skills %}
+                <p class="mb-2">
+                  <b>Skills:</b><br>
+                  {{ profile.skills|default:"—" }}
+                </p>
+                <hr>
+              {% endif %}
 
-            {% if is_owner or profile.show_work_experience %}
-              <p class="mb-2">
-                <b>Work Experience:</b><br>
-                {{ profile.work_experience|linebreaks|default:"—" }}
-              </p>
-              <hr>
-            {% endif %}
+              {% if is_owner or profile.show_education %}
+                <p class="mb-2">
+                  <b>Education:</b><br>
+                  {{ profile.education|default:"—"|linebreaks }}
+                </p>
+                <hr>
+              {% endif %}
 
-            {% if is_owner or profile.show_links %}
-              <p class="mb-0">
-                <b>Links:</b><br>
-                {{ profile.links|default:"—" }}
-              </p>
-            {% endif %}
+              {% if is_owner or profile.show_work_experience %}
+                <p class="mb-2">
+                  <b>Work Experience:</b><br>
+                  {{ profile.work_experience|default:"—"|linebreaks }}
+                </p>
+                <hr>
+              {% endif %}
 
+              {% if is_owner or profile.show_links %}
+                <p class="mb-0">
+                  <b>Links:</b><br>
+                  {{ profile.links|default:"—" }}
+                </p>
+              {% endif %}
+
+            {% endif %}
           {% endif %}
 
         </div>
       </div>
 
       <div class="d-flex justify-content-end mt-3">
-        <a class="btn btn-outline-secondary"
-           href="{% url 'jobs:home' %}">
+        <a class="btn btn-outline-secondary" href="{% url 'jobs:home' %}">
           Back to Jobs
         </a>
       </div>
