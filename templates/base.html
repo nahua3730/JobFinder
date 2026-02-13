@@ -30,7 +30,11 @@
                 {% if user.is_recruiter %}
                     <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
                     <!-- Until Candidate Search is implemented, route to profile so link isn't dead -->
+<<<<<<< HEAD
                     <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
+=======
+                    <a class="nav-link" href="{% url 'users:candidate_list' %}">Candidate Search</a>
+>>>>>>> origin/userstory5-privacy-options
                 {% else %}
                     <!-- Until My Applications is implemented, route to profile so link isn't dead -->
                     <a class="nav-link" href="{% url 'users:profile_view' %}">My Applications</a>
@@ -38,7 +42,11 @@
 
                 <div class="vr bg-white mx-2 d-none d-lg-block"></div>
 
-                <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
+                {% if user.is_job_seeker %}
+                  <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
+                {% else %}
+                  <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
+                {% endif %}
 
                 <!-- Django 5.x often expects POST for logout -->
                 <form method="post" action="{% url 'users:logout' %}" class="d-inline">

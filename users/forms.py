@@ -1,5 +1,5 @@
 from django import forms
-from .models import JobSeekerProfile, User
+from .models import JobSeekerProfile, User, RecruiterProfile
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -40,4 +40,34 @@ class JobSeekerProfileForm(forms.ModelForm):
 class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ("username", "email", "is_recruiter")
+        fields = ("first_name", "last_name", "username", "email", "is_recruiter")
+
+class PrivacySettingsForm(forms.ModelForm):
+    class Meta:
+        model = JobSeekerProfile
+        fields = [
+            "privacy_enabled",
+            "show_headline",
+            "show_skills",
+            "show_education",
+            "show_work_experience",
+            "show_links",
+        ]
+class RecruiterUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name"]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"
+
+
+class RecruiterProfileForm(forms.ModelForm):
+    class Meta:
+        model = RecruiterProfile
+        fields = ["company_name"]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"

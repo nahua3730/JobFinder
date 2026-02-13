@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Edit Recruiter Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h3 mb-0">Edit Recruiter Profile</h1>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <h5 class="mb-3">Name</h5>
+        {{ user_form.as_p }}
+
+        <hr>
+
+        <h5 class="mb-3">Company</h5>
+        {{ profile_form.as_p }}
+
+        <button class="btn btn-dark" type="submit">Save</button>
+        <a class="btn btn-outline-secondary" href="{% url 'users:recruiter_profile' %}">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

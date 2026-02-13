@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 #    Implement User Stories here.
 
-#TEMP
+# TEMP
 class User(AbstractUser):
     """
     Custom user model to distinguish between Seekers and Recruiters.
@@ -12,6 +12,7 @@ class User(AbstractUser):
     """
     is_job_seeker = models.BooleanField(default=False)
     is_recruiter = models.BooleanField(default=False)
+
 
 class JobSeekerProfile(models.Model):
     """
@@ -27,16 +28,25 @@ class JobSeekerProfile(models.Model):
     education = models.TextField(blank=True)
     work_experience = models.TextField(blank=True)
     links = models.TextField(blank=True, help_text="Comma-separated URLs")
-    
+
+    # privacy base toggle
     privacy_enabled = models.BooleanField(default=False, help_text="Hide profile from recruiters")
-    
-    # user story 11
+
+    # user story 11 (search fields)
     location = models.CharField(max_length=255, blank=True, help_text="City, State")
     projects = models.TextField(blank=True, help_text="List of projects for search")
-    
+
+    # user story 5 (field-level visibility toggles)
+    show_headline = models.BooleanField(default=True)
+    show_skills = models.BooleanField(default=True)
+    show_education = models.BooleanField(default=True)
+    show_work_experience = models.BooleanField(default=True)
+    show_links = models.BooleanField(default=True)
+
     def __str__(self):
         return self.user.username
-#END TEMP
+# END TEMP
+
 
 class RecruiterProfile(models.Model):
     """
@@ -44,6 +54,6 @@ class RecruiterProfile(models.Model):
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='recruiter_profile')
     company_name = models.CharField(max_length=255)
-    
+
     def __str__(self):
         return self.company_name
