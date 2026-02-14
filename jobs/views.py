@@ -1,17 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import JobPosting
 from users.models import JobSeekerProfile
-from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm  
+from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 def home(request):
-    # landing page only
+    if request.user.is_authenticated and request.user.is_recruiter:
+        return redirect("jobs:my_jobs")
     jobs = JobPosting.objects.all().order_by('-created_at')
     return render(request, "jobs/index.html", {"jobs": jobs})
 
-
 def search(request):
+    if request.user.is_authenticated and request.user.is_recruiter:
+        return redirect("jobs:my_jobs")
+
     form = JobSearchForm(request.GET or None)
     jobs = JobPosting.objects.all().order_by("-created_at")
 
@@ -31,13 +34,20 @@ def search(request):
         if location:
             jobs = jobs.filter(location__icontains=location)
 
+        # overlap logic (recommended)
         if salary_min is not None:
-            jobs = jobs.filter(min_salary__gte=salary_min)
+            jobs = jobs.filter(max_salary__gte=salary_min)
         if salary_max is not None:
-            jobs = jobs.filter(max_salary__lte=salary_max)
+            jobs = jobs.filter(min_salary__lte=salary_max)
 
-        if is_remote != "":
-            jobs = jobs.filter(is_remote=is_remote)
+        # Remote/On-site dropdown: Any / Remote / On-site
+        # handle possible values from the form: "", "remote", "onsite"
+        if is_remote:
+            v = str(is_remote).strip().lower()
+            if v in ("remote", "true", "1", "yes"):
+                jobs = jobs.filter(is_remote=True)
+            elif v in ("on-site", "onsite", "false", "0", "no"):
+                jobs = jobs.filter(is_remote=False)
 
         if visa_sponsorship:
             jobs = jobs.filter(visa_sponsorship=True)
@@ -56,18 +66,17 @@ def create_job(request):
             job = form.save(commit=False)
             job.recruiter = request.user
             job.save()
-            return redirect ('jobs:home')
+            return redirect('jobs:home')
     else:
         form = JobPostingForm()
-    
+
     return render(request, "jobs/create_job.html", {'form': form, 'title': 'Post a New Job'})
 
 @login_required
 def edit_job(request, job_id):
     """ User Story 10: Recruiter edits a job """
-    # Ensure they can only edit their OWN jobs
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
-    
+
     if request.method == 'POST':
         form = JobPostingForm(request.POST, instance=job)
         if form.is_valid():
@@ -75,17 +84,17 @@ def edit_job(request, job_id):
             return redirect('jobs:home')
     else:
         form = JobPostingForm(instance=job)
-        
+
     return render(request, 'jobs/create_job.html', {'form': form, 'title': 'Edit Job'})
 
 @login_required
 def candidate_search(request):
-    """ User Story 11: Search candidates by skills, location, projects (Could include privacy filters here)"""
+    """ User Story 11: Search candidates by skills, location, projects """
     if not request.user.is_recruiter:
         return redirect('jobs:home')
-        
+
     form = CandidateSearchForm(request.GET or None)
-    candidates = JobSeekerProfile.objects.filter(user__is_job_seeker=True) 
+    candidates = JobSeekerProfile.objects.filter(user__is_job_seeker=True)
 
     if form.is_valid():
         query = form.cleaned_data.get('query')
@@ -98,16 +107,14 @@ def candidate_search(request):
                 Q(user__last_name__icontains=query) |
                 Q(skills__icontains=query)
             )
-        
+
         if location:
             candidates = candidates.filter(location__icontains=location)
-            
+
         if has_projects:
-            # If projects aren't empty, filter by projects
             candidates = candidates.exclude(projects__exact='')
-            # Optional: If they typed a keyword, check if it's inside the project text too
-            if query: 
-                 candidates = candidates.filter(projects__icontains=query)
+            if query:
+                candidates = candidates.filter(projects__icontains=query)
 
     return render(request, 'jobs/candidate_search.html', {'form': form, 'candidates': candidates})
 
@@ -116,8 +123,6 @@ def my_jobs(request):
     """ Show only the jobs created by the logged-in recruiter """
     if not request.user.is_recruiter:
         return redirect('jobs:home')
-        
-    # Filter jobs where the 'recruiter' field matches the current user
+
     my_job_list = JobPosting.objects.filter(recruiter=request.user).order_by('-created_at')
-    
     return render(request, 'jobs/my_jobs.html', {'jobs': my_job_list})

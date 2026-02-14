@@ -51,41 +51,29 @@ def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            if user.is_recruiter:
-                user.is_job_seeker = False
-            else:
-                user.is_job_seeker = True
-            user.save()
-
-            if not user.is_recruiter:
-                JobSeekerProfile.objects.get_or_create(user=user)
             user = form.save(commit=False)
 
-            is_recruiter = form.cleaned_data.get('is_recruiter')
-
-            # create profile automatically for non-recruiters
-            if is_recruiter:
-                user.is_recruiter = True
-                user.is_job_seeker = False
-            else:
-                user.is_recruiter = False
-                user.is_job_seeker = True
-            
+            is_recruiter = form.cleaned_data.get("is_recruiter")
+            user.is_recruiter = bool(is_recruiter)
+            user.is_job_seeker = not user.is_recruiter
             user.save()
 
             if user.is_recruiter:
-                RecruiterProfile.objects.create(user=user, company_name="Pending Company")
+                RecruiterProfile.objects.get_or_create(
+                    user=user,
+                    defaults={"company_name": "Pending Company"}
+                )
+                auth_login(request, user)
+                return redirect("users:recruiter_profile_edit")  # or recruiter_profile
             else:
-                JobSeekerProfile.objects.create(user=user)
-                
-            auth_login(request, user)
-            return redirect("users:profile_edit")  
+                JobSeekerProfile.objects.get_or_create(user=user)
+                auth_login(request, user)
+                return redirect("users:profile_edit")
+
     else:
         form = SignUpForm()
 
     return render(request, "users/signup.html", {"form": form})
-
 @login_required
 def privacy_settings(request):
     if not request.user.is_job_seeker:
