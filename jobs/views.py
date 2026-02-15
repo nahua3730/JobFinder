@@ -82,37 +82,42 @@ def edit_job(request, job_id):
         form = JobPostingForm(instance=job)
 
     return render(request, 'jobs/create_job.html', {'form': form, 'title': 'Edit Job'})
-
 @login_required
 def candidate_search(request):
-    """ User Story 11: Search candidates by skills, location, projects """
+    """ User Story 11: Search candidates by skills, location, projects (respects privacy) """
     if not request.user.is_recruiter:
-        return redirect('jobs:home')
+        return redirect("jobs:home")
 
     form = CandidateSearchForm(request.GET or None)
-    candidates = JobSeekerProfile.objects.filter(user__is_job_seeker=True)
+    candidates = JobSeekerProfile.objects.filter(
+        user__is_job_seeker=True,
+        privacy_enabled=False,
+    )
 
     if form.is_valid():
-        query = form.cleaned_data.get('query')
-        location = form.cleaned_data.get('location')
-        has_projects = form.cleaned_data.get('has_projects')
+        query = form.cleaned_data.get("query")
+        location = form.cleaned_data.get("location")
+        has_projects = form.cleaned_data.get("has_projects")
 
         if query:
-            candidates = candidates.filter(
-                Q(user__first_name__icontains=query) |
-                Q(user__last_name__icontains=query) |
-                Q(skills__icontains=query)
+            q_obj = Q(
+                user__first_name__icontains=query
+            ) | Q(
+                user__last_name__icontains=query
             )
 
+            q_obj |= Q(show_skills=True, skills__icontains=query)
+            q_obj |= Q(show_projects=True, projects__icontains=query)
+
+            candidates = candidates.filter(q_obj)
+
         if location:
-            candidates = candidates.filter(location__icontains=location)
+            candidates = candidates.filter(show_location=True, location__icontains=location)
 
         if has_projects:
-            candidates = candidates.exclude(projects__exact='')
-            if query:
-                candidates = candidates.filter(projects__icontains=query)
+            candidates = candidates.filter(show_projects=True).exclude(projects__exact="")
 
-    return render(request, 'jobs/candidate_search.html', {'form': form, 'candidates': candidates})
+    return render(request, "jobs/candidate_search.html", {"form": form, "candidates": candidates})
 
 @login_required
 def my_jobs(request):

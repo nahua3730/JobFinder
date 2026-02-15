@@ -13,7 +13,6 @@ urlpatterns = [
     path("profile/edit/", views.profile_edit, name="profile_edit"),
     path("privacy/", views.privacy_settings, name="privacy_settings"),
     path("profile/<str:username>/", views.profile_detail, name="profile_detail"),
-    path("candidates/", views.candidate_list, name="candidate_list"),
     path("recruiter/profile/", views.recruiter_profile, name="recruiter_profile"),
     path("recruiter/profile/edit/", views.recruiter_profile_edit, name="recruiter_profile_edit"),
 ]

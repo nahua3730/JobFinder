@@ -93,13 +93,6 @@ def profile_detail(request, username):
     return render(request, "users/profile_view.html", {"profile": profile, "is_owner": is_owner})
 
 @login_required
-def candidate_list(request):
-    if not request.user.is_recruiter:
-        return redirect("users:profile_view")
-    candidates = User.objects.filter(is_job_seeker=True).order_by("username")
-    return render(request, "users/candidate_list.html", {"candidates": candidates})
-
-@login_required
 def recruiter_profile(request):
     if not request.user.is_recruiter:
         return redirect("users:profile_view")

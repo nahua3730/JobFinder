@@ -23,20 +23,34 @@
     <div class="list-group">
         {% for candidate in candidates %}
             <div class="list-group-item">
-                <h5>
-                    {{ candidate.user.get_full_name|default:candidate.user.username }}
+
+                <h5 class="mb-1">
+                     <a href="{% url 'users:profile_detail' candidate.user.username %}">
+                        {{ candidate.user.get_full_name|default:candidate.user.username }}
+                    </a>
                 </h5>
 
-                <p class="mb-1"><strong>Skills:</strong> {{ candidate.skills }}</p>
-                <p class="mb-1"><strong>Location:</strong> {{ candidate.location }}</p>
-                <p class="mb-1"><strong>Projects:</strong> {{ candidate.projects }}</p>
+                {% if candidate.privacy_enabled %}
+                    <p class="text-muted mb-0">This candidate’s profile is hidden.</p>
+                {% else %}
 
-                <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'users:profile_detail' candidate.user.username %}"> View Profile
-                </a>
+                    {% if candidate.show_skills %}
+                        <p class="mb-1"><strong>Skills:</strong> {{ candidate.skills|default:"—" }}</p>
+                    {% endif %}
+
+                    {% if candidate.show_location %}
+                        <p class="mb-1"><strong>Location:</strong> {{ candidate.location|default:"—" }}</p>
+                    {% endif %}
+
+                    {% if candidate.show_projects %}
+                        <p class="mb-1"><strong>Projects:</strong> {{ candidate.projects|default:"—"|linebreaks }}</p>
+                    {% endif %}
+
+                 {% endif %}
             </div>
         {% empty %}
             <p>No candidates found matching your criteria.</p>
-        {% endfor %}    
+        {% endfor %} 
     </div>
 </div>
 {% endblock %}

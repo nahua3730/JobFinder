@@ -32,7 +32,6 @@
       <div class="card shadow-sm">
         <div class="card-body p-4">
 
-          {# ---------- HARD GUARD: profile might be None ---------- #}
           {% if not profile %}
             <p class="text-muted mb-0">
               Profile not found. If you’re a recruiter, use your recruiter profile page.
@@ -40,7 +39,6 @@
 
           {% else %}
 
-            {# ---------- Privacy guard (only evaluate if profile exists) ---------- #}
             {% if not is_owner and profile.privacy_enabled %}
               <p class="text-muted mb-0">This profile is hidden.</p>
             {% else %}
@@ -55,6 +53,14 @@
                 <p class="mb-2">
                   <b>Headline:</b><br>
                   {{ profile.headline|default:"—" }}
+                </p>
+                <hr>
+              {% endif %}
+
+              {% if is_owner or profile.show_location %}
+                <p class="mb-2">
+                  <b>Location:</b><br>
+                  {{ profile.location|default:"—" }}
                 </p>
                 <hr>
               {% endif %}
@@ -83,15 +89,18 @@
                 <hr>
               {% endif %}
 
-              <p class="mb-2">
+              {% if is_owner or profile.show_projects %}
+                <p class="mb-2">
                   <b>Projects:</b><br>
                   {{ profile.projects|default:"—"|linebreaks }}
-              </p>
-              <hr>
+                </p>
+                <hr>
+              {% endif %}
+
               {% if is_owner or profile.show_links %}
                 <p class="mb-0">
                   <b>Links:</b><br>
-                  {{ profile.links|default:"—" }}
+                  {{ profile.links|default:"—"|linebreaks }}
                 </p>
               {% endif %}
 

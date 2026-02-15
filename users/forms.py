@@ -6,10 +6,13 @@ from django.contrib.auth.forms import UserCreationForm
 class JobSeekerProfileForm(forms.ModelForm):
     class Meta:
         model = JobSeekerProfile
-        fields = ["headline", "skills", "education", "work_experience", "projects", "links"]
+        fields = ["headline", "location", "skills", "education", "work_experience", "projects", "links"]
         widgets = {
             "headline": forms.TextInput(attrs={
                 "placeholder": "e.g., CS student seeking Summer 2026 internship"
+            }),
+            "location": forms.TextInput(attrs={
+                "placeholder": "e.g., Atlanta, GA"
             }),
             "skills": forms.TextInput(attrs={
                 "placeholder": "Python, Java, SQL, React"
@@ -56,9 +59,11 @@ class PrivacySettingsForm(forms.ModelForm):
         fields = [
             "privacy_enabled",
             "show_headline",
+            "show_location",
             "show_skills",
             "show_education",
             "show_work_experience",
+            "show_projects",
             "show_links",
         ]
 class RecruiterUserForm(forms.ModelForm):

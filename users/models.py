@@ -26,9 +26,11 @@ class JobSeekerProfile(models.Model):
     projects = models.TextField(blank=True, help_text="List of projects for search")
 
     show_headline = models.BooleanField(default=True)
+    show_location = models.BooleanField(default=True)
     show_skills = models.BooleanField(default=True)
     show_education = models.BooleanField(default=True)
     show_work_experience = models.BooleanField(default=True)
+    show_projects = models.BooleanField(default=True)
     show_links = models.BooleanField(default=True)
 
     def __str__(self):

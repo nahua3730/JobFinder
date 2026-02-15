@@ -34,6 +34,14 @@
             </div>
 
             <div class="mb-3">
+              <label class="form-label" for="{{ form.headline.id_for_label }}">Location</label>
+              {{ form.location }}
+              {% for error in form.location.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="mb-3">
               <label class="form-label" for="{{ form.skills.id_for_label }}">Skills</label>
               {{ form.skills }}
               <div class="form-text">Comma-separated (e.g., Python, Java, SQL)</div>
