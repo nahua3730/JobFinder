@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Update Status{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="h4 mb-3">Update Status</h1>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <p class="mb-2"><strong>Job:</strong> {{ application.job.title }}</p>
+      <p class="mb-3"><strong>Current Status:</strong> {{ application.get_status_display }}</p>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">New Status</label>
+          {{ form.status }}
+        </div>
+
+        <button class="btn btn-dark" type="submit">Save</button>
+        <a class="btn btn-outline-secondary ms-2" href="{% url 'applications:my_applications' %}">
+          Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import models
 
-
 class Application(models.Model):
     class Status(models.TextChoices):
         APPLIED = "applied", "Applied"
@@ -22,7 +21,7 @@ class Application(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ("job", "applicant")  # one application per job per user
+        unique_together = ("job", "applicant") 
         ordering = ["-created_at"]
 
     def __str__(self):
