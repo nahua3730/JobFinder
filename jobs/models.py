@@ -20,11 +20,10 @@ class JobPosting(models.Model):
     min_salary = models.IntegerField(null=True, blank=True)
     max_salary = models.IntegerField(null=True, blank=True)
 
-    # kills filter (comma-separated)
-    skills = models.CharField(max_length=255, blank=True, default="")
-
     # existing remote flag
     is_remote = models.BooleanField(default=False)
+    skills = models.TextField(blank=True, help_text="Comma-separated required skills")
+    
 
     # visa sponsorship filter
     visa_sponsorship = models.BooleanField(default=False)

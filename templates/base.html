@@ -37,6 +37,7 @@
                     <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
                     <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
                 {% else %}
+                    <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
                 {% endif %}
 
                 <div class="vr bg-white mx-2 d-none d-lg-block"></div>
@@ -47,7 +48,6 @@
                   <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
                 {% endif %}
 
-                <!-- Django 5.x often expects POST for logout -->
                 <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                   {% csrf_token %}
                   <button type="submit" class="nav-link btn btn-link p-0" style="text-decoration:none;">

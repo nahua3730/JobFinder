@@ -9,17 +9,13 @@ from .forms import SignUpForm
 from django.contrib.auth import login as auth_login
 from .forms import PrivacySettingsForm
 from .forms import RecruiterUserForm, RecruiterProfileForm
-# Create your views here.
 
 def login_view(request):
-    # We will use Django's built-in auth views later, but this maps the URL for now
     return render(request, 'users/login.html')
 
 def logout_view(request):
-    # Placeholder
     return redirect('jobs:home')
 
-#additions for user stories 1-2 for sprint 1:
 def _get_profile(user):
     if not user.is_job_seeker:
         return None
@@ -64,7 +60,7 @@ def signup(request):
                     defaults={"company_name": "Pending Company"}
                 )
                 auth_login(request, user)
-                return redirect("users:recruiter_profile_edit")  # or recruiter_profile
+                return redirect("users:recruiter_profile_edit") 
             else:
                 JobSeekerProfile.objects.get_or_create(user=user)
                 auth_login(request, user)

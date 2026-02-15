@@ -33,15 +33,11 @@ def search(request):
             jobs = jobs.filter(skills__icontains=skills)
         if location:
             jobs = jobs.filter(location__icontains=location)
-
-        # overlap logic (recommended)
         if salary_min is not None:
             jobs = jobs.filter(max_salary__gte=salary_min)
         if salary_max is not None:
             jobs = jobs.filter(min_salary__lte=salary_max)
 
-        # Remote/On-site dropdown: Any / Remote / On-site
-        # handle possible values from the form: "", "remote", "onsite"
         if is_remote:
             v = str(is_remote).strip().lower()
             if v in ("remote", "true", "1", "yes"):
@@ -133,3 +129,30 @@ def job_detail(request, job_id):
 
     job = get_object_or_404(JobPosting, id=job_id)
     return render(request, "jobs/job_detail.html", {"job": job})
+
+@login_required
+def recommended_jobs(request):
+    if not request.user.is_job_seeker:
+        return redirect("jobs:home")
+    profile, _ = JobSeekerProfile.objects.get_or_create(user=request.user)
+    user_skills = {
+        s.strip().lower()
+        for s in (profile.skills or "").split(",")
+        if s.strip()
+    }
+    jobs = JobPosting.objects.all().order_by("-created_at")
+    recommended = [] 
+    for job in jobs:
+        job_skills = {
+            s.strip().lower()
+            for s in (getattr(job, "skills", "") or "").split(",")
+            if s.strip()
+        }
+        score = len(user_skills & job_skills)
+        if score > 0:
+            recommended.append((job, score))
+    recommended.sort(key=lambda pair: pair[1], reverse=True)
+    return render(request, "jobs/recommended_jobs.html", {
+        "recommended": recommended,
+        "user_skills": sorted(user_skills),
+    })
