@@ -54,8 +54,7 @@
   <div class="card mb-3">
     <div class="card-body">
       <div class="d-flex justify-content-between">
-          <h5 class="card-title">{{ job.title }}</h5>
-          
+          <h5 class="card-title"><a class="text-decoration-none" href="{% url 'jobs:job_detail' job.id %}"> {{ job.title }} </a></h5>
           {% if user == job.recruiter %}
               <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-warning btn-sm" style="height: fit-content;">Edit</a>
           {% endif %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Apply{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="h4 mb-3">Apply to: {{ job.title }}</h1>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Tailored note (optional)</label>
+          {{ form.note }}
+        </div>
+
+        <button class="btn btn-dark" type="submit">
+          {% if application %}Update Application{% else %}Apply{% endif %}
+        </button>
+
+        <a class="btn btn-outline-secondary ms-2" href="{% url 'jobs:job_detail' job.id %}">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

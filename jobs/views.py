@@ -126,3 +126,10 @@ def my_jobs(request):
 
     my_job_list = JobPosting.objects.filter(recruiter=request.user).order_by('-created_at')
     return render(request, 'jobs/my_jobs.html', {'jobs': my_job_list})
+
+def job_detail(request, job_id):
+    if request.user.is_authenticated and request.user.is_recruiter:
+        return redirect("jobs:my_jobs")
+
+    job = get_object_or_404(JobPosting, id=job_id)
+    return render(request, "jobs/job_detail.html", {"job": job})
