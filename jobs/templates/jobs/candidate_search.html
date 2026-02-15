@@ -23,14 +23,20 @@
     <div class="list-group">
         {% for candidate in candidates %}
             <div class="list-group-item">
-                <h5>{{ candidate.user.username }}</h5>
+                <h5>
+                    {{ candidate.user.get_full_name|default:candidate.user.username }}
+                </h5>
+
                 <p class="mb-1"><strong>Skills:</strong> {{ candidate.skills }}</p>
                 <p class="mb-1"><strong>Location:</strong> {{ candidate.location }}</p>
                 <p class="mb-1"><strong>Projects:</strong> {{ candidate.projects }}</p>
+
+                <a class="btn btn-sm btn-outline-primary mt-2" href="{% url 'users:profile_detail' candidate.user.username %}"> View Profile
+                </a>
             </div>
         {% empty %}
             <p>No candidates found matching your criteria.</p>
-        {% endfor %}
+        {% endfor %}    
     </div>
 </div>
 {% endblock %}
