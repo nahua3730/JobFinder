@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 class JobSeekerProfileForm(forms.ModelForm):
     class Meta:
         model = JobSeekerProfile
-        fields = ["headline", "skills", "education", "work_experience", "links"]
+        fields = ["headline", "skills", "education", "work_experience", "projects", "links"]
         widgets = {
             "headline": forms.TextInput(attrs={
                 "placeholder": "e.g., CS student seeking Summer 2026 internship"
@@ -22,6 +22,10 @@ class JobSeekerProfileForm(forms.ModelForm):
                 "rows": 6,
                 "placeholder": "Role — Company — Dates\n• Impact / project / results"
             }),
+            "projects": forms.Textarea(attrs={
+                "rows": 4,
+                "placeholder": "List your key projects here. This helps recruiters understand your experience!"
+            }),
             "links": forms.Textarea(attrs={
                 "rows": 3,
                 "placeholder": "LinkedIn, GitHub, portfolio links (one per line)"
@@ -31,7 +35,6 @@ class JobSeekerProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Apply Bootstrap styling automatically to all fields
         for field in self.fields.values():
             existing_classes = field.widget.attrs.get("class", "")
             field.widget.attrs["class"] = (existing_classes + " form-control").strip()

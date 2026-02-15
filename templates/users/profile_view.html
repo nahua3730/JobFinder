@@ -83,6 +83,11 @@
                 <hr>
               {% endif %}
 
+              <p class="mb-2">
+                  <b>Projects:</b><br>
+                  {{ profile.projects|default:"—"|linebreaks }}
+              </p>
+              <hr>
               {% if is_owner or profile.show_links %}
                 <p class="mb-0">
                   <b>Links:</b><br>

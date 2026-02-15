@@ -59,6 +59,13 @@
             </div>
 
             <div class="mb-3">
+              <label class="form-label">Projects</label>
+              {{ form.projects }} <div class="form-text text-muted">
+                  List key projects to help recruiters find you (e.g., "Built a Django Job Board").
+              </div>
+            </div>
+
+            <div class="mb-3">
               <label class="form-label" for="{{ form.links.id_for_label }}">Links</label>
               {{ form.links }}
               <div class="form-text">LinkedIn / GitHub / portfolio (one per line)</div>
