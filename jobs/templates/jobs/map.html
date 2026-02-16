@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="get" class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">Map Search & Filters</h5>
+
+      <!-- ADDED: switch back to list -->
+      <a class="btn btn-outline-secondary btn-sm"
+         href="{% url 'jobs:search' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}">
+        View as List
+      </a>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Title</label>
+        {{ form.title }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Skills</label>
+        {{ form.skills }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Location</label>
+        {{ form.location }}
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Min Salary</label>
+        {{ form.salary_min }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Max Salary</label>
+        {{ form.salary_max }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Remote/On-site</label>
+        {{ form.is_remote }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Visa Sponsorship</label>
+        {{ form.visa_sponsorship }}
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-content-end mt-3">
+      <a class="btn btn-outline-secondary" href="{% url 'jobs:job_map' %}">Clear</a>
+      <button class="btn btn-dark" type="submit">Search</button>
+    </div>
+  </div>
+</form>
+
+<!-- ADDED: map controls -->
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+      <button id="useLocationBtn" class="btn btn-primary" type="button">
+        Use My Current Location
+      </button>
+
+      <div style="min-width: 260px;">
+        <label class="form-label mb-1">
+          Distance: <span id="radiusLabel"></span>
+        </label>
+        <input id="radiusMiles" type="range" min="1" max="200" step="1" value="{{ default_radius }}" class="form-range">
+        <div class="form-text">Jobs are shown within this radius once your location is set.</div>
+      </div>
+
+      <div class="ms-auto text-muted">
+        Showing <span id="shownCount">0</span> / <span id="totalCount">0</span> jobs
+      </div>
+    </div>
+
+    <div id="geoMsg" class="text-danger small mt-2" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ADDED: map container -->
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div id="map" style="height: 70vh; width: 100%;"></div>
+  </div>
+</div>
+
+<!-- Leaflet (no API key) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+// ADDED: red pin icon for user location
+const redUserIcon = new L.Icon({
+iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+iconSize: [25, 41],
+iconAnchor: [12, 41],
+popupAnchor: [1, -34],
+shadowSize: [41, 41],
+});
+  // ADDED: build data URL with current query params
+  const dataUrl = "{% url 'jobs:job_map_data' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}";
+
+  // ADDED: default view centered on USA
+  const map = L.map('map').setView([39.5, -98.35], 6);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const markerLayer = L.layerGroup().addTo(map);
+
+  let allJobs = [];
+  let userLatLng = null;
+  let userMarker = null;
+  let radiusCircle = null;
+  const radiusInput = document.getElementById("radiusMiles");
+  const radiusLabel = document.getElementById("radiusLabel");
+  const shownCount = document.getElementById("shownCount");
+  const totalCount = document.getElementById("totalCount");
+  const geoMsg = document.getElementById("geoMsg");
+
+  function setGeoMessage(msg) {
+    geoMsg.style.display = msg ? "block" : "none";
+    geoMsg.textContent = msg || "";
+  }
+
+  function milesToMeters(miles) {
+    return miles * 1609.34;
+  }
+
+  // ADDED: Haversine distance (miles)
+  function distanceMiles(lat1, lon1, lat2, lon2) {
+    const R = 3958.8; // miles
+    const toRad = (deg) => deg * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function updateRadiusLabel() {
+    radiusLabel.textContent = `${radiusInput.value} miles`;
+  }
+
+  function jobPassesRadius(job) {
+    if (!userLatLng) return true; // if user location not set, show all
+    const r = parseInt(radiusInput.value, 10);
+    const d = distanceMiles(userLatLng.lat, userLatLng.lng, job.latitude, job.longitude);
+    return d <= r;
+  }
+  
+  function fitToCircle() {
+    if (!radiusCircle) return;
+    map.fitBounds(radiusCircle.getBounds(), { padding: [30, 30] });
+  }
+
+
+  function renderMarkers() {
+    markerLayer.clearLayers();
+
+    let shown = 0;
+    for (const job of allJobs) {
+      if (!jobPassesRadius(job)) continue;
+      shown++;
+
+      const popupHtml = `
+        <div style="min-width:200px;">
+          <b>${job.title}</b><br/>
+          <span>${job.location}</span><br/>
+          <a href="{% url 'jobs:home' %}${job.id}/">View details</a>
+        </div>
+      `;
+
+      const m = L.marker([job.latitude, job.longitude]).bindPopup(popupHtml);
+      m.addTo(markerLayer);
+    }
+
+    shownCount.textContent = shown.toString();
+    totalCount.textContent = allJobs.length.toString();
+
+    // draw/update circle
+    if (userLatLng) {
+      const meters = milesToMeters(parseInt(radiusInput.value, 10));
+      if (radiusCircle) radiusCircle.remove();
+      radiusCircle = L.circle([userLatLng.lat, userLatLng.lng], { radius: meters }).addTo(map);
+    }
+  }
+
+  async function loadJobs() {
+    const resp = await fetch(dataUrl);
+    allJobs = await resp.json();
+    totalCount.textContent = allJobs.length.toString();
+    renderMarkers();
+  }
+
+  function setUserLocation(lat, lng, label) {
+    userLatLng = { lat, lng };
+    setGeoMessage("");
+
+    if (userMarker) userMarker.remove();
+    userMarker = L.marker([lat, lng], { icon: redUserIcon }).addTo(map).bindPopup(label || "You are here").openPopup();
+
+    map.setView([lat, lng], 13);
+    renderMarkers();
+  }
+
+  document.getElementById("useLocationBtn").addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      setGeoMessage("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation(pos.coords.latitude, pos.coords.longitude, "You are here"),
+      () => setGeoMessage("Location permission denied. Enable it to filter by distance."),
+      { enableHighAccuracy: false, timeout: 8000 }
+    );
+  });
+
+  radiusInput.addEventListener("input", () => {
+    updateRadiusLabel();
+    renderMarkers();
+    fitToCircle();
+  });
+
+  updateRadiusLabel();
+  const homeLat = {{ home_lat|default:"null" }};
+  const homeLng = {{ home_lng|default:"null" }};
+  loadJobs().then(() => {
+    if (homeLat !== null && homeLng !== null) {
+      setUserLocation(homeLat, homeLng, "Your saved location");
+    }
+  });
+</script>
+
+{% endblock %}

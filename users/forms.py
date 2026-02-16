@@ -6,13 +6,22 @@ from django.contrib.auth.forms import UserCreationForm
 class JobSeekerProfileForm(forms.ModelForm):
     class Meta:
         model = JobSeekerProfile
-        fields = ["headline", "location", "skills", "education", "work_experience", "projects", "links"]
+        fields = ["headline", "street_address", "city", "state", "zip_code", "skills", "education", "work_experience", "projects", "links", "preferred_commute_radius_miles"]
         widgets = {
             "headline": forms.TextInput(attrs={
                 "placeholder": "e.g., CS student seeking Summer 2026 internship"
             }),
-            "location": forms.TextInput(attrs={
-                "placeholder": "e.g., Atlanta, GA"
+            "street_address": forms.TextInput(attrs={
+                "placeholder": "e.g., 266 Ferst Dr NW"
+            }),
+            "city": forms.TextInput(attrs={
+                "placeholder": "e.g., Atlanta"
+            }),
+            "state": forms.TextInput(attrs={
+                "placeholder": "e.g., GA"
+            }),
+            "zip_code": forms.TextInput(attrs={
+                "placeholder": "e.g., 30332"
             }),
             "skills": forms.TextInput(attrs={
                 "placeholder": "Python, Java, SQL, React"
@@ -32,6 +41,11 @@ class JobSeekerProfileForm(forms.ModelForm):
             "links": forms.Textarea(attrs={
                 "rows": 3,
                 "placeholder": "LinkedIn, GitHub, portfolio links (one per line)"
+            }),
+            "preferred_commute_radius_miles": forms.NumberInput(attrs={
+                "min": 1,
+                "max": 500,
+                "placeholder": "e.g., 10"
             }),
         }
 

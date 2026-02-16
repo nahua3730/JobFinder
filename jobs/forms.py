@@ -38,11 +38,28 @@ class JobSearchForm(forms.Form):
 class JobPostingForm(forms.ModelForm):
     class Meta:
         model = JobPosting
-        fields = ['title', 'description', 'location', 'salary_range', 'skills', 'is_remote', 'visa_sponsorship']
+        fields = ['title', 'description', 'street_address', 'city', 'state', 'zip_code', 'salary_range', 'skills', 'is_remote', 'visa_sponsorship']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            
+            "street_address": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "e.g., 266 Ferst Dr NW"
+            }),
+            "city": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "e.g., Atlanta"
+            }),
+            "state": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "e.g., GA"
+            }),
+            "zip_code": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "e.g., 30332"
+            }),
+
             'salary_range': forms.TextInput(attrs={'class': 'form-control'}),
 
             'skills': forms.TextInput(attrs={

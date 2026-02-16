@@ -4,6 +4,8 @@ from users.models import JobSeekerProfile
 from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import JsonResponse
+from .geocoding import geocode_us
 
 def home(request):
     if request.user.is_authenticated and request.user.is_recruiter:
@@ -50,6 +52,93 @@ def search(request):
 
     return render(request, "jobs/search.html", {"form": form, "jobs": jobs})
 
+def _filtered_jobs_from_search_form(request):
+    form = JobSearchForm(request.GET or None)
+    jobs = JobPosting.objects.all().order_by("-created_at")
+
+    if form.is_valid():
+        title = form.cleaned_data.get("title")
+        skills = form.cleaned_data.get("skills")
+        location = form.cleaned_data.get("location")
+        salary_min = form.cleaned_data.get("salary_min")
+        salary_max = form.cleaned_data.get("salary_max")
+        is_remote = form.cleaned_data.get("is_remote")
+        visa_sponsorship = form.cleaned_data.get("visa_sponsorship")
+
+        if title:
+            jobs = jobs.filter(title__icontains=title)
+        if skills:
+            jobs = jobs.filter(skills__icontains=skills)
+        if location:
+            jobs = jobs.filter(location__icontains=location)
+        if salary_min is not None:
+            jobs = jobs.filter(max_salary__gte=salary_min)
+        if salary_max is not None:
+            jobs = jobs.filter(min_salary__lte=salary_max)
+
+        if is_remote:
+            v = str(is_remote).strip().lower()
+            if v in ("remote", "true", "1", "yes"):
+                jobs = jobs.filter(is_remote=True)
+            elif v in ("on-site", "onsite", "false", "0", "no"):
+                jobs = jobs.filter(is_remote=False)
+
+        if visa_sponsorship:
+            jobs = jobs.filter(visa_sponsorship=True)
+
+    return form, jobs
+
+
+def job_map(request):
+    if request.user.is_authenticated and request.user.is_recruiter:
+        return redirect("jobs:my_jobs")
+
+    form, _ = _filtered_jobs_from_search_form(request)
+
+    default_radius = 10
+    if request.user.is_authenticated and getattr(request.user, "is_job_seeker", False):
+        profile, _ = JobSeekerProfile.objects.get_or_create(user=request.user)
+        default_radius = getattr(profile, "preferred_commute_radius_miles", 10) or 10
+
+    home_lat = None
+    home_lng = None
+    home_label = None
+
+    if request.user.is_authenticated and getattr(request.user, "is_job_seeker", False):
+        profile, _ = JobSeekerProfile.objects.get_or_create(user=request.user)
+        home_lat = profile.latitude
+        home_lng = profile.longitude
+        home_label = profile.location
+
+    return render(request, "jobs/map.html", {
+        "form": form,
+        "default_radius": default_radius,
+        "home_lat": home_lat,
+        "home_lng": home_lng,
+        "home_label": home_label,
+    })
+
+def job_map_data(request):
+    if request.user.is_authenticated and request.user.is_recruiter:
+        return JsonResponse({"error": "Recruiters do not use this endpoint."}, status=403)
+
+    _, jobs = _filtered_jobs_from_search_form(request)
+
+    jobs = jobs.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+
+    data = []
+    for job in jobs:
+        data.append({
+            "id": job.id,
+            "title": job.title,
+            "location": job.location,
+            "latitude": job.latitude,
+            "longitude": job.longitude,
+            "is_remote": job.is_remote,
+        })
+
+    return JsonResponse(data, safe=False)
+
 @login_required
 def create_job(request):
     ''' User Story 10: Recruiter post a job '''
@@ -61,6 +150,16 @@ def create_job(request):
         if form.is_valid():
             job = form.save(commit=False)
             job.recruiter = request.user
+            job.location = job.build_location_string()
+
+            if job.is_remote:
+                job.latitude = None
+                job.longitude = None
+            else:
+                coords = geocode_us(job.location)
+                if coords:
+                    job.latitude, job.longitude = coords
+
             job.save()
             return redirect('jobs:home')
     else:
@@ -72,16 +171,35 @@ def create_job(request):
 def edit_job(request, job_id):
     """ User Story 10: Recruiter edits a job """
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+    old_location = job.location
+    old_remote = job.is_remote
 
     if request.method == 'POST':
         form = JobPostingForm(request.POST, instance=job)
         if form.is_valid():
-            form.save()
+            job = form.save(commit=False)
+
+            job.location = job.build_location_string()
+
+            location_changed = (job.location != old_location)
+            remote_changed = (job.is_remote != old_remote)
+            coords_missing = (job.latitude is None or job.longitude is None)
+
+            if job.is_remote:
+                job.latitude = None
+                job.longitude = None
+            elif location_changed or remote_changed or coords_missing:
+                coords = geocode_us(job.location)
+                if coords:
+                    job.latitude, job.longitude = coords
+
+            job.save()
             return redirect('jobs:home')
     else:
         form = JobPostingForm(instance=job)
 
     return render(request, 'jobs/create_job.html', {'form': form, 'title': 'Edit Job'})
+
 @login_required
 def candidate_search(request):
     """ User Story 11: Search candidates by skills, location, projects (respects privacy) """

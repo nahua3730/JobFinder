@@ -6,7 +6,7 @@ User = get_user_model()
 @admin.register(JobPosting)
 class JobPostingAdmin(admin.ModelAdmin):
     list_display = ("title", "recruiter", "location", "is_remote", "created_at")
-    search_fields = ("title", "description", "location", "skills", "recruiter__username")
+    search_fields = ("title", "description", "location", "street_address", "city", "state", "zip_code", "skills", "recruiter__username")
     list_filter = ("is_remote", "created_at")
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "recruiter":

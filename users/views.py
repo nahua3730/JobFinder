@@ -9,6 +9,7 @@ from .forms import SignUpForm
 from django.contrib.auth import login as auth_login
 from .forms import PrivacySettingsForm
 from .forms import RecruiterUserForm, RecruiterProfileForm
+from jobs.geocoding import geocode_us
 
 def login_view(request):
     return render(request, 'users/login.html')
@@ -37,6 +38,16 @@ def profile_edit(request):
     if request.method == "POST":
         form = JobSeekerProfileForm(request.POST, instance=profile)
         if form.is_valid():
+            profile = form.save(commit=False)
+
+            profile.location = profile.build_location_display()
+            q = profile.build_geocode_query()
+
+            if q:
+                coords = geocode_us(q)
+                if coords:
+                    profile.latitude, profile.longitude = coords
+                    
             form.save()
             return redirect("users:profile_view")  
     else:

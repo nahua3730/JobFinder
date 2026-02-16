@@ -23,6 +23,16 @@ class JobSeekerProfile(models.Model):
     privacy_enabled = models.BooleanField(default=False, help_text="Hide profile from recruiters")
 
     location = models.CharField(max_length=255, blank=True, help_text="City, State")
+    street_address = models.CharField(max_length=255, blank=True, default="")
+    city = models.CharField(max_length=100, blank=True, default="")
+    state = models.CharField(max_length=2, blank=True, default="")
+    zip_code = models.CharField(max_length=10, blank=True, default="")
+    
+    preferred_commute_radius_miles = models.PositiveIntegerField(default=10, help_text="Preferred commute radius in miles")
+
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
     projects = models.TextField(blank=True, help_text="List of projects for search")
 
     show_headline = models.BooleanField(default=True)
@@ -32,6 +42,35 @@ class JobSeekerProfile(models.Model):
     show_work_experience = models.BooleanField(default=True)
     show_projects = models.BooleanField(default=True)
     show_links = models.BooleanField(default=True)
+
+    def build_location_display(self) -> str:
+        city = (self.city or "").strip()
+        state = (self.state or "").strip().upper()
+        zip_code = (self.zip_code or "").strip()
+
+        if city and state:
+            return f"{city}, {state} {zip_code}".strip()
+        if city:
+            return city
+        if state:
+            return state
+        return zip_code
+
+    def build_geocode_query(self) -> str:
+        parts = []
+        if (self.street_address or "").strip():
+            parts.append(self.street_address.strip())
+
+        display = self.build_location_display()
+        if display:
+            parts.append(display)
+
+        q = ", ".join(parts)
+        return f"{q}, USA" if q else ""
+
+    def save(self, *args, **kwargs):
+        self.location = self.build_location_display()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username

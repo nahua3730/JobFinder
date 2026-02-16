@@ -12,4 +12,6 @@ urlpatterns = [
     path('my-jobs/', views.my_jobs, name='my_jobs'),
     path("<int:job_id>/", views.job_detail, name="job_detail"),
     path("recommended/", views.recommended_jobs, name="recommended_jobs"),
+    path("map/", views.job_map, name="job_map"),
+    path("map-data/", views.job_map_data, name="job_map_data"),
 ]

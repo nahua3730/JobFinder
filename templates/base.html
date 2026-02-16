@@ -27,6 +27,7 @@
 
             {% if not user.is_authenticated or user.is_job_seeker %}
               <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
+              <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
             {% endif %}
             {% if user.is_authenticated and user.is_job_seeker %}
             <a class="nav-link" href="{% url 'applications:my_applications' %}">My Applications</a>

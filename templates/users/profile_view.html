@@ -65,6 +65,14 @@
                 <hr>
               {% endif %}
 
+              {% if is_owner %}
+                <p class="mb-2">
+                  <b>Preferred commute radius:</b><br>
+                  {{ profile.preferred_commute_radius_miles }} miles
+                </p>
+                <hr>
+              {% endif %}
+
               {% if is_owner or profile.show_skills %}
                 <p class="mb-2">
                   <b>Skills:</b><br>
