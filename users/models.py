@@ -37,6 +37,7 @@ class JobSeekerProfile(models.Model):
 
     show_headline = models.BooleanField(default=True)
     show_location = models.BooleanField(default=True)
+    show_commute_radius = models.BooleanField(default=True)
     show_skills = models.BooleanField(default=True)
     show_education = models.BooleanField(default=True)
     show_work_experience = models.BooleanField(default=True)

@@ -74,6 +74,7 @@ class PrivacySettingsForm(forms.ModelForm):
             "privacy_enabled",
             "show_headline",
             "show_location",
+            "show_commute_radius",
             "show_skills",
             "show_education",
             "show_work_experience",
