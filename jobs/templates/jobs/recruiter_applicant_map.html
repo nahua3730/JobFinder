@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+
+<style>
+  .cluster-shell {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 24px;
+    box-shadow: 0 14px 40px rgba(16, 24, 40, 0.08);
+    padding: 24px;
+  }
+
+  #applicantClusterMap {
+    height: 650px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .stat-card {
+    min-width: 180px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef4ff 100%);
+    border: 1px solid #dbe7ff;
+    border-radius: 18px;
+    padding: 14px 16px;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: #667085;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+  }
+</style>
+
+<div class="container py-4">
+  <div class="mb-4">
+    <h1 class="fw-bold">Applicant Location Map</h1>
+    <p class="text-muted mb-0">
+      See where applicants for <strong>{{ job.title }}</strong> are coming from.
+    </p>
+  </div>
+
+  <div class="cluster-shell">
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Job</div>
+        <div class="stat-value" style="font-size: 1rem;">{{ job.title }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Cluster View</div>
+        <div class="stat-value">On</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Applicants Mapped</div>
+        <div class="stat-value" id="applicantCount">0</div>
+      </div>
+    </div>
+
+    <div id="applicantClusterMap"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
+<script>
+  const map = L.map("applicantClusterMap").setView([39.8283, -98.5795], 4);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 19,
+  }).addTo(map);
+
+  const clusterGroup = L.markerClusterGroup();
+  const bounds = [];
+  const applicantCount = document.getElementById("applicantCount");
+
+  fetch("{% url 'jobs:recruiter_applicant_map_data' job.id %}")
+    .then(response => response.json())
+    .then(data => {
+      applicantCount.textContent = data.length;
+
+      data.forEach(applicant => {
+        const marker = L.marker([applicant.latitude, applicant.longitude]);
+
+        marker.bindPopup(`
+          <div style="min-width:240px;">
+            <h6 style="font-weight:700; margin-bottom:8px;">${applicant.name}</h6>
+            ${applicant.headline ? `<div style="margin-bottom:6px;"><strong>Headline:</strong> ${applicant.headline}</div>` : ""}
+            ${applicant.location ? `<div style="margin-bottom:6px;"><strong>Location:</strong> ${applicant.location}</div>` : ""}
+            ${applicant.skills ? `<div><strong>Skills:</strong> ${applicant.skills}</div>` : ""}
+          </div>
+        `);
+
+        clusterGroup.addLayer(marker);
+        bounds.push([applicant.latitude, applicant.longitude]);
+      });
+
+      map.addLayer(clusterGroup);
+
+      if (bounds.length > 0) {
+        map.fitBounds(bounds, { padding: [40, 40] });
+      }
+    })
+    .catch(error => {
+      console.error("Failed to load applicant map data:", error);
+    });
+</script>
+{% endblock %}

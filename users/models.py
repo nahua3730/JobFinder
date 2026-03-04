@@ -7,11 +7,7 @@ class User(AbstractUser):
 
 
 class JobSeekerProfile(models.Model):
-    """
-    User Story 1: Profile with headline, skills, etc.
-    User Story 5: Privacy options
-    User Story 11: Candidate Search
-    """
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='seeker_profile')
     headline = models.CharField(max_length=255, blank=True)
     skills = models.TextField(help_text="Comma-separated skills", blank=True)
@@ -78,9 +74,8 @@ class JobSeekerProfile(models.Model):
 
 
 class RecruiterProfile(models.Model):
-    """
-    User Story 10: Link jobs to a company/recruiter.
-    """
+    
+ 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='recruiter_profile')
     company_name = models.CharField(max_length=255)
     title = models.CharField(

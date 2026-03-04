@@ -1,15 +1,487 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>{{ title }}</h2>
-    <div class="card p-4">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Save Job</button>
-            <a href="{% url 'jobs:home' %}" class="btn btn-secondary">Cancel</a>
-        </form>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+<style>
+  .job-editor-shell {
+    display: grid;
+    grid-template-columns: 1.02fr 1.25fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .pro-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 24px;
+    box-shadow: 0 14px 40px rgba(16, 24, 40, 0.08);
+  }
+
+  .pro-card-body {
+    padding: 24px;
+  }
+
+  .page-hero {
+    margin-bottom: 24px;
+  }
+
+  .page-hero h1 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .page-hero p {
+    color: #6c757d;
+    margin-bottom: 0;
+  }
+
+  .map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .map-header h4 {
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+
+  .map-subtitle {
+    color: #6c757d;
+    font-size: 0.95rem;
+  }
+
+  .search-bar-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .map-search-input {
+    flex: 1;
+    min-width: 220px;
+  }
+
+  #recruiter-job-map {
+    height: 520px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+  }
+
+  .selection-panel {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #eef4ff 100%);
+    border: 1px solid #dbe7ff;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .selection-panel h6 {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .address-preview {
+    color: #344054;
+    margin-bottom: 10px;
+    min-height: 24px;
+  }
+
+  .coord-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #ffffff;
+    border: 1px solid #d0d5dd;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .status-text {
+    margin-top: 8px;
+    font-size: 0.92rem;
+    color: #667085;
+  }
+
+  .label-strong {
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .section-divider {
+    margin: 20px 0 16px;
+    border-top: 1px solid #edf0f2;
+  }
+
+  .soft-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f2f4f7;
+    color: #344054;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .remote-banner {
+    display: none;
+    margin-top: 14px;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #9a3412;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 992px) {
+    .job-editor-shell {
+      grid-template-columns: 1fr;
+    }
+
+    #recruiter-job-map {
+      height: 420px;
+    }
+  }
+</style>
+
+<div class="container py-4">
+  <div class="page-hero">
+    <span class="soft-badge">Recruiter Workspace</span>
+    <h1 class="mt-2">{{ title }}</h1>
+    <p>
+      Create a polished posting and pin the exact office location so candidates immediately understand where the job is based.
+    </p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="job-editor-shell">
+      <div class="pro-card">
+        <div class="pro-card-body">
+          <h4 class="fw-bold mb-3">Job Information</h4>
+
+          <div class="mb-3">
+            <label class="label-strong">Job Title</label>
+            {{ form.title }}
+          </div>
+
+          <div class="mb-3">
+            <label class="label-strong">Description</label>
+            {{ form.description }}
+          </div>
+
+          <div class="section-divider"></div>
+
+          <h5 class="fw-bold mb-3">Office Location</h5>
+
+          <div class="mb-3">
+            <label class="label-strong">Street Address</label>
+            {{ form.street_address }}
+          </div>
+
+          <div class="row">
+            <div class="col-md-5 mb-3">
+              <label class="label-strong">City</label>
+              {{ form.city }}
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="label-strong">State</label>
+              {{ form.state }}
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="label-strong">ZIP Code</label>
+              {{ form.zip_code }}
+            </div>
+          </div>
+
+          <div class="form-check mb-3">
+            {{ form.is_remote }}
+            <label class="form-check-label ms-1" for="{{ form.is_remote.id_for_label }}">
+              This is a remote role
+            </label>
+          </div>
+
+          <div class="remote-banner" id="remoteBanner">
+            Remote job selected — office map pinning is disabled unless you turn remote off.
+          </div>
+
+          <div class="section-divider"></div>
+
+          <h5 class="fw-bold mb-3">Job Filters</h5>
+
+          <div class="mb-3">
+            <label class="label-strong">Salary Range</label>
+            {{ form.salary_range }}
+          </div>
+
+          <div class="mb-3">
+            <label class="label-strong">Skills</label>
+            {{ form.skills }}
+          </div>
+
+          <div class="form-check mb-4">
+            {{ form.visa_sponsorship }}
+            <label class="form-check-label ms-1" for="{{ form.visa_sponsorship.id_for_label }}">
+              Offers visa sponsorship
+            </label>
+          </div>
+
+          {{ form.latitude }}
+          {{ form.longitude }}
+
+          <div class="d-flex gap-2 flex-wrap">
+            <button type="submit" class="btn btn-dark px-4">Save Job</button>
+            <a href="{% url 'jobs:my_jobs' %}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pro-card">
+        <div class="pro-card-body">
+          <div class="map-header">
+            <div>
+              <h4>Pin Office on Map</h4>
+              <div class="map-subtitle">
+                Search an address, click anywhere on the map, or drag the pin to refine the exact office location.
+              </div>
+            </div>
+          </div>
+
+          <div class="search-bar-row">
+            <input
+              type="text"
+              id="mapSearchInput"
+              class="form-control map-search-input"
+              placeholder="Search office address..."
+            />
+            <button type="button" class="btn btn-outline-dark" id="searchMapBtn">Search</button>
+            <button type="button" class="btn btn-outline-secondary" id="clearMapBtn">Clear</button>
+          </div>
+
+          <div id="recruiter-job-map"></div>
+
+          <div class="selection-panel">
+            <h6>Selected Office Location</h6>
+            <div class="address-preview" id="selectedAddressPreview">
+              No location selected yet.
+            </div>
+
+            <span class="coord-chip" id="latChip">Lat: --</span>
+            <span class="coord-chip" id="lngChip">Lng: --</span>
+
+            <div class="status-text" id="mapStatusText">
+              Click the map to auto-fill the address fields.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </form>
 </div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  const streetInput = document.getElementById("id_street_address");
+  const cityInput = document.getElementById("id_city");
+  const stateInput = document.getElementById("id_state");
+  const zipInput = document.getElementById("id_zip_code");
+  const latInput = document.getElementById("id_latitude");
+  const lngInput = document.getElementById("id_longitude");
+  const remoteInput = document.getElementById("id_is_remote");
+
+  const selectedAddressPreview = document.getElementById("selectedAddressPreview");
+  const latChip = document.getElementById("latChip");
+  const lngChip = document.getElementById("lngChip");
+  const mapStatusText = document.getElementById("mapStatusText");
+  const remoteBanner = document.getElementById("remoteBanner");
+
+  const searchMapBtn = document.getElementById("searchMapBtn");
+  const clearMapBtn = document.getElementById("clearMapBtn");
+  const mapSearchInput = document.getElementById("mapSearchInput");
+
+  const map = L.map("recruiter-job-map").setView([39.8283, -98.5795], 4);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 19,
+  }).addTo(map);
+
+  let marker = null;
+
+  function getDisplayAddress(data) {
+    const pieces = [];
+    if (data.street_address) pieces.push(data.street_address);
+
+    let cityStateZip = "";
+    if (data.city && data.state) {
+      cityStateZip = `${data.city}, ${data.state}`;
+    } else if (data.city) {
+      cityStateZip = data.city;
+    } else if (data.state) {
+      cityStateZip = data.state;
+    }
+
+    if (data.zip_code) {
+      cityStateZip = cityStateZip ? `${cityStateZip} ${data.zip_code}` : data.zip_code;
+    }
+
+    if (cityStateZip) pieces.push(cityStateZip);
+
+    return pieces.join(", ") || data.display_name || "Selected location";
+  }
+
+  function updateFormFields(data) {
+    streetInput.value = data.street_address || "";
+    cityInput.value = data.city || "";
+    stateInput.value = data.state || "";
+    zipInput.value = data.zip_code || "";
+    latInput.value = data.latitude ?? "";
+    lngInput.value = data.longitude ?? "";
+
+    latChip.textContent = `Lat: ${Number(data.latitude).toFixed(6)}`;
+    lngChip.textContent = `Lng: ${Number(data.longitude).toFixed(6)}`;
+    selectedAddressPreview.textContent = getDisplayAddress(data);
+  }
+
+  function placeMarker(lat, lng) {
+    if (marker) {
+      marker.setLatLng([lat, lng]);
+    } else {
+      marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+
+      marker.on("dragend", async function (e) {
+        if (remoteInput.checked) return;
+        const pos = e.target.getLatLng();
+        await reverseGeocodePoint(pos.lat, pos.lng);
+      });
+    }
+
+    map.setView([lat, lng], 15);
+  }
+
+  function clearSelectedLocation() {
+    if (marker) {
+      map.removeLayer(marker);
+      marker = null;
+    }
+
+    streetInput.value = "";
+    cityInput.value = "";
+    stateInput.value = "";
+    zipInput.value = "";
+    latInput.value = "";
+    lngInput.value = "";
+
+    latChip.textContent = "Lat: --";
+    lngChip.textContent = "Lng: --";
+    selectedAddressPreview.textContent = "No location selected yet.";
+    mapStatusText.textContent = "Click the map to auto-fill the address fields.";
+  }
+
+  async function reverseGeocodePoint(lat, lng) {
+    try {
+      mapStatusText.textContent = "Looking up address from selected point...";
+
+      const response = await fetch(
+        `{% url 'jobs:recruiter_reverse_geocode' %}?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        mapStatusText.textContent = data.error || "Could not reverse geocode this location.";
+        return;
+      }
+
+      updateFormFields(data);
+      placeMarker(data.latitude, data.longitude);
+      mapStatusText.textContent = "Office location updated from map pin.";
+    } catch (error) {
+      console.error(error);
+      mapStatusText.textContent = "Something went wrong while reading that location.";
+    }
+  }
+
+  async function searchAddress(query) {
+    try {
+      mapStatusText.textContent = "Searching address...";
+
+      const response = await fetch(
+        `{% url 'jobs:recruiter_geocode_search' %}?q=${encodeURIComponent(query)}`
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        mapStatusText.textContent = data.error || "Address not found.";
+        return;
+      }
+
+      updateFormFields(data);
+      placeMarker(data.latitude, data.longitude);
+      mapStatusText.textContent = "Address found and pinned on the map.";
+    } catch (error) {
+      console.error(error);
+      mapStatusText.textContent = "Something went wrong during address search.";
+    }
+  }
+
+  function applyRemoteModeUI() {
+    const isRemote = remoteInput.checked;
+
+    if (isRemote) {
+      remoteBanner.style.display = "block";
+      clearSelectedLocation();
+      mapStatusText.textContent = "Remote role selected. Map pinning is disabled.";
+    } else {
+      remoteBanner.style.display = "none";
+      mapStatusText.textContent = "Click the map to auto-fill the address fields.";
+    }
+  }
+
+  map.on("click", async function (e) {
+    if (remoteInput.checked) return;
+    await reverseGeocodePoint(e.latlng.lat, e.latlng.lng);
+  });
+
+  searchMapBtn.addEventListener("click", function () {
+    if (remoteInput.checked) return;
+
+    const query = mapSearchInput.value.trim();
+    if (query) {
+      searchAddress(query);
+    }
+  });
+
+  clearMapBtn.addEventListener("click", function () {
+    if (remoteInput.checked) return;
+    clearSelectedLocation();
+  });
+
+  remoteInput.addEventListener("change", applyRemoteModeUI);
+
+  {% if form.instance.latitude and form.instance.longitude %}
+    const preloadData = {
+      street_address: "{{ form.instance.street_address|escapejs }}",
+      city: "{{ form.instance.city|escapejs }}",
+      state: "{{ form.instance.state|escapejs }}",
+      zip_code: "{{ form.instance.zip_code|escapejs }}",
+      latitude: {{ form.instance.latitude }},
+      longitude: {{ form.instance.longitude }},
+      display_name: "{{ form.instance.location|escapejs }}"
+    };
+    updateFormFields(preloadData);
+    placeMarker(preloadData.latitude, preloadData.longitude);
+  {% endif %}
+
+  applyRemoteModeUI();
+</script>
 {% endblock %}

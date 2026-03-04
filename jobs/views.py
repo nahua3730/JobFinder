@@ -5,7 +5,9 @@ from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
-from .geocoding import geocode_us
+from django.views.decorators.http import require_GET
+from applications.models import Application
+from .geocoding import geocode_us, reverse_geocode_us
 
 def home(request):
     if request.user.is_authenticated and request.user.is_recruiter:
@@ -141,7 +143,6 @@ def job_map_data(request):
 
 @login_required
 def create_job(request):
-    ''' User Story 10: Recruiter post a job '''
     if not request.user.is_recruiter:
         return redirect('jobs:home')
 
@@ -156,53 +157,53 @@ def create_job(request):
                 job.latitude = None
                 job.longitude = None
             else:
-                coords = geocode_us(job.location)
-                if coords:
-                    job.latitude, job.longitude = coords
+                # If recruiter clicked on map, keep exact chosen point
+                if job.latitude is None or job.longitude is None:
+                    coords = geocode_us(job.location)
+                    if coords:
+                        job.latitude, job.longitude = coords
 
             job.save()
-            return redirect('jobs:home')
+            return redirect('jobs:my_jobs')
     else:
         form = JobPostingForm()
 
-    return render(request, "jobs/create_job.html", {'form': form, 'title': 'Post a New Job'})
-
+    return render(request, "jobs/create_job.html", {
+        'form': form,
+        'title': 'Post a New Job'
+    })
+    
 @login_required
 def edit_job(request, job_id):
-    """ User Story 10: Recruiter edits a job """
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
-    old_location = job.location
-    old_remote = job.is_remote
 
     if request.method == 'POST':
         form = JobPostingForm(request.POST, instance=job)
         if form.is_valid():
             job = form.save(commit=False)
-
             job.location = job.build_location_string()
-
-            location_changed = (job.location != old_location)
-            remote_changed = (job.is_remote != old_remote)
-            coords_missing = (job.latitude is None or job.longitude is None)
 
             if job.is_remote:
                 job.latitude = None
                 job.longitude = None
-            elif location_changed or remote_changed or coords_missing:
-                coords = geocode_us(job.location)
-                if coords:
-                    job.latitude, job.longitude = coords
+            else:
+                if job.latitude is None or job.longitude is None:
+                    coords = geocode_us(job.location)
+                    if coords:
+                        job.latitude, job.longitude = coords
 
             job.save()
-            return redirect('jobs:home')
+            return redirect('jobs:my_jobs')
     else:
         form = JobPostingForm(instance=job)
 
-    return render(request, 'jobs/create_job.html', {'form': form, 'title': 'Edit Job'})
+    return render(request, 'jobs/create_job.html', {
+        'form': form,
+        'title': 'Edit Job'
+    })
 
 @login_required
 def candidate_search(request):
-    """ User Story 11: Search candidates by skills, location, projects (respects privacy) """
     if not request.user.is_recruiter:
         return redirect("jobs:home")
 
@@ -239,7 +240,6 @@ def candidate_search(request):
 
 @login_required
 def my_jobs(request):
-    """ Show only the jobs created by the logged-in recruiter """
     if not request.user.is_recruiter:
         return redirect('jobs:home')
 
@@ -279,3 +279,101 @@ def recommended_jobs(request):
         "recommended": recommended,
         "user_skills": sorted(user_skills),
     })
+
+@login_required
+@require_GET
+def recruiter_reverse_geocode(request):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    lat = request.GET.get("lat")
+    lng = request.GET.get("lng")
+
+    try:
+        lat = float(lat)
+        lng = float(lng)
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Invalid coordinates."}, status=400)
+
+    data = reverse_geocode_us(lat, lng)
+    if not data:
+        return JsonResponse({"error": "Could not reverse geocode this point."}, status=404)
+
+    return JsonResponse(data)
+
+
+@login_required
+@require_GET
+def recruiter_geocode_search(request):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    query = (request.GET.get("q") or "").strip()
+    if not query:
+        return JsonResponse({"error": "Missing search query."}, status=400)
+
+    coords = geocode_us(query)
+    if not coords:
+        return JsonResponse({"error": "Address not found."}, status=404)
+
+    lat, lng = coords
+    data = reverse_geocode_us(lat, lng)
+
+    if data:
+        return JsonResponse(data)
+
+    return JsonResponse({
+        "display_name": query,
+        "street_address": "",
+        "city": "",
+        "state": "",
+        "zip_code": "",
+        "latitude": lat,
+        "longitude": lng,
+    })
+
+
+@login_required
+def recruiter_applicant_map(request, job_id):
+    if not request.user.is_recruiter:
+        return redirect("jobs:home")
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+    return render(request, "jobs/recruiter_applicant_map.html", {"job": job})
+
+
+@login_required
+def recruiter_applicant_map_data(request, job_id):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+
+    applications = (
+        Application.objects
+        .filter(job=job)
+        .select_related("applicant__seeker_profile", "applicant")
+    )
+
+    data = []
+    for application in applications:
+        user = application.applicant
+        profile = getattr(user, "seeker_profile", None)
+
+        if not profile:
+            continue
+        if profile.privacy_enabled:
+            continue
+        if profile.latitude is None or profile.longitude is None:
+            continue
+
+        data.append({
+            "name": user.get_full_name().strip() or user.username,
+            "headline": profile.headline or "",
+            "skills": profile.skills or "",
+            "location": profile.location or "",
+            "latitude": profile.latitude,
+            "longitude": profile.longitude,
+        })
+
+    return JsonResponse(data, safe=False)

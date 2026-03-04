@@ -13,7 +13,6 @@ REMOTE_CHOICES = [
     ("false", "On-site"),
 ]
 
-
 class JobSearchForm(forms.Form):
     title = forms.CharField(required=False)
     skills = forms.CharField(required=False, help_text="Comma-separated (e.g., Python, SQL)")
@@ -34,15 +33,27 @@ class JobSearchForm(forms.Form):
         self.fields["is_remote"].widget.attrs["class"] = "form-select"
         self.fields["visa_sponsorship"].widget.attrs["class"] = "form-select"
 
-# User Story 10
 class JobPostingForm(forms.ModelForm):
     class Meta:
         model = JobPosting
-        fields = ['title', 'description', 'street_address', 'city', 'state', 'zip_code', 'salary_range', 'skills', 'is_remote', 'visa_sponsorship']
+        fields = [
+            'title',
+            'description',
+            'street_address',
+            'city',
+            'state',
+            'zip_code',
+            'salary_range',
+            'skills',
+            'is_remote',
+            'visa_sponsorship',
+            'latitude',
+            'longitude',
+        ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4, 'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            
+
             "street_address": forms.TextInput(attrs={
                 "class": "form-control",
                 "placeholder": "e.g., 266 Ferst Dr NW"
@@ -63,12 +74,17 @@ class JobPostingForm(forms.ModelForm):
             'salary_range': forms.TextInput(attrs={'class': 'form-control'}),
 
             'skills': forms.TextInput(attrs={
-                'class': 'form-control', 
+                'class': 'form-control',
                 'placeholder': 'Python, Java, React, SQL'
             }),
-        }
 
-# User story 11
+            'is_remote': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'visa_sponsorship': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+
+            'latitude': forms.HiddenInput(),
+            'longitude': forms.HiddenInput(),
+        }
+        
 class CandidateSearchForm(forms.Form):
     query = forms.CharField(required=False, label="Name or Skills", 
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Python, John Doe...'}))

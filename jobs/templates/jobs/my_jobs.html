@@ -2,46 +2,41 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>My Job Postings</h2>
-        <a href="{% url 'jobs:create_job' %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Post New Job
-        </a>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Job Postings</h2>
+    <a href="{% url 'jobs:create_job' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Post New Job
+    </a>
+  </div>
 
-    {% if jobs %}
-        <div class="table-responsive">
-            <table class="table table-hover shadow-sm bg-white rounded">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Title</th>
-                        <th scope="col">Location</th>
-                        <th scope="col">Posted Date</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in jobs %}
-                    <tr>
-                        <td class="fw-bold">{{ job.title }}</td>
-                        <td>{{ job.location }}</td>
-                        <td>{{ job.created_at|date:"M d, Y" }}</td>
-                        <td>
-                            <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-sm btn-outline-warning me-2">
-                                Edit
-                            </a>
-                            </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+  {% if jobs %}
+    <div class="row">
+      {% for job in jobs %}
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ job.title }}</h5>
+              <p class="card-text text-muted">{{ job.location }}</p>
+              <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+
+              <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-dark btn-sm">
+                  Edit Job
+                </a>
+
+                <a href="{% url 'jobs:recruiter_applicant_map' job.id %}" class="btn btn-outline-dark btn-sm">
+                  View Applicant Map
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-    {% else %}
-        <div class="text-center py-5 bg-light rounded">
-            <h4>You haven't posted any jobs yet.</h4>
-            <p class="text-muted">Post your first role and start hiring!</p>
-            <a href="{% url 'jobs:create_job' %}" class="btn btn-primary mt-2">Post a Job</a>
-        </div>
-    {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      You have not posted any jobs yet.
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

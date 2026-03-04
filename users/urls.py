@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-# We can use built-in auth views for login/logout to save time. Make sure to change this later!!
 from django.contrib.auth import views as auth_views
 
 app_name = 'users'
