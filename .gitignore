@@ -15,3 +15,6 @@ media/
 .vscode/
 .idea/
 .env
+
+# Zip File
+*.zip

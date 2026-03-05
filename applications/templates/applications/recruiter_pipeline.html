@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Pipeline{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="h3 mb-4">Applicant Pipeline</h1>
+
+  <div class="row g-3">
+    {% for col_name, apps in columns.items %}
+      <div class="col-12 col-md">
+        <div class="card shadow-sm">
+          <div class="card-header fw-semibold">
+            {{ col_name }} ({{ apps|length }})
+          </div>
+          <div class="card-body" 
+                {% if col_name == "Applied" %}data-status="applied"{% endif %}
+                {% if col_name == "Review" %}data-status="review"{% endif %}
+                {% if col_name == "Interview" %}data-status="interview"{% endif %}
+                {% if col_name == "Offer" %}data-status="offer"{% endif %}
+                {% if col_name == "Closed" %}data-status="closed"{% endif %}
+                ondragover="handleDragOver(event)"
+                ondrop="handleDrop(event)"
+                style="min-height: 200px;">
+            {% for app in apps %}
+              <div class="border rounded p-2 mb-2"
+                    style="cursor: grab;"
+                    draggable="true"
+                    data-app-id="{{ app.id }}"
+                    data-update-url="{% url 'applications:recruiter_update_application_status_api' app.id %}"
+                    ondragstart="handleDragStart(event)">
+                <div class="fw-semibold">{{ app.applicant.username }}</div>
+                <div class="text-muted small">{{ app.job.title }}</div>
+
+                <a class="btn btn-sm btn-outline-dark mt-2"
+                   href="{% url 'applications:recruiter_update_application_status' app.id %}">
+                  Move Stage
+                </a>
+              </div>
+            {% empty %}
+              <div class="text-muted">No applicants</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+<script>
+  let draggedAppId = null;
+
+  function handleDragStart(e) {
+    const card = e.currentTarget;
+    draggedAppId = card.dataset.appId;
+    e.dataTransfer.effectAllowed = "move";
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault(); 
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+  }
+
+  async function handleDrop(e) {
+    e.preventDefault();
+
+    const dropZone = e.currentTarget;
+    const newStatus = dropZone.dataset.status;
+    const appId = draggedAppId;
+
+    if (!appId || !newStatus) return;
+
+    const csrfToken = getCookie("csrftoken");
+
+    const formData = new URLSearchParams();
+    formData.append("status", newStatus);
+
+    const url = `/recruiter/pipeline/${appId}/status-api/`;
+
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken
+      },
+      body: formData.toString()
+    });
+
+    if (resp.ok) {
+      window.location.reload();
+    } else {
+      alert("Failed to move candidate.");
+    }
+  }
+</script>
+{% endblock %}
