@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Notifications</h1>
+
+<form method="post" style="margin-bottom: 14px;">
+  {% csrf_token %}
+  <button type="submit">Mark all as read</button>
+</form>
+
+{% if notifications %}
+  <ul>
+    {% for n in notifications %}
+      <li style="margin-bottom: 12px;">
+        {% if not n.is_read %}<strong>[NEW]</strong>{% endif %}
+        <strong>{{ n.title }}</strong><br>
+        {{ n.body }}<br>
+        {% if n.url %}
+          <a href="{{ n.url }}">View matches</a>
+        {% endif %}
+        <br>
+        <small>{{ n.created_at }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No notifications.</p>
+{% endif %}
+{% endblock %}

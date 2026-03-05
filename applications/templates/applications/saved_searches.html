@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Saved Candidate Searches</h1>
+
+<form method="post" style="margin-bottom: 18px;">
+  {% csrf_token %}
+  <label>Name (optional)</label><br>
+  <input type="text" name="name" placeholder="e.g. Python interns in Atlanta"><br><br>
+
+  <label>Query (name/skills)</label><br>
+  <input type="text" name="query"><br><br>
+
+  <label>Location</label><br>
+  <input type="text" name="location"><br><br>
+
+  <label>
+    <input type="checkbox" name="has_projects">
+    Only candidates with projects
+  </label><br><br>
+
+  <button type="submit">Save Search</button>
+</form>
+
+<hr>
+
+{% if searches %}
+  <ul>
+    {% for s in searches %}
+      <li style="margin-bottom: 12px;">
+        <strong>{{ s.name|default:"Saved Search" }}</strong>
+        <br>
+        Filters: {{ s.filters }}
+        <br>
+        <a href="{% url 'applications:run_saved_search' s.id %}">Run</a>
+        |
+        <a href="{% url 'applications:delete_saved_search' s.id %}">Delete</a>
+        <br>
+        <small>Last checked: {{ s.last_checked_at|default:"never" }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No saved searches yet.</p>
+{% endif %}
+{% endblock %}

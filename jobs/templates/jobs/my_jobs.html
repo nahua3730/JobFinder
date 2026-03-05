@@ -30,7 +30,11 @@
                             <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-sm btn-outline-warning me-2">
                                 Edit
                             </a>
-                            </td>
+
+                            <a href="{% url 'jobs:job_recommendations' job.id %}" class="btn btn-sm btn-outline-primary">
+                                Recommended Candidates
+                            </a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

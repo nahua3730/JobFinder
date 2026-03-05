@@ -22,4 +22,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('applications/', include('applications.urls')),
     path('', include('jobs.urls')),  # This sends the empty path '/' straight to the jobs app
+    path("", include("jobs.urls")),
+    path("applications/", include("applications.urls")),
 ]

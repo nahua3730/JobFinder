@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Recommended Candidates</h1>
+<h2>{{ job.title }}</h2>
+<p><strong>Skills:</strong> {{ job.skills }}</p>
+<p><strong>Location:</strong> {{ job.location }} {% if job.is_remote %}(Remote OK){% endif %}</p>
+
+<hr>
+
+{% if recommendations %}
+  <ul>
+    {% for r in recommendations %}
+      <li style="margin-bottom: 14px;">
+        <strong>{{ r.profile.user.first_name }} {{ r.profile.user.last_name }}</strong>
+        — Score: <strong>{{ r.score }}</strong><br>
+        Skills: {{ r.profile.skills }}<br>
+        Location: {{ r.profile.location }}<br>
+        {% if r.reasons %}
+          <em>{{ r.reasons|join:" • " }}</em>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No recommended candidates yet (try adding job skills!).</p>
+{% endif %}
+{% endblock %}

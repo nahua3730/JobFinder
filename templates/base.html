@@ -28,11 +28,19 @@
             {% if not user.is_authenticated or user.is_job_seeker %}
               <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
             {% endif %}
+
             {% if user.is_authenticated %}
                 {% if user.is_recruiter %}
                     <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
                     <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
                     <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
+
+                    <!-- Story 15 Links -->
+                    <a class="nav-link" href="{% url 'applications:saved_searches' %}">Saved Searches</a>
+                    <a class="nav-link" href="{% url 'applications:notifications' %}">
+                      <i class="fa-solid fa-bell"></i> Notifications
+                    </a>
+
                 {% else %}
                     <!-- Until My Applications is implemented, route to profile so link isn't dead -->
                     <a class="nav-link" href="{% url 'users:profile_view' %}">My Applications</a>
@@ -53,6 +61,7 @@
                     Logout ({{ user.username }})
                   </button>
                 </form>
+
             {% else %}
                 <a class="nav-link" href="{% url 'users:login' %}">Login</a>
                 <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>

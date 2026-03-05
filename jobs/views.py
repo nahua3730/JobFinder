@@ -126,3 +126,61 @@ def my_jobs(request):
 
     my_job_list = JobPosting.objects.filter(recruiter=request.user).order_by('-created_at')
     return render(request, 'jobs/my_jobs.html', {'jobs': my_job_list})
+def _split_skills(text):
+    if not text:
+        return set()
+    return {s.strip().lower() for s in text.split(",") if s.strip()}
+
+@login_required
+def job_recommendations(request, job_id):
+    if not request.user.is_recruiter:
+        return redirect("jobs:home")
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+
+    job_skills = _split_skills(job.skills)
+
+    candidates = JobSeekerProfile.objects.filter(
+        user__is_job_seeker=True,
+        privacy_enabled=False
+    ).select_related("user")
+
+    scored = []
+    for c in candidates:
+        cand_skills = _split_skills(c.skills)
+
+        matched = sorted(job_skills.intersection(cand_skills))
+        score = 0
+        reasons = []
+
+        # skills overlap
+        if matched:
+            score += min(len(matched) * 5, 30)  # 5 pts each, cap 30
+            reasons.append(f"Matched skills: {', '.join(matched[:8])}")
+
+        # location boost
+        if job.location and c.location and job.location.lower() in c.location.lower():
+            score += 8
+            reasons.append("Location match")
+
+        # remote boost
+        if job.is_remote:
+            score += 3
+            reasons.append("Remote-friendly role")
+
+        # projects boost (light)
+        if c.projects and matched:
+            score += 2
+            reasons.append("Has projects")
+
+        if score > 0:
+            scored.append({
+                "profile": c,
+                "score": score,
+                "reasons": reasons,
+            })
+
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    top = scored[:25]
+
+    return render(request, "jobs/recommendations.html", {"job": job, "recommendations": top})
