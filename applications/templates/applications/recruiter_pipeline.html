@@ -9,10 +9,16 @@
     {% for col_name, apps in columns.items %}
       <div class="col-12 col-md">
         <div class="card shadow-sm">
-          <div class="card-header fw-semibold">
-            {{ col_name }} ({{ apps|length }})
-          </div>
-          <div class="card-body" 
+          <div class="card-header fw-semibold d-flex justify-content-between align-items-center
+            {% if col_name == 'Applied' %}pipeline-header-applied{% endif %}
+            {% if col_name == 'Review' %}pipeline-header-review{% endif %}
+            {% if col_name == 'Interview' %}pipeline-header-interview{% endif %}
+            {% if col_name == 'Offer' %}pipeline-header-offer{% endif %}
+            {% if col_name == 'Closed' %}pipeline-header-closed{% endif %}">
+            <span>{{ col_name }}</span>
+            <span class="badge rounded-pill bg-light text-dark border">{{ apps|length }}</span>
+        </div>
+          <div class="card-body pipeline-column" id="column-{{ col_name|lower }}"
                 {% if col_name == "Applied" %}data-status="applied"{% endif %}
                 {% if col_name == "Review" %}data-status="review"{% endif %}
                 {% if col_name == "Interview" %}data-status="interview"{% endif %}
@@ -22,22 +28,52 @@
                 ondrop="handleDrop(event)"
                 style="min-height: 200px;">
             {% for app in apps %}
-              <div class="border rounded p-2 mb-2"
-                    style="cursor: grab;"
+              <div class="pipeline-card border rounded p-3 mb-3"
                     draggable="true"
                     data-app-id="{{ app.id }}"
                     data-update-url="{% url 'applications:recruiter_update_application_status_api' app.id %}"
-                    ondragstart="handleDragStart(event)">
-                <div class="fw-semibold">{{ app.applicant.username }}</div>
+                    data-name="{% if app.applicant.first_name or app.applicant.last_name %}{{ app.applicant.first_name }} {{ app.applicant.last_name }}{% else %}{{ app.applicant.username }}{% endif %}"
+                    data-username="{{ app.applicant.username }}"
+                    data-job="{{ app.job.title }}"
+                    data-applied="{{ app.created_at|timesince }} ago"
+                    data-profile-url="{% url 'users:profile_detail' app.applicant.username %}"
+                    data-headline="{{ app.applicant.seeker_profile.headline|default:''|escapejs }}"
+                    data-location="{{ app.applicant.seeker_profile.location|default:''|escapejs }}"
+                    data-commute="{{ app.applicant.seeker_profile.preferred_commute_radius|default:''|escapejs }}"
+                    data-skills="{{ app.applicant.seeker_profile.skills|default:''|escapejs }}"
+                    data-education="{{ app.applicant.seeker_profile.education|default:''|escapejs }}"
+                    data-work="{{ app.applicant.seeker_profile.work_experience|default:''|escapejs }}"
+                    data-projects="{{ app.applicant.seeker_profile.projects|default:''|escapejs }}"
+                    data-links="{{ app.applicant.seeker_profile.links|default:''|escapejs }}"
+                    ondragstart="handleDragStart(event)"
+                    ondragleave="handleDragLeave(event)"
+                    ondragend="handleDragEnd(event)"
+                    onclick="openCandidatePanel(event, this)">
+                <div class="fw-semibold">{{ app.applicant.first_name }} {{ app.applicant.last_name }}</div>
                 <div class="text-muted small">{{ app.job.title }}</div>
+                <div class="text-muted small">Applied {{ app.created_at|timesince }} ago</div>
+
+                <div class="candidate-preview">
+                    {% if app.applicant.seeker_profile.skills %}
+                        <div class="text-muted small">
+                            <strong>Skills:</strong> {{ app.applicant.seeker_profile.skills }}
+                        </div>
+                    {% endif %}
+
+                    {% if app.applicant.seeker_profile.headline %}
+                        <div class="text-muted small mt-1">
+                            <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
+                        </div>
+                    {% endif %}
+                </div>
 
                 <a class="btn btn-sm btn-outline-dark mt-2"
                    href="{% url 'applications:recruiter_update_application_status' app.id %}">
-                  Move Stage
+                    Move Stage
                 </a>
               </div>
             {% empty %}
-              <div class="text-muted">No applicants</div>
+              <div class="text-muted empty-placeholder">No applicants</div>
             {% endfor %}
           </div>
         </div>
@@ -45,18 +81,150 @@
     {% endfor %}
   </div>
 </div>
+<div id="candidatePanelOverlay" class="candidate-panel-overlay" onclick="closeCandidatePanel()"></div>
+
+<div id="candidatePanel" class="candidate-panel">
+  <div class="candidate-panel-header d-flex justify-content-between align-items-start">
+    <div>
+      <h4 id="panelName" class="mb-1"></h4>
+      <div id="panelUsername" class="text-muted small"></div>
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" onclick="closeCandidatePanel()"></button>
+  </div>
+
+  <hr>
+
+  <!-- always visible quick preview -->
+  <div class="candidate-panel-section">
+    <div class="panel-label">Applied for</div>
+    <div id="panelJob" class="fw-semibold"></div>
+  </div>
+
+  <div class="candidate-panel-section mt-3">
+    <div class="panel-label">Applied</div>
+    <div id="panelApplied"></div>
+  </div>
+
+  <div class="candidate-panel-section mt-3">
+    <div class="panel-label">Headline</div>
+    <div id="panelHeadline"></div>
+  </div>
+
+  <div class="candidate-panel-section mt-3">
+    <div class="panel-label">Skills</div>
+    <div id="panelSkills"></div>
+  </div>
+
+  <div id="fullProfileSection" class="mt-4 d-none">
+    <hr>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Location</div>
+      <div id="panelLocation"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Preferred commute radius</div>
+      <div id="panelCommute"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Skills</div>
+      <div id="panelFullSkills" class="panel-multiline"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Education</div>
+      <div id="panelEducation" class="panel-multiline"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Work Experience</div>
+      <div id="panelWork" class="panel-multiline"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Projects</div>
+      <div id="panelProjects" class="panel-multiline"></div>
+    </div>
+
+    <div class="candidate-panel-section mt-3">
+      <div class="panel-label">Links</div>
+      <div id="panelLinks" class="panel-multiline"></div>
+    </div>
+  </div>
+
+  <div class="candidate-panel-section mt-4">
+    <button id="panelExpandButton" class="btn btn-dark w-100" type="button" onclick="toggleFullProfile()">
+      View Full Profile
+    </button>
+  </div>
+</div>
+
 <script>
   let draggedAppId = null;
+  let draggedCard = null;
+  let isDraggingCard = false;
 
-  function handleDragStart(e) {
-    const card = e.currentTarget;
-    draggedAppId = card.dataset.appId;
-    e.dataTransfer.effectAllowed = "move";
+  function clearDragOverStates() {
+    document.querySelectorAll(".pipeline-column").forEach(column => {
+    column.classList.remove("drag-over");
+    });
   }
 
+  function updateEmptyPlaceholders() {
+    document.querySelectorAll(".pipeline-column").forEach(column => {
+    const cards = column.querySelectorAll(".pipeline-card");
+    const placeholder = column.querySelector(".empty-placeholder");
+
+    if (cards.length > 0) {
+      if (placeholder) {
+        placeholder.remove();
+      }
+    } else {
+      if (!placeholder) {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "text-muted empty-placeholder";
+        emptyDiv.textContent = "No applicants";
+        column.appendChild(emptyDiv);
+      }
+    }
+  });
+}
+    function updateColumnCounts() {
+      document.querySelectorAll(".pipeline-column").forEach(column => {
+      const cards = column.querySelectorAll(".pipeline-card").length;
+      const header = column.closest(".card").querySelector(".badge");
+      if (header) {
+        header.textContent = cards;
+      }
+    });
+  }
+
+  function handleDragStart(e) {
+    clearDragOverStates();
+    draggedCard = e.currentTarget;
+    draggedAppId = draggedCard.dataset.appId;
+    draggedCard.classList.add("dragging");
+    isDraggingCard = true;
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", draggedAppId);
+  }
+
+  function handleDragEnd(e) {
+    e.currentTarget.classList.remove("dragging");
+    clearDragOverStates();
+    setTimeout(() => {
+      isDraggingCard = false;
+    }, 50);
+  }
+  function handleDragLeave(e) {
+    clearDragOverStates();
+  }
   function handleDragOver(e) {
     e.preventDefault(); 
     e.dataTransfer.dropEffect = "move";
+    e.currentTarget.classList.add("drag-over");
   }
 
   function getCookie(name) {
@@ -66,14 +234,16 @@
     return null;
   }
 
+
+
   async function handleDrop(e) {
     e.preventDefault();
-
+    clearDragOverStates();
     const dropZone = e.currentTarget;
     const newStatus = dropZone.dataset.status;
     const appId = draggedAppId;
 
-    if (!appId || !newStatus) return;
+    if (!draggedCard || !appId || !newStatus) return;
 
     const csrfToken = getCookie("csrftoken");
 
@@ -81,6 +251,11 @@
     formData.append("status", newStatus);
 
     const url = `/recruiter/pipeline/${appId}/status-api/`;
+    const oldColumn = draggedCard.parentElement;
+    dropZone.appendChild(draggedCard);
+    draggedCard.classList.remove("dragging");
+    updateColumnCounts();
+    updateEmptyPlaceholders();
 
     const resp = await fetch(url, {
       method: "POST",
@@ -91,11 +266,70 @@
       body: formData.toString()
     });
 
-    if (resp.ok) {
-      window.location.reload();
-    } else {
+    if (!resp.ok) {
+      oldColumn.appendChild(draggedCard);
+      updateColumnCounts();
+      updateEmptyPlaceholders();
       alert("Failed to move candidate.");
     }
+    draggedCard = null;
+    draggedAppId = null;
   }
+  function openCandidatePanel(event, card) {
+    if (isDraggingCard) return;
+    if (event.target.closest("a") || event.target.closest("button")) return;
+
+    const name = card.dataset.name || "—";
+    const username = card.dataset.username || "";
+    const job = card.dataset.job || "—";
+    const applied = card.dataset.applied || "—";
+    const headline = card.dataset.headline || "—";
+    const location = card.dataset.location || "—";
+    const commute = card.dataset.commute || "—";
+    const skills = card.dataset.skills || "—";
+    const education = card.dataset.education || "—";
+    const work = card.dataset.work || "—";
+    const projects = card.dataset.projects || "—";
+    const links = card.dataset.links || "—";
+
+    document.getElementById("panelName").textContent = name;
+    document.getElementById("panelUsername").textContent = username ? "@" + username : "";
+    document.getElementById("panelJob").textContent = job;
+    document.getElementById("panelApplied").textContent = applied;
+    document.getElementById("panelHeadline").textContent = headline;
+    document.getElementById("panelSkills").textContent = skills;
+    document.getElementById("panelLocation").textContent = location;
+    document.getElementById("panelCommute").textContent = commute ? `${commute} miles` : "—";
+    document.getElementById("panelFullSkills").textContent = skills;
+    document.getElementById("panelEducation").textContent = education;
+    document.getElementById("panelWork").textContent = work;
+    document.getElementById("panelProjects").textContent = projects;
+    document.getElementById("panelLinks").textContent = links;
+    document.getElementById("fullProfileSection").classList.add("d-none");
+    document.getElementById("panelExpandButton").textContent = "View Full Profile";
+
+    document.getElementById("candidatePanel").classList.add("show");
+    document.getElementById("candidatePanelOverlay").classList.add("show");
+    document.body.style.overflow = "hidden";
+    }
+
+  function closeCandidatePanel() {
+    document.getElementById("candidatePanel").classList.remove("show");
+    document.getElementById("candidatePanelOverlay").classList.remove("show");
+    document.body.style.overflow = "";
+  }
+
+  function toggleFullProfile() {
+    const fullSection = document.getElementById("fullProfileSection");
+    const button = document.getElementById("panelExpandButton");
+
+    if (fullSection.classList.contains("d-none")) {
+        fullSection.classList.remove("d-none");
+        button.textContent = "Hide Full Profile";
+    } else {
+        fullSection.classList.add("d-none");
+        button.textContent = "View Full Profile";
+    }
+    }
 </script>
 {% endblock %}

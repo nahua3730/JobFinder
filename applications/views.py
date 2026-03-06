@@ -18,7 +18,6 @@ def index(request):
 def apply_to_job(request, job_id):
     job = get_object_or_404(JobPosting, id=job_id)
 
-    # Only job seekers can apply
     if not getattr(request.user, "is_job_seeker", False):
         messages.error(request, "Only job seekers can apply to jobs.")
         return redirect("jobs:home")
@@ -80,7 +79,7 @@ def recruiter_pipeline(request):
     qs = (
         Application.objects
         .filter(job__recruiter=request.user)
-        .select_related("job", "applicant")
+        .select_related("job", "applicant", "applicant__seeker_profile")
         .order_by("-updated_at")
     )
 

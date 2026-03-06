@@ -1,0 +1,192 @@
+.bg-index{
+    background: url("/static/img/background.jpg") no-repeat fixed;
+    background-size: 100% auto;
+  }
+.navbar a.nav-link {
+    color: #FFFEF6 !important;
+  }
+  .bg-dark {
+    background-color: #2E2E2E !important;
+  }
+  .ms-footer {
+    background-color: #202020;
+  }
+  .ms-footer p {
+    color: #7F7F7F;
+    font-size: 13px;
+  }
+  .ms-footer a:hover {
+    color: #6ab43e;
+    text-decoration: none;
+  }
+  .ms-footer-bottom span{
+    font-size: 13px;
+    line-height: 38px;
+  }
+  .ms-footer-bottom a {
+    color: #6ab43e;
+    text-decoration: none;
+  }
+  .ms-footer-bottom a:hover {
+    color: #fff;
+  }
+  .img-card-200 {
+    width: fit-content;
+    max-height: 200px;
+  }
+  .img-card-400 {
+    width: fit-content;
+    max-height: 400px;
+  }
+  .pipeline-header-applied {
+  background-color: #e2e6ea !important;
+  color: #212529 !important;
+  border-top: 4px solid #6c757d !important;
+}
+
+.pipeline-header-review {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-top: 4px solid #0d6efd !important;
+}
+
+.pipeline-header-interview {
+  background-color: #ede9fe !important;
+  color: #6d28d9 !important;
+  border-top: 4px solid #6f42c1 !important;
+}
+
+.pipeline-header-offer {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  border-top: 4px solid #198754 !important;
+}
+
+.pipeline-header-closed {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  border-top: 4px solid #dc3545 !important;
+}
+.pipeline-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  cursor: grab;
+  background-color: #ffffff;
+}
+
+.pipeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+}
+
+.pipeline-card:active {
+  cursor: grabbing;
+}
+
+.pipeline-card.dragging {
+  opacity: 0.55;
+  transform: rotate(1deg);
+}
+.pipeline-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  cursor: grab;
+  background-color: #ffffff;
+  line-height: 1.4;
+}
+
+.pipeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.12);
+}
+
+.pipeline-card:active {
+  cursor: grabbing;
+}
+
+.pipeline-card.dragging {
+  opacity: 0.55;
+  transform: rotate(1deg);
+}
+.pipeline-column {
+  transition: background-color 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 0.5rem;
+}
+
+.pipeline-column.drag-over {
+  background-color: #f8f9ff;
+  border: 2px dashed #6c63ff;
+  box-shadow: inset 0 0 0 1px rgba(108, 99, 255, 0.08);
+}
+.candidate-preview {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease, opacity 0.25s ease;
+  margin-top: 6px;
+}
+
+.pipeline-card:hover .candidate-preview {
+  max-height: 120px;
+  opacity: 1;
+}
+
+.candidate-link,
+.candidate-link:visited {
+  color: #212529 !important;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.candidate-link:hover,
+.candidate-link:focus {
+  color: #0d6efd !important;
+  text-decoration: underline;
+}
+.candidate-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+  z-index: 1040;
+}
+
+.candidate-panel-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.candidate-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 90vw;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  z-index: 1050;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.candidate-panel.show {
+  transform: translateX(0);
+}
+
+.candidate-panel-header h4 {
+  font-weight: 700;
+}
+
+.candidate-panel-section {
+  line-height: 1.5;
+}
+.panel-multiline {
+  white-space: pre-line;
+}
+
+.candidate-panel-section {
+  line-height: 1.5;
+}

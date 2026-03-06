@@ -8,6 +8,7 @@
   <div class="mb-3">
     <div><b>Applicant:</b> {{ application.applicant.username }}</div>
     <div><b>Job:</b> {{ application.job.title }}</div>
+    <div class="text-muted small">Applied {{ application.created_at|timesince }} ago</div>
   </div>
 
   <form method="post">

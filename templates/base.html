@@ -54,7 +54,6 @@
                   {% csrf_token %}
                 </form>
 
-                <!-- CHANGED: logout looks like other nav links -->
                 <a class="nav-link" href="#"
                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                   Logout ({{ user.username }})
@@ -78,7 +77,6 @@
       {% block content %}
       {% endblock content %}
     </div>
-
     <section class="p-3 ms-footer d-none d-md-block mt-5">
       <div class="container">
         <div class="row mt-3 text-white">
@@ -87,6 +85,7 @@
             <hr />
             <p>Bridging the gap between early-career professionals and recruiters.</p>
           </div>
+
           <div class="col-md-3 mx-auto mb-4">
             <b>CONTACT</b>
             <hr />
