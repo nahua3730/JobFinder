@@ -3,11 +3,20 @@
 
 {% block content %}
 <div class="container py-4">
-  <h1 class="h3 mb-4">Applicant Pipeline</h1>
-
-  <div class="row g-3">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <h1 class="h3 mb-0">Applicant Pipeline</h1>
+    <div style="max-width: 320px; width: 100%;">
+      <input
+        type="text"
+        id="pipelineSearch"
+        class="form-control"
+        placeholder="Search applicants..."
+      >
+    </div>
+  </div>
+  <div class="pipeline-board">
     {% for col_name, apps in columns.items %}
-      <div class="col-12 col-md">
+      <div class="pipeline-stage">
         <div class="card shadow-sm">
           <div class="card-header fw-semibold d-flex justify-content-between align-items-center
             {% if col_name == 'Applied' %}pipeline-header-applied{% endif %}
@@ -49,8 +58,12 @@
                     ondragleave="handleDragLeave(event)"
                     ondragend="handleDragEnd(event)"
                     onclick="openCandidatePanel(event, this)">
-                <div class="fw-semibold">{{ app.applicant.first_name }} {{ app.applicant.last_name }}</div>
-                <div class="text-muted small">{{ app.job.title }}</div>
+                <div class="fw-semibold applicant-name-text">
+                  {{ app.applicant.first_name }} {{ app.applicant.last_name }}
+                </div>
+                <div class="text-muted small applicant-job-text">
+                  {{ app.job.title }}
+                </div>
                 <div class="text-muted small">Applied {{ app.created_at|timesince }} ago</div>
 
                 <div class="candidate-preview">
@@ -79,6 +92,9 @@
         </div>
       </div>
     {% endfor %}
+  </div>
+  <div class="mt-3 text-muted small" id="pipelineSummary">
+    Showing 0 applicants
   </div>
 </div>
 <div id="candidatePanelOverlay" class="candidate-panel-overlay" onclick="closeCandidatePanel()"></div>
@@ -174,10 +190,13 @@
 
   function updateEmptyPlaceholders() {
     document.querySelectorAll(".pipeline-column").forEach(column => {
-    const cards = column.querySelectorAll(".pipeline-card");
+    const visibleCards = Array.from(
+      column.querySelectorAll(".pipeline-card")
+    ).filter(card => !card.classList.contains("search-hidden"));
+
     const placeholder = column.querySelector(".empty-placeholder");
 
-    if (cards.length > 0) {
+    if (visibleCards.length > 0) {
       if (placeholder) {
         placeholder.remove();
       }
@@ -193,10 +212,13 @@
 }
     function updateColumnCounts() {
       document.querySelectorAll(".pipeline-column").forEach(column => {
-      const cards = column.querySelectorAll(".pipeline-card").length;
+      const visibleCards = Array.from(
+        column.querySelectorAll(".pipeline-card")
+      ).filter(card => !card.classList.contains("search-hidden")).length;
+
       const header = column.closest(".card").querySelector(".badge");
       if (header) {
-        header.textContent = cards;
+        header.textContent = visibleCards;
       }
     });
   }
@@ -234,8 +256,6 @@
     return null;
   }
 
-
-
   async function handleDrop(e) {
     e.preventDefault();
     clearDragOverStates();
@@ -254,8 +274,7 @@
     const oldColumn = draggedCard.parentElement;
     dropZone.appendChild(draggedCard);
     draggedCard.classList.remove("dragging");
-    updateColumnCounts();
-    updateEmptyPlaceholders();
+    filterPipeline();
 
     const resp = await fetch(url, {
       method: "POST",
@@ -330,6 +349,74 @@
         fullSection.classList.add("d-none");
         button.textContent = "View Full Profile";
     }
+  }
+  function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightText(text, query) {
+  if (!query) return text;
+  const escaped = escapeRegExp(query);
+  const regex = new RegExp(`(${escaped})`, "ig");
+  return text.replace(regex, '<mark class="pipeline-highlight">$1</mark>');
+}
+
+function filterPipeline() {
+  const searchInput = document.getElementById("pipelineSearch");
+  const query = searchInput.value.trim().toLowerCase();
+
+  document.querySelectorAll(".pipeline-card").forEach(card => {
+    const name = (card.dataset.name || "");
+    const username = (card.dataset.username || "");
+    const job = (card.dataset.job || "");
+    const searchableName = name.toLowerCase();
+    const searchableUsername = username.toLowerCase();
+    const searchableJob = job.toLowerCase();
+
+    const matches =
+      searchableName.includes(query) ||
+      searchableUsername.includes(query) ||
+      searchableJob.includes(query);
+
+    card.classList.toggle("search-hidden", !matches);
+
+    const nameEl = card.querySelector(".applicant-name-text");
+    const jobEl = card.querySelector(".applicant-job-text");
+
+    if (nameEl) {
+      nameEl.innerHTML = query ? highlightText(name, query) : name;
     }
+
+    if (jobEl) {
+      jobEl.innerHTML = query ? highlightText(job, query) : job;
+    }
+  });
+
+    updateEmptyPlaceholders();
+    updateColumnCounts();
+    updatePipelineSummary();
+  }
+  function updatePipelineSummary() {
+    const allCards = document.querySelectorAll(".pipeline-card").length;
+    const visibleCards = Array.from(
+      document.querySelectorAll(".pipeline-card")
+    ).filter(card => !card.classList.contains("search-hidden")).length;
+
+    const summary = document.getElementById("pipelineSummary");
+    if (visibleCards === 0) {
+    summary.textContent = "No applicants match your search";
+    } else if (visibleCards === allCards) {
+      summary.textContent = `Showing ${visibleCards} applicants`;
+    } else {
+      summary.textContent = `Showing ${visibleCards} of ${allCards} applicants`;
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("pipelineSearch");
+    searchInput.addEventListener("input", filterPipeline);
+
+    filterPipeline();
+    updatePipelineSummary();
+  });
 </script>
 {% endblock %}
