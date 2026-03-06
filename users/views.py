@@ -10,6 +10,7 @@ from django.contrib.auth import login as auth_login
 from .forms import PrivacySettingsForm
 from .forms import RecruiterUserForm, RecruiterProfileForm
 from jobs.geocoding import geocode_us
+from django.contrib import messages
 
 def login_view(request):
     return render(request, 'users/login.html')
@@ -90,10 +91,13 @@ def privacy_settings(request):
         form = PrivacySettingsForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect("users:profile_view") 
+            messages.success(request, "Privacy settings saved successfully.")
+            return redirect("users:privacy_settings")
     else:
         form = PrivacySettingsForm(instance=profile)
-    return render(request, "users/privacy_settings.html", {"form": form})
+    skills_list = [s.strip() for s in (profile.skills or "").split(",") if s.strip()]
+    return render(request, "users/privacy_settings.html", {"form": form, "profile": profile,
+        "skills_list": skills_list,})
 
 def profile_detail(request, username):
     user = get_object_or_404(User, username=username)

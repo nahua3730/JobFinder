@@ -1,9 +1,279 @@
 {% extends "base.html" %}
+{% block title %}Privacy Settings{% endblock %}
+
 {% block content %}
-<h2>Privacy Settings</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Save</button>
-</form>
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm border-0 rounded-4 privacy-settings-card">
+        <div class="card-body p-4 p-md-5">
+
+          <h2 class="h3 mb-2">Privacy Settings</h2>
+          <p class="text-muted mb-4">
+            Control what recruiters can see on your profile.
+          </p>
+
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="privacy-row privacy-row-top mb-4">
+              <div>
+                <label for="{{ form.privacy_enabled.id_for_label }}" class="privacy-label fw-semibold">
+                  Hide my profile from recruiters
+                </label>
+                <div class="text-muted small mt-1">
+                  When enabled, recruiters cannot view your profile.
+                </div>
+              </div>
+              <div class="form-check form-switch m-0">
+                {{ form.privacy_enabled }}
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="settings-section-title">VISIBLE SECTIONS</div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_headline.id_for_label }}" class="privacy-label">
+                Show Headline
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_headline }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_location.id_for_label }}" class="privacy-label">
+                Show Location
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_location }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_commute_radius.id_for_label }}" class="privacy-label">
+                Show Commute Radius
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_commute_radius }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_skills.id_for_label }}" class="privacy-label">
+                Show Skills
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_skills }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_education.id_for_label }}" class="privacy-label">
+                Show Education
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_education }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_work_experience.id_for_label }}" class="privacy-label">
+                Show Work Experience
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_work_experience }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_projects.id_for_label }}" class="privacy-label">
+                Show Projects
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_projects }}
+              </div>
+            </div>
+
+            <div class="privacy-row">
+              <label for="{{ form.show_links.id_for_label }}" class="privacy-label">
+                Show Links
+              </label>
+              <div class="form-check form-switch m-0">
+                {{ form.show_links }}
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+              <button type="submit" class="btn btn-primary px-4">
+                Save Changes
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm border-0 rounded-4 preview-card">
+        <div class="card-body p-4">
+          <h4 class="mb-2">Recruiter View Preview</h4>
+          <p class="text-muted small mb-4">
+            This preview updates as you change your privacy settings.
+          </p>
+
+          <div id="previewHiddenMessage" class="alert alert-secondary d-none mb-0">
+            This profile is hidden from recruiters.
+          </div>
+
+          <div id="previewContent">
+            <div class="preview-profile-header mb-4">
+              <h5 class="mb-1">
+                {% if profile.user.first_name or profile.user.last_name %}
+                  {{ profile.user.first_name }} {{ profile.user.last_name }}
+                {% else %}
+                  {{ profile.user.username }}
+                {% endif %}
+              </h5>
+              <p class="text-muted small mb-0">Recruiter-facing profile preview</p>
+            </div>
+
+            <div class="preview-section" id="preview-headline">
+              <h6 class="mb-1">Headline</h6>
+              <p class="text-muted mb-0">
+                {{ profile.headline|default:"—" }}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-location">
+              <h6 class="mb-1">Location</h6>
+              <p class="text-muted mb-0">
+                {{ profile.location|default:"—" }}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-commute">
+              <h6 class="mb-1">Preferred Commute Radius</h6>
+              <p class="text-muted mb-0">
+                {% if profile.preferred_commute_radius_miles %}
+                  {{ profile.preferred_commute_radius_miles }} miles
+                {% else %}
+                  —
+                {% endif %}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-skills">
+              <h6 class="mb-2">Skills</h6>
+              {% if skills_list %}
+                <div class="d-flex flex-wrap gap-2">
+                  {% for skill in skills_list %}
+                    <span class="preview-pill">{{ skill }}</span>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted mb-0">—</p>
+              {% endif %}
+            </div>
+
+            <div class="preview-section" id="preview-education">
+              <h6 class="mb-1">Education</h6>
+              <p class="text-muted mb-0 panel-multiline">
+                {{ profile.education|default:"—" }}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-work">
+              <h6 class="mb-1">Work Experience</h6>
+              <p class="text-muted mb-0 panel-multiline">
+                {{ profile.work_experience|default:"—" }}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-projects">
+              <h6 class="mb-1">Projects</h6>
+              <p class="text-muted mb-0 panel-multiline">
+                {{ profile.projects|default:"—" }}
+              </p>
+            </div>
+
+            <div class="preview-section" id="preview-links">
+              <h6 class="mb-1">Links</h6>
+              <p class="text-muted mb-0 panel-multiline">
+                {{ profile.links|default:"—" }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const masterToggle = document.getElementById("{{ form.privacy_enabled.id_for_label }}");
+
+const fieldMap = [
+  ["{{ form.show_headline.id_for_label }}", "preview-headline"],
+  ["{{ form.show_location.id_for_label }}", "preview-location"],
+  ["{{ form.show_commute_radius.id_for_label }}", "preview-commute"],
+  ["{{ form.show_skills.id_for_label }}", "preview-skills"],
+  ["{{ form.show_education.id_for_label }}", "preview-education"],
+  ["{{ form.show_work_experience.id_for_label }}", "preview-work"],
+  ["{{ form.show_projects.id_for_label }}", "preview-projects"],
+  ["{{ form.show_links.id_for_label }}", "preview-links"]
+];
+
+const inputs = document.querySelectorAll(".form-check input:not(#{{ form.privacy_enabled.id_for_label }})");
+const previewHiddenMessage = document.getElementById("previewHiddenMessage");
+const previewContent = document.getElementById("previewContent");
+
+function updateVisibility() {
+  const hidden = masterToggle.checked;
+
+  inputs.forEach(input => {
+    input.disabled = hidden;
+  });
+
+  if (hidden) {
+    previewHiddenMessage.classList.remove("d-none");
+    previewContent.classList.add("d-none");
+  } else {
+    previewHiddenMessage.classList.add("d-none");
+    previewContent.classList.remove("d-none");
+  }
+
+  fieldMap.forEach(([inputId, previewId]) => {
+    const input = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+
+    if (input && preview) {
+      preview.style.display = (!hidden && input.checked) ? "" : "none";
+    }
+  });
+}
+
+updateVisibility();
+
+masterToggle.addEventListener("change", updateVisibility);
+
+fieldMap.forEach(([inputId]) => {
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.addEventListener("change", updateVisibility);
+  }
+});
+</script>
+{% if messages %}
+<div id="save-toast" class="save-toast">
+  {% for message in messages %}
+    {{ message }}
+  {% endfor %}
+</div>
+{% endif %}
 {% endblock %}

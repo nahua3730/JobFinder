@@ -190,3 +190,129 @@
 .candidate-panel-section {
   line-height: 1.5;
 }
+.privacy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.privacy-row:last-of-type {
+  border-bottom: none;
+}
+
+.privacy-row-top {
+  align-items: flex-start;
+}
+
+.privacy-label {
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.form-check.form-switch {
+  padding-left: 0;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.form-check-input:focus {
+  box-shadow: none;
+}
+
+.form-check-input[type="checkbox"] {
+  background-size: 1.2rem 1.2rem;
+}
+
+.preview-card {
+  background-color: #b5e9f2;
+  border: 1px solid #e6f7ee;
+}
+.preview-card h4 {
+  color: #065f46;
+}
+.preview-section {
+  margin-bottom: 16px;
+}
+.preview-section h6 {
+  font-weight: 600;
+  color: #1f2937;
+}
+.privacy-settings-card {
+  background-color: #f8fafc;
+}
+
+.settings-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.03em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.privacy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 4px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.privacy-row:last-child {
+  border-bottom: none;
+}
+
+.privacy-label {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.form-check-input {
+  width: 3rem;
+  height: 1.6rem;
+}
+
+.form-check-input:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+.privacy-row:hover {
+  background-color: #f1f5f9;
+}
+.save-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #16a34a;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+
+  opacity: 0;
+  transform: translateY(20px);
+  animation: toastIn 0.4s ease forwards,
+             toastOut 0.4s ease 3s forwards;
+}
+
+@keyframes toastIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
