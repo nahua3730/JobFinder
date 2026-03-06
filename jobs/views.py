@@ -263,19 +263,52 @@ def recommended_jobs(request):
         for s in (profile.skills or "").split(",")
         if s.strip()
     }
-    jobs = JobPosting.objects.all().order_by("-created_at")
+    jobs = list(JobPosting.objects.all())
     recommended = [] 
     for job in jobs:
+        raw_skills = getattr(job, "skills", "") or ""
         job_skills = {
             s.strip().lower()
-            for s in (getattr(job, "skills", "") or "").split(",")
+            for s in raw_skills.split(",")
             if s.strip()
         }
-        score = len(user_skills & job_skills)
-        if score > 0:
-            recommended.append((job, score))
-    recommended.sort(key=lambda pair: pair[1], reverse=True)
+        if not job_skills:
+            continue
+        matched_skills = sorted(user_skills & job_skills)
+        missing_skills = sorted(job_skills - user_skills)
+        score = round(len(matched_skills) / len(job_skills) * 100)
+        recommended.append((job, score, matched_skills, missing_skills))
+        sort = request.GET.get("sort", "match_desc")
+        min_match = request.GET.get("min_match", "")
+        remote_only = request.GET.get("remote") == "1"
+        visa_only = request.GET.get("visa") == "1"
+
+        if min_match:
+            try:
+                min_match_value = int(min_match)
+                recommended = [item for item in recommended if item[1] >= min_match_value]
+            except ValueError:
+                min_match = ""
+
+        if remote_only:
+            recommended = [item for item in recommended if item[0].is_remote]
+
+        if visa_only:
+            recommended = [item for item in recommended if item[0].visa_sponsorship]
+
+        if sort == "match_asc":
+            recommended.sort(key=lambda x: x[1])
+        elif sort == "newest":
+            recommended.sort(key=lambda x: x[0].created_at, reverse=True)
+        elif sort == "oldest":
+            recommended.sort(key=lambda x: x[0].created_at)
+        else:
+            recommended.sort(key=lambda x: x[1], reverse=True)
     return render(request, "jobs/recommended_jobs.html", {
         "recommended": recommended,
         "user_skills": sorted(user_skills),
+        "current_sort": sort,
+        "current_min_match": min_match,
+        "remote_only": remote_only,
+        "visa_only": visa_only,
     })
