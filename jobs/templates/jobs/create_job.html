@@ -1,15 +1,202 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>{{ title }}</h2>
-    <div class="card p-4">
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Save Job</button>
-            <a href="{% url 'jobs:home' %}" class="btn btn-secondary">Cancel</a>
-        </form>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+    /* base theme */
+    .cr-theme {
+        font-family: 'VT323', monospace;
+        font-size: 1.5rem;
+        color: #333;
+        background-color: #795548; 
+        padding: 20px;
+        border: 8px solid #3e2723;
+        border-radius: 8px;
+    }
+
+    .cr-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        background-color: #aad751; 
+        border: 6px solid #8cbf3f;
+        padding: 15px;
+        box-shadow: 0px 8px 0px #3e2723; 
+    }
+
+    .cr-title {
+        text-transform: uppercase;
+        color: #fff;
+        text-shadow: 3px 3px 0px #333;
+        font-size: 3rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    /* the 3D Buttons */
+    .cr-btn {
+        display: inline-block;
+        padding: 8px 20px;
+        font-family: 'VT323', monospace;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #000;
+        background-color: #fff;
+        border: 4px solid #000;
+        border-bottom: 8px solid #000;
+        cursor: pointer;
+        transition: transform 0.1s, border-bottom-width 0.1s;
+    }
+    .cr-btn:active {
+        transform: translateY(4px);
+        border-bottom: 4px solid #000;
+    }
+    .cr-btn-primary { background-color: #00a8f3; color: white; }
+
+    .cr-form-container {
+        background-color: #aad751; 
+        border: 8px solid #8cbf3f;
+        padding: 30px;
+    }
+
+    .cr-form-box {
+        background-color: #fff;
+        border: 8px solid #333;
+        padding: 30px;
+    }
+
+    .cr-form-box label {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        text-transform: uppercase;
+        display: block;
+        margin-top: 20px;
+        margin-bottom: 8px;
+    }
+
+    .cr-form-box input[type="text"],
+    .cr-form-box input[type="number"],
+    .cr-form-box input[type="email"],
+    .cr-form-box select,
+    .cr-form-box textarea {
+        width: 100%;
+        font-family: 'VT323', monospace;
+        font-size: 1.6rem;
+        padding: 12px;
+        border: 4px solid #333;
+        background-color: #f5f5f5;
+        box-sizing: border-box;
+        outline: none;
+        transition: background-color 0.2s;
+    }
+
+    .cr-form-box input[type="text"]:focus,
+    .cr-form-box input[type="number"]:focus,
+    .cr-form-box select:focus,
+    .cr-form-box textarea:focus {
+        background-color: #fffde7; 
+        border-color: #00a8f3;
+    }
+
+    .cr-form-box input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        border: 4px solid #333;
+        cursor: pointer;
+        vertical-align: middle;
+        margin-right: 10px;
+        margin-top: -2px; 
+    }
+
+    .help-text {
+        font-size: 1.2rem;
+        color: #666;
+        display: block;
+        margin-top: 4px;
+    }
+
+    .cr-error {
+        color: #e53935;
+        font-size: 1.4rem;
+        font-weight: bold;
+        background-color: #ffebee;
+        padding: 8px;
+        border: 4px dashed #e53935;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="container mt-4 cr-theme">
+    
+    <div class="cr-header">
+        <h2 class="cr-title">
+            <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
+                <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+                <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+                <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+                <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+                <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+                <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+                <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+                <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+            {{ title|default:"Post a New Job" }}
+        </h2>
+        <a href="{% url 'jobs:my_jobs' %}" class="cr-btn" style="background-color: #9e9e9e; color: white;">
+            BACK
+        </a>
+    </div>
+
+    <div class="cr-form-container">
+        <div class="cr-form-box">
+            <form method="POST">
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="cr-error mb-3">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div style="margin-bottom: 20px;">
+                        
+                        {% if field.field.widget.input_type == "checkbox" %}
+                            <label style="display: flex; align-items: center; margin-top: 10px; text-transform: none;">
+                                {{ field }} <span style="margin-left: 10px; text-transform: uppercase;">{{ field.label }}</span>
+                            </label>
+                        {% else %}
+                            {{ field.label_tag }}
+                            {{ field }}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <span class="help-text">{{ field.help_text }}</span>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <div class="cr-error">⚠️ {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div style="margin-top: 40px; display: flex; gap: 15px;">
+                    <button type="submit" class="cr-btn cr-btn-primary" style="font-size: 1.8rem;">
+                        SAVE PLAYER DATA
+                    </button>
+                    <a href="{% url 'jobs:my_jobs' %}" class="cr-btn" style="background-color: #ffcc00; color: #000; font-size: 1.8rem; text-decoration: none; display: flex; align-items: center;">
+                        CANCEL
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

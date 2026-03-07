@@ -29,7 +29,7 @@
         text-transform: uppercase;
         color: #fff;
         text-shadow: 3px 3px 0px #333;
-        font-size: 3rem;
+        font-size: 2.5rem;
         margin: 0;
         display: flex;
         align-items: center;
@@ -54,9 +54,18 @@
         border-bottom: 4px solid #000;
     }
     .cr-btn-primary { background-color: #00a8f3; color: white; }
-    .cr-btn-edit { background-color: #ffcc00; color: #000; }
 
-    /* --- The Multiple Lanes Table --- */
+    .cr-select {
+        font-family: 'VT323', monospace;
+        font-size: 1.5rem;
+        padding: 4px 8px;
+        border: 4px solid #000;
+        background-color: #fff;
+        text-transform: uppercase;
+        outline: none;
+        cursor: pointer;
+    }
+
     .cr-table {
         width: 100%;
         border-collapse: collapse;
@@ -103,11 +112,9 @@
         border: 4px solid #000;
         text-transform: uppercase;
         font-size: 1.2rem;
+        background-color: #000;
+        color: #fff;
     }
-    .badge-success { background-color: #4caf50; color: white; }
-    .badge-warning { background-color: #ffcc00; color: black; }
-    .badge-danger { background-color: #e53935; color: white; }
-    .badge-count { background-color: #e53935; color: white; font-size: 1.8rem; }
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -126,57 +133,60 @@
                 <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
                 <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
             </svg>
-            My Job Postings
+            Applicants:&nbsp;<span style="color: #ffcc00;">{{ job.title }}</span>
         </h2>
-        <a href="{% url 'jobs:create_job' %}" class="cr-btn cr-btn-primary">
-            PLAY NOW
+        <a href="{% url 'jobs:my_jobs' %}" class="cr-btn" style="background-color: #9e9e9e; color: white;">
+            BACK
         </a>
     </div>
 
-    {% if jobs %}
+    {% if applications %}
         <div class="table-responsive">
             <table class="cr-table">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Status</th>
-                        <th>Applicants</th>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Actions</th>
+                        <th>Player (Applicant)</th>
+                        <th>Applied Date</th>
+                        <th>Note</th>
+                        <th>Current Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for job in jobs %}
+                    {% for app in applications %}
                     <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
-                        <td style="font-size: 1.8rem; font-weight: bold;">{{ job.title }}</td>
                         <td>
-                            {% if job.status == 'APPROVED' %}
-                                <span class="cr-badge badge-success">{{ job.get_status_display }}</span>
-                            {% elif job.status == 'PENDING' %}
-                                <span class="cr-badge badge-warning">{{ job.get_status_display }}</span>
-                            {% elif job.status == 'SPAM' %}
-                                <span class="cr-badge badge-danger">{{ job.get_status_display }}</span>
+                            <strong style="font-size: 1.8rem;">{{ app.applicant.first_name }} {{ app.applicant.last_name }}</strong><br>
+                            <span style="opacity: 0.8; font-size: 1.2rem;">{{ app.applicant.email }}</span>
+                        </td>
+                        
+                        <td>{{ app.created_at|date:"M d, Y" }}</td>
+                        
+                        <td>
+                            {% if app.note %}
+                                {{ app.note|truncatewords:8 }}
                             {% else %}
-                                <span class="cr-badge" style="background:#ccc;">{{ job.get_status_display }}</span>
+                                <span style="opacity: 0.6;">[ NO NOTE ]</span>
                             {% endif %}
                         </td>
-                        <td style="text-align: center;">
-                            {% if job.applications.count > 0 %}
-                                <span class="cr-badge badge-count">🪙 {{ job.applications.count }}</span>
-                            {% else %}
-                                <span style="opacity: 0.7;">0</span>
-                            {% endif %}
-                        </td>
-                        <td>{{ job.location }}</td>
-                        <td>{{ job.created_at|date:"M d, Y" }}</td>
+                        
                         <td>
-                            <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn" style="padding: 4px 10px;">
-                                VIEW
-                            </a>
-                            <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-edit" style="padding: 4px 10px;">
-                                EDIT
-                            </a>
+                            <span class="cr-badge">{{ app.get_status_display }}</span>
+                        </td>
+                        
+                        <td>
+                            <form method="POST" style="display: flex; gap: 8px; align-items: center; margin: 0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="application_id" value="{{ app.id }}">
+                                <select name="status" class="cr-select">
+                                    {% for val, label in status_choices %}
+                                        <option value="{{ val }}" {% if app.status == val %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="cr-btn cr-btn-primary" style="padding: 4px 10px;">SAVE</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -186,8 +196,7 @@
     {% else %}
         <div class="lane-road" style="padding: 50px; text-align: center; border: 8px solid #333;">
             <h3 style="color: white; font-size: 2.5rem;">NO PLAYERS ON THE BOARD.</h3>
-            <p style="color: #ccc;">Post your first job to start traffic!</p>
-            <a href="{% url 'jobs:create_job' %}" class="cr-btn cr-btn-primary mt-3">Post a Job</a>
+            <p style="color: #ccc;">Check back later to see who applies to cross the road!</p>
         </div>
     {% endif %}
 </div>

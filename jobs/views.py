@@ -4,13 +4,15 @@ from users.models import JobSeekerProfile
 from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from applications.models import Application
 from django.http import JsonResponse
 from .geocoding import geocode_us
 
 def home(request):
     if request.user.is_authenticated and request.user.is_recruiter:
         return redirect("jobs:my_jobs")
-    jobs = JobPosting.objects.all().order_by('-created_at')
+    
+    jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by('-created_at')
     return render(request, "jobs/index.html", {"jobs": jobs})
 
 def search(request):
@@ -18,7 +20,8 @@ def search(request):
         return redirect("jobs:my_jobs")
 
     form = JobSearchForm(request.GET or None)
-    jobs = JobPosting.objects.all().order_by("-created_at")
+    
+    jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
 
     if form.is_valid():
         title = form.cleaned_data.get("title")
@@ -54,7 +57,8 @@ def search(request):
 
 def _filtered_jobs_from_search_form(request):
     form = JobSearchForm(request.GET or None)
-    jobs = JobPosting.objects.all().order_by("-created_at")
+    
+    jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
 
     if form.is_valid():
         title = form.cleaned_data.get("title")
@@ -250,7 +254,7 @@ def job_detail(request, job_id):
     if request.user.is_authenticated and request.user.is_recruiter:
         return redirect("jobs:my_jobs")
 
-    job = get_object_or_404(JobPosting, id=job_id)
+    job = get_object_or_404(JobPosting, id=job_id, status=JobPosting.Status.APPROVED)
     return render(request, "jobs/job_detail.html", {"job": job})
 
 @login_required
@@ -263,7 +267,8 @@ def recommended_jobs(request):
         for s in (profile.skills or "").split(",")
         if s.strip()
     }
-    jobs = JobPosting.objects.all().order_by("-created_at")
+    
+    jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
     recommended = [] 
     for job in jobs:
         job_skills = {
@@ -279,3 +284,32 @@ def recommended_jobs(request):
         "recommended": recommended,
         "user_skills": sorted(user_skills),
     })
+
+
+@login_required
+def job_applications(request, job_id):
+    """ View for a recruiter to see and update applicants for a specific job """
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+    
+    if request.method == 'POST':
+        application_id = request.POST.get('application_id')
+        new_status = request.POST.get('status')
+        
+        if application_id and new_status:
+            application = get_object_or_404(Application, id=application_id, job=job)
+            
+            valid_statuses = [choice[0] for choice in Application.Status.choices]
+            if new_status in valid_statuses:
+                application.status = new_status
+                application.save()
+                
+        return redirect('jobs:job_applications', job_id=job.id)
+        
+    applications = job.applications.select_related('applicant').all()
+    
+    context = {
+        'job': job,
+        'applications': applications,
+        'status_choices': Application.Status.choices
+    }
+    return render(request, 'jobs/job_applications.html', context)
