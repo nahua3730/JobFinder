@@ -267,6 +267,10 @@ def recommended_jobs(request):
         for s in (profile.skills or "").split(",")
         if s.strip()
     }
+    sort = request.GET.get("sort", "match_desc")
+    min_match = request.GET.get("min_match", "")
+    remote_only = request.GET.get("remote") == "1"
+    visa_only = request.GET.get("visa") == "1"
     
     jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
     recommended = [] 
@@ -283,10 +287,6 @@ def recommended_jobs(request):
         missing_skills = sorted(job_skills - user_skills)
         score = round(len(matched_skills) / len(job_skills) * 100)
         recommended.append((job, score, matched_skills, missing_skills))
-        sort = request.GET.get("sort", "match_desc")
-        min_match = request.GET.get("min_match", "")
-        remote_only = request.GET.get("remote") == "1"
-        visa_only = request.GET.get("visa") == "1"
 
         if min_match:
             try:

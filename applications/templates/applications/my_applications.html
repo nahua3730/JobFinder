@@ -2,44 +2,674 @@
 {% block title %}My Applications{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h4 mb-0">My Applications</h1>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  .cr-theme {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #333;
+    background-color: #795548;
+    padding: 20px;
+    border: 8px solid #3e2723;
+    border-radius: 0;
+  }
+
+  .cr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #aad751;
+    border: 6px solid #8cbf3f;
+    padding: 15px;
+    box-shadow: 0px 8px 0px #3e2723;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cr-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .cr-title {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 2.6rem;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .cr-subtitle {
+    color: #f4ffe0;
+    font-size: 1.35rem;
+    margin: 4px 0 0 0;
+    text-shadow: 2px 2px 0px #5f7f2e;
+  }
+
+  .application-card {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .app-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .app-title {
+    font-size: 2rem;
+    color: #222;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+  }
+
+  .app-meta {
+    font-size: 1.2rem;
+    color: #666;
+    line-height: 1.15;
+  }
+
+  .app-note {
+    margin-top: 10px;
+    font-size: 1.25rem;
+    color: #444;
+    line-height: 1.2;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.7rem;
+    border: 3px solid #333;
+    background: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: 0px 3px 0px #999;
+  }
+
+  .status-applied { background: #9e9e9e; color: #fff; }
+  .status-review { background: #00a8f3; color: #fff; }
+  .status-interview { background: #8e44ad; color: #fff; }
+  .status-offer { background: #4caf50; color: #fff; }
+  .status-closed { background: #e53935; color: #fff; }
+
+  .cr-btn {
+    display: inline-block;
+    padding: 8px 18px;
+    font-family: 'VT323', monospace;
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000 !important;
+    border-bottom: 8px solid #000 !important;
+    border-radius: 0 !important;
+    cursor: pointer;
+    transition: transform 0.1s, border-bottom-width 0.1s;
+    box-shadow: none !important;
+  }
+
+  .cr-btn:hover {
+    color: #000;
+    transform: translateY(-2px);
+  }
+
+  .cr-btn:active {
+    transform: translateY(4px);
+    border-bottom-width: 4px !important;
+  }
+
+  .stage-board {
+    position: relative;
+    background: #2f2f6f;
+    border: 6px solid #1f1f4a;
+    box-shadow: inset 0px 0px 0px 4px rgba(255,255,255,0.06);
+    min-height: 210px;
+    padding: 28px 22px 22px;
+    overflow: hidden;
+  }
+
+  .stage-board::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc(20% - 3px),
+        rgba(255,255,255,0.95) calc(20% - 3px),
+        rgba(255,255,255,0.95) calc(20% + 3px),
+        transparent calc(20% + 3px),
+        transparent 40%
+      );
+    opacity: 0.95;
+    pointer-events: none;
+  }
+
+  .stage-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    z-index: 2;
+    margin-top: 78px;
+  }
+
+  .stage-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .stage-marker {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 5px solid #23235a;
+    background: radial-gradient(circle at 35% 35%, #4c4c9a 0%, #2b2b68 70%);
+    box-shadow: inset 0px 0px 0px 4px rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .stage-marker::after {
+    content: "";
+    position: absolute;
+    bottom: 12px;
+    width: 42px;
+    height: 12px;
+    background: repeating-linear-gradient(
+      to right,
+      rgba(0,0,0,0.18) 0px,
+      rgba(0,0,0,0.18) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+  }
+
+  .stage-label {
+    color: #ff5a48;
+    font-size: 1.45rem;
+    line-height: 1;
+    text-shadow: 1px 1px 0px #2d1b1b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .stage-sub {
+    color: #d9d9ff;
+    font-size: 1rem;
+    line-height: 1;
+    opacity: 0.9;
+  }
+
+  .chicken-runner {
+    position: absolute;
+    top: 22px;
+    width: 68px;
+    height: 68px;
+    z-index: 3;
+    left: 10%;
+    transform: translateX(-50%) scaleX(-1);
+    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.18));
+    transition: left 0.18s linear;
+  }
+
+  .chicken-runner.hop {
+    animation: chickenHop 2s steps(6, end);
+  }
+
+  @keyframes chickenHop {
+    0%   { transform: translateX(-50%) scaleX(-1) translateY(0); }
+    25%  { transform: translateX(-50%) scaleX(-1) translateY(-10px); }
+    50%  { transform: translateX(-50%) scaleX(-1) translateY(-16px); }
+    75%  { transform: translateX(-50%) scaleX(-1) translateY(-8px); }
+    100% { transform: translateX(-50%) scaleX(-1) translateY(0); }
+  }
+
+  .empty-state {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 18px;
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 991px) {
+    .stage-marker {
+      width: 72px;
+      height: 72px;
+    }
+
+    .stage-label {
+      font-size: 1.15rem;
+    }
+
+    .stage-sub {
+      font-size: 0.85rem;
+    }
+
+    .chicken-runner {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cr-title {
+      font-size: 2rem;
+    }
+
+    .stage-board {
+      overflow-x: auto;
+      padding-bottom: 18px;
+    }
+
+    .stage-row {
+      min-width: 620px;
+    }
+
+    .chicken-runner {
+      top: 16px;
+    }
+  }
+</style>
+
+<div class="container py-4 cr-theme">
+  <div class="cr-header">
+    <div class="cr-title-wrap">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      <div>
+        <h1 class="cr-title">My Applications</h1>
+        <p class="cr-subtitle">Track your application progress lane by lane</p>
+      </div>
+    </div>
   </div>
 
   {% if applications %}
-    <div class="list-group">
-      {% for app in applications %}
-        <div class="list-group-item">
-          <div class="d-flex justify-content-between align-items-start">
+    {% for app in applications %}
+      {% if app.status == 'applied' %}
+        {% with stage_num='1' %}
+        <div class="application-card">
+          <div class="app-top">
             <div>
-              <div class="fw-semibold">
-                {{ app.job.title }}
-              </div>
-              <div class="text-muted small">
+              <div class="app-title">{{ app.job.title }}</div>
+              <div class="app-meta">
                 Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
               </div>
 
               {% if app.note %}
-                <div class="mt-2"><strong>Note:</strong> {{ app.note }}</div>
+                <div class="app-note">
+                  <strong>Note:</strong> {{ app.note }}
+                </div>
               {% endif %}
             </div>
 
-            <div class="text-end">
-              <span class="badge bg-secondary">{{ app.get_status_display }}</span>
-              <div class="mt-2">
-                <a class="btn btn-outline-dark btn-sm"
-                   href="{% url 'applications:update_status' app.id %}">
-                  Update Status
-                </a>
-              </div>
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="status-badge status-applied">{{ app.get_status_display }}</span>
+
+              <a class="cr-btn update-status-btn"
+                 href="{% url 'applications:update_status' app.id %}"
+                 data-app-id="{{ app.id }}"
+                 data-current-stage="{{ stage_num }}">
+                Update Status
+              </a>
+            </div>
+          </div>
+
+          <div class="stage-board"
+               data-app-id="{{ app.id }}"
+               data-current-stage="{{ stage_num }}">
+            <svg class="chicken-runner"
+                 viewBox="0 0 16 16"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+
+            <div class="stage-row">
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
             </div>
           </div>
         </div>
-      {% endfor %}
-    </div>
+        {% endwith %}
+
+      {% elif app.status == 'review' %}
+        {% with stage_num='2' %}
+        <div class="application-card">
+          <div class="app-top">
+            <div>
+              <div class="app-title">{{ app.job.title }}</div>
+              <div class="app-meta">
+                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+              </div>
+
+              {% if app.note %}
+                <div class="app-note">
+                  <strong>Note:</strong> {{ app.note }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="status-badge status-review">{{ app.get_status_display }}</span>
+
+              <a class="cr-btn update-status-btn"
+                 href="{% url 'applications:update_status' app.id %}"
+                 data-app-id="{{ app.id }}"
+                 data-current-stage="{{ stage_num }}">
+                Update Status
+              </a>
+            </div>
+          </div>
+
+          <div class="stage-board"
+               data-app-id="{{ app.id }}"
+               data-current-stage="{{ stage_num }}">
+            <svg class="chicken-runner"
+                 viewBox="0 0 16 16"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+
+            <div class="stage-row">
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
+            </div>
+          </div>
+        </div>
+        {% endwith %}
+
+      {% elif app.status == 'interview' %}
+        {% with stage_num='3' %}
+        <div class="application-card">
+          <div class="app-top">
+            <div>
+              <div class="app-title">{{ app.job.title }}</div>
+              <div class="app-meta">
+                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+              </div>
+
+              {% if app.note %}
+                <div class="app-note">
+                  <strong>Note:</strong> {{ app.note }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="status-badge status-interview">{{ app.get_status_display }}</span>
+
+              <a class="cr-btn update-status-btn"
+                 href="{% url 'applications:update_status' app.id %}"
+                 data-app-id="{{ app.id }}"
+                 data-current-stage="{{ stage_num }}">
+                Update Status
+              </a>
+            </div>
+          </div>
+
+          <div class="stage-board"
+               data-app-id="{{ app.id }}"
+               data-current-stage="{{ stage_num }}">
+            <svg class="chicken-runner"
+                 viewBox="0 0 16 16"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+
+            <div class="stage-row">
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
+            </div>
+          </div>
+        </div>
+        {% endwith %}
+
+      {% elif app.status == 'offer' %}
+        {% with stage_num='4' %}
+        <div class="application-card">
+          <div class="app-top">
+            <div>
+              <div class="app-title">{{ app.job.title }}</div>
+              <div class="app-meta">
+                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+              </div>
+
+              {% if app.note %}
+                <div class="app-note">
+                  <strong>Note:</strong> {{ app.note }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="status-badge status-offer">{{ app.get_status_display }}</span>
+
+              <a class="cr-btn update-status-btn"
+                 href="{% url 'applications:update_status' app.id %}"
+                 data-app-id="{{ app.id }}"
+                 data-current-stage="{{ stage_num }}">
+                Update Status
+              </a>
+            </div>
+          </div>
+
+          <div class="stage-board"
+               data-app-id="{{ app.id }}"
+               data-current-stage="{{ stage_num }}">
+            <svg class="chicken-runner"
+                 viewBox="0 0 16 16"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+
+            <div class="stage-row">
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
+            </div>
+          </div>
+        </div>
+        {% endwith %}
+
+      {% else %}
+        {% with stage_num='5' %}
+        <div class="application-card">
+          <div class="app-top">
+            <div>
+              <div class="app-title">{{ app.job.title }}</div>
+              <div class="app-meta">
+                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+              </div>
+
+              {% if app.note %}
+                <div class="app-note">
+                  <strong>Note:</strong> {{ app.note }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="d-flex flex-column align-items-end gap-2">
+              <span class="status-badge status-closed">{{ app.get_status_display }}</span>
+
+              <a class="cr-btn update-status-btn"
+                 href="{% url 'applications:update_status' app.id %}"
+                 data-app-id="{{ app.id }}"
+                 data-current-stage="{{ stage_num }}">
+                Update Status
+              </a>
+            </div>
+          </div>
+
+          <div class="stage-board"
+               data-app-id="{{ app.id }}"
+               data-current-stage="{{ stage_num }}">
+            <svg class="chicken-runner"
+                 viewBox="0 0 16 16"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+
+            <div class="stage-row">
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
+              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
+            </div>
+          </div>
+        </div>
+        {% endwith %}
+      {% endif %}
+    {% endfor %}
   {% else %}
-    <p class="text-muted">You haven’t applied to any jobs yet.</p>
+    <div class="empty-state">
+      You haven’t applied to any jobs yet.
+    </div>
   {% endif %}
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const stagePositions = {
+    1: "10%",
+    2: "30%",
+    3: "50%",
+    4: "70%",
+    5: "90%"
+  };
+
+  function hopChickenToStage(chicken, targetStage) {
+    let currentStage = 1;
+    const finalStage = parseInt(targetStage, 10) || 1;
+
+    chicken.style.left = stagePositions[1];
+
+    if (finalStage <= 1) return;
+
+    function doHop() {
+      if (currentStage >= finalStage) return;
+
+      currentStage += 1;
+      chicken.classList.remove("hop");
+
+      requestAnimationFrame(() => {
+        chicken.classList.add("hop");
+        chicken.style.left = stagePositions[currentStage];
+      });
+
+      setTimeout(() => {
+        chicken.classList.remove("hop");
+        doHop();
+      }, 420);
+    }
+
+    setTimeout(doHop, 120);
+  }
+
+  document.querySelectorAll(".stage-board").forEach((board) => {
+    const stage = board.dataset.currentStage;
+    const chicken = board.querySelector(".chicken-runner");
+
+    if (!chicken) return;
+
+    hopChickenToStage(chicken, stage);
+  });
+});
+</script>
 {% endblock %}

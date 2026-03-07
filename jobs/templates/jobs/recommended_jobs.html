@@ -2,33 +2,257 @@
 {% block title %}Recommended Jobs Based on Skills{% endblock %}
 
 {% block content %}
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
 <style>
+  .cr-theme {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #333;
+    background-color: #795548;
+    padding: 20px;
+    border: 8px solid #3e2723;
+    border-radius: 0;
+  }
+
+  .cr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #aad751;
+    border: 6px solid #8cbf3f;
+    padding: 15px;
+    box-shadow: 0px 8px 0px #3e2723;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cr-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .cr-title {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 2.6rem;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .cr-subtitle {
+    color: #f4ffe0;
+    font-size: 1.4rem;
+    margin: 4px 0 0 0;
+    text-shadow: 2px 2px 0px #5f7f2e;
+  }
+
+  .cr-btn,
+  .job-modal-box .btn,
+  .filters-card .btn {
+    display: inline-block;
+    padding: 8px 18px;
+    font-family: 'VT323', monospace;
+    font-size: 1.45rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000 !important;
+    border-bottom: 8px solid #000 !important;
+    border-radius: 0 !important;
+    cursor: pointer;
+    transition: transform 0.1s, border-bottom-width 0.1s, box-shadow 0.1s;
+    box-shadow: none !important;
+  }
+
+  .cr-btn:hover,
+  .job-modal-box .btn:hover,
+  .filters-card .btn:hover {
+    color: #000;
+    transform: translateY(-2px);
+  }
+
+  .cr-btn:active,
+  .job-modal-box .btn:active,
+  .filters-card .btn:active {
+    transform: translateY(4px);
+    border-bottom-width: 4px !important;
+  }
+
+  .filters-card {
+    background: #fff8dc;
+    border: 6px solid #333;
+    border-radius: 0;
+    box-shadow: 0px 6px 0px #3e2723;
+    margin-bottom: 22px;
+  }
+
+  .filters-card .card-body {
+    padding: 16px;
+  }
+
+  .filters-card .form-label,
+  .filters-card .form-check-label {
+    font-family: 'VT323', monospace;
+    font-size: 1.35rem;
+    color: #222;
+    margin-bottom: 6px;
+  }
+
+  .filters-card .form-select,
+  .filters-card .form-check-input {
+    font-family: 'VT323', monospace;
+    border-radius: 0 !important;
+    border: 4px solid #333 !important;
+    box-shadow: none !important;
+  }
+
+  .filters-card .form-select {
+    font-size: 1.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    background-color: #f5f5f5;
+  }
+
+  .filters-card .form-select:focus,
+  .filters-card .form-check-input:focus {
+    border-color: #00a8f3 !important;
+    box-shadow: none !important;
+  }
+
+  .filters-card .form-check-input:checked {
+    background-color: #00a8f3;
+    border-color: #333 !important;
+  }
+
   .job-card {
     cursor: pointer;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
-    border: none;
-    border-radius: 16px;
+    border: 4px solid #333 !important;
+    border-radius: 0 !important;
+    box-shadow: 0px 6px 0px #3e2723;
+    overflow: hidden;
+    background: #fff;
   }
 
   .job-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 10px 0px #3e2723;
+  }
+
+  .job-card .card-body {
+    border-radius: 0 !important;
+    padding: 16px;
+  }
+
+  .job-card-title {
+    font-size: 2rem;
+    line-height: 1;
+    color: #222;
+    margin-bottom: 0.25rem;
+  }
+
+  .job-company {
+    font-size: 1.45rem;
+    color: #555;
+    margin-bottom: 0.7rem;
   }
 
   .match-badge {
-    font-size: 0.85rem;
-    border-radius: 999px;
-    padding: 0.45rem 0.8rem;
+    font-size: 1.2rem;
+    border-radius: 0 !important;
+    padding: 0.28rem 0.65rem;
+    color: #fff;
+    border: 3px solid #333;
+    line-height: 1;
+  }
+
+  .match-badge-high {
+    background: #4caf50;
+  }
+
+  .match-badge-medium {
+    background: #ff9800;
+  }
+
+  .match-badge-low {
+    background: #757575;
+  }
+
+  .match-progress-wrapper {
+    width: 100%;
+    height: 10px;
+    background: #d7d7d7;
+    border: 3px solid #333;
+    border-radius: 0;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .match-progress-fill {
+    height: 100%;
+    width: 0;
+    transition: width 0.6s ease;
+  }
+
+  .match-progress-fill.high {
+    background: #4caf50;
+  }
+
+  .match-progress-fill.medium {
+    background: #ff9800;
+  }
+
+  .match-progress-fill.low {
+    background: #757575;
+  }
+
+  .job-meta-pill {
+    display: inline-block;
+    padding: 0.28rem 0.55rem;
+    border-radius: 0;
+    background: #f1f1f1;
+    color: #333;
+    font-size: 1.1rem;
+    border: 3px solid #333;
+    line-height: 1;
+  }
+
+  .required-skills-preview {
+    min-height: 52px;
+    font-size: 1.25rem;
+    color: #444;
   }
 
   .click-hint {
-    font-size: 0.82rem;
+    font-size: 1.15rem;
+    color: #666 !important;
+    text-transform: uppercase;
+  }
+
+  .jobs-count {
+    font-size: 1.45rem;
+    color: #fff;
+    text-shadow: 2px 2px 0px #333;
+  }
+
+  .empty-state {
+    background: #fff8dc;
+    border: 6px solid #333;
+    border-radius: 0;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 20px;
+    font-size: 1.6rem;
   }
 
   .job-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.55);
     display: none;
     align-items: center;
     justify-content: center;
@@ -41,247 +265,449 @@
   }
 
   .job-modal-box {
-    background: #fff;
-    width: min(1000px, 100%);
+    background: #fff8dc;
+    width: min(1080px, 100%);
     max-height: 90vh;
     overflow-y: auto;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
-    padding: 28px;
+    border: 8px solid #3e2723;
+    border-radius: 0;
+    box-shadow: 0px 10px 0px #2b1d1a;
+    padding: 24px;
     position: relative;
+    font-family: 'VT323', monospace;
   }
 
   .job-modal-close {
     position: absolute;
-    top: 16px;
-    right: 18px;
-    border: none;
-    background: transparent;
-    font-size: 1.7rem;
+    top: 12px;
+    right: 14px;
+    width: 44px;
+    height: 44px;
+    border: 4px solid #000;
+    background: #fff;
+    font-size: 1.8rem;
     line-height: 1;
     cursor: pointer;
+    border-radius: 0;
+  }
+
+  .job-modal-close:hover {
+    transform: translateY(-2px);
   }
 
   .modal-job-title {
+    font-size: 2.5rem;
     font-weight: 700;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    color: #222;
   }
 
-  .skill-badge {
-    display: inline-block;
-    border-radius: 999px;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-    margin: 0 0.4rem 0.45rem 0;
+  .modal-company-name {
+    font-size: 1.45rem;
+    color: #555;
   }
 
-  .skill-badge.match {
-    background: #d1f7dc;
-    color: #146c2e;
+  .detail-chip-card {
+    background: #fff;
+    border: 4px solid #333;
+    border-radius: 0;
+    padding: 0.8rem 0.9rem;
+    height: 100%;
+    box-shadow: 0px 4px 0px #b8a98e;
   }
 
-  .skill-badge.missing {
-    background: #f8d7da;
-    color: #842029;
+  .detail-chip-label {
+    font-size: 1.05rem;
+    color: #666;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .detail-chip-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #212529;
+    line-height: 1.15;
+  }
+
+  .section-heading {
+    font-size: 1.55rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    color: #222;
+  }
+
+  .modal-body-copy {
+    font-size: 1.32rem;
+    color: #444 !important;
+    line-height: 1.35;
   }
 
   .circle-wrap {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: #fff;
+    border: 4px solid #333;
+    box-shadow: 0px 4px 0px #b8a98e;
+    padding: 16px 10px;
   }
 
   .circle-score-text {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: 700;
     fill: #198754;
   }
 
   .circle-caption {
-    font-size: 0.95rem;
-    color: #6c757d;
+    font-size: 1.2rem;
+    color: #555;
     text-align: center;
     margin-top: 10px;
+    line-height: 1.2;
   }
 
-  .required-skills-preview {
-    min-height: 48px;
+  .skill-group-box {
+    background: #fff;
+    border: 4px solid #333;
+    box-shadow: 0px 4px 0px #b8a98e;
+    padding: 12px;
   }
-  .job-meta-pill {
-  display: inline-block;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  background: #f1f3f5;
-  color: #495057;
-  font-size: 0.8rem;
-  font-weight: 500;
+
+  .skill-badge {
+    display: inline-block;
+    border-radius: 0;
+    padding: 0.28rem 0.6rem;
+    font-size: 1.15rem;
+    margin: 0 0.35rem 0.4rem 0;
+    border: 3px solid #333;
+    line-height: 1;
+  }
+
+  .skill-badge.match {
+    background: #c8efcb;
+    color: #144d23;
+  }
+
+  .skill-badge.missing {
+    background: #ffd7d7;
+    color: #7a1e1e;
+  }
+
+  .posted-line {
+    font-size: 1.15rem;
+    color: #666 !important;
+    margin-top: 12px;
+    text-transform: uppercase;
+  }
+
+  .cr-alert {
+    background: #fff8dc;
+    border: 6px solid #333;
+    border-radius: 0;
+    color: #222;
+    box-shadow: 0px 6px 0px #3e2723;
+    font-size: 1.45rem;
+  }
+
+  @media (max-width: 768px) {
+    .cr-title {
+      font-size: 2.1rem;
+    }
+
+    .modal-job-title {
+      font-size: 2rem;
+    }
+
+    .job-modal-box {
+      padding: 18px;
+    }
+  }
+  .filter-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
 }
 
-.detail-chip-card {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 14px;
-  padding: 0.9rem 1rem;
-  height: 100%;
+.filter-check .form-check-input {
+  margin-top: 0 !important;
+  flex-shrink: 0;
 }
 
-.detail-chip-label {
-  font-size: 0.78rem;
-  color: #6c757d;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+.filter-check .form-check-label {
+  margin-bottom: 0;
+  line-height: 1.05;
 }
-
-.detail-chip-value {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #212529;
-}
-
-.match-progress-wrapper {
+  .pixel-dropdown {
+  position: relative;
   width: 100%;
-  height: 6px;
-  background: #e9ecef;
-  border-radius: 999px;
-  overflow: hidden;
 }
 
-.match-progress-fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.6s ease;
+.pixel-dropdown-toggle {
+  width: 100%;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f5f5f5;
+  border: 4px solid #333;
+  border-radius: 0;
+  font-family: 'VT323', monospace;
+  font-size: 1.3rem;
+  color: #222;
+  text-align: left;
+  box-shadow: none;
+  cursor: pointer;
 }
 
-.match-progress-fill.high {
-  background: #198754;
+.pixel-dropdown-toggle:focus {
+  outline: none;
+  border-color: #00a8f3;
+  background: #fffef2;
 }
 
-.match-progress-fill.medium {
-  background: #f59f00;
+.pixel-dropdown.open .pixel-dropdown-toggle {
+  border-color: #00a8f3;
+  background: #fffef2;
 }
 
-.match-progress-fill.low {
-  background: #6c757d;
+.pixel-caret {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1;
 }
 
-.match-badge {
-  font-size: 0.85rem;
-  border-radius: 999px;
-  padding: 0.45rem 0.8rem;
-  color: white;
-  border: none;
+.pixel-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  display: none;
+  background: #fff8dc;
+  border: 4px solid #333;
+  box-shadow: 0px 6px 0px #3e2723;
+  padding: 6px;
 }
 
-.match-badge-high {
-  background: #198754;
+.pixel-dropdown.open .pixel-dropdown-menu {
+  display: block;
 }
 
-.match-badge-medium {
-  background: #f59f00;
+.pixel-dropdown-item {
+  width: 100%;
+  display: block;
+  padding: 10px 12px;
+  background: #fff;
+  border: 3px solid #333;
+  border-radius: 0;
+  font-family: 'VT323', monospace;
+  font-size: 1.25rem;
+  color: #222;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: 6px;
 }
 
-.match-badge-low {
-  background: #6c757d;
+.pixel-dropdown-item:last-child {
+  margin-bottom: 0;
 }
 
+.pixel-dropdown-item:hover {
+  background: #e8f5b7;
+}
+
+.pixel-dropdown-item.active {
+  background: #aad751;
+  color: #fff;
+  text-shadow: 2px 2px 0px #5f7f2e;
+}
 </style>
 
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1 class="h3 mb-1">Recommended Jobs</h1>
-      <p class="text-muted mb-0">Based on your profile skills</p>
+<div class="container py-4 cr-theme">
+  <div class="cr-header">
+    <div class="cr-title-wrap">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+
+      <div>
+        <h1 class="cr-title">Recommended Jobs</h1>
+        <p class="cr-subtitle">Based on your profile skills</p>
+      </div>
     </div>
-    <a class="btn btn-outline-secondary btn-sm" href="{% url 'jobs:home' %}">
-      Back to All Jobs
-    </a>
+
+    <a class="cr-btn" href="{% url 'jobs:home' %}">Back to All Jobs</a>
   </div>
 
   {% if not user_skills %}
-    <div class="alert alert-info">
+    <div class="alert cr-alert mb-4">
       Add skills to your profile to receive personalized job recommendations.
     </div>
   {% endif %}
-  <form method="get" class="card shadow-sm border-0 mb-4">
-  <div class="card-body">
-    <div class="row g-2 align-items-end">
-      <div class="col-12 col-md-3">
-        <label for="sort" class="form-label fw-semibold">Sort by</label>
-        <select name="sort" id="sort" class="form-select form-select-sm">
-          <option value="match_desc" {% if current_sort == "match_desc" %}selected{% endif %}>
-            Highest Match
-          </option>
-          <option value="match_asc" {% if current_sort == "match_asc" %}selected{% endif %}>
-            Lowest Match
-          </option>
-          <option value="newest" {% if current_sort == "newest" %}selected{% endif %}>
-            Newest
-          </option>
-          <option value="oldest" {% if current_sort == "oldest" %}selected{% endif %}>
-            Oldest
-          </option>
-        </select>
-      </div>
 
-      <div class="col-12 col-md-3">
-        <label for="min_match" class="form-label fw-semibold">Minimum Match</label>
-        <select name="min_match" id="min_match" class="form-select form-select-sm">
-          <option value="" {% if current_min_match == "" %}selected{% endif %}>Any</option>
-          <option value="25" {% if current_min_match == "25" %}selected{% endif %}>25%+</option>
-          <option value="50" {% if current_min_match == "50" %}selected{% endif %}>50%+</option>
-          <option value="75" {% if current_min_match == "75" %}selected{% endif %}>75%+</option>
-        </select>
-      </div>
+  <form method="get" class="filters-card">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold">Sort by</label>
 
-      <div class="col-12 col-md-2">
-        <div class="form-check mt-md-4 pt-md-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="remote"
-            value="1"
-            id="remoteOnly"
-            {% if remote_only %}checked{% endif %}
-          >
-          <label class="form-check-label" for="remoteOnly">
-            Remote only
-          </label>
+          <div class="pixel-dropdown" data-dropdown>
+            <input type="hidden" name="sort" id="sort" value="{{ current_sort|default:'match_desc' }}">
+
+            <button
+              type="button"
+              class="pixel-dropdown-toggle"
+              data-dropdown-toggle
+              aria-expanded="false"
+            >
+              <span data-dropdown-label>
+                {% if current_sort == "match_asc" %}
+                  Lowest Match
+                {% elif current_sort == "newest" %}
+                  Newest
+                {% elif current_sort == "oldest" %}
+                  Oldest
+                {% else %}
+                  Highest Match
+                {% endif %}
+              </span>
+              <span class="pixel-caret">▼</span>
+            </button>
+
+            <div class="pixel-dropdown-menu" data-dropdown-menu>
+              <button type="button" class="pixel-dropdown-item {% if current_sort == 'match_desc' or not current_sort %}active{% endif %}"
+                      data-value="match_desc" data-label="Highest Match">
+                Highest Match
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_sort == 'match_asc' %}active{% endif %}"
+                      data-value="match_asc" data-label="Lowest Match">
+                Lowest Match
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_sort == 'newest' %}active{% endif %}"
+                      data-value="newest" data-label="Newest">
+                Newest
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_sort == 'oldest' %}active{% endif %}"
+                      data-value="oldest" data-label="Oldest">
+                Oldest
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="col-12 col-md-2">
-        <div class="form-check mt-md-4 pt-md-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="visa"
-            value="1"
-            id="visaOnly"
-            {% if visa_only %}checked{% endif %}
-          >
-          <label class="form-check-label" for="visaOnly">
-            Visa sponsorship
-          </label>
+        <div class="col-12 col-md-3">
+          <label class="form-label fw-semibold">Minimum Match</label>
+
+          <div class="pixel-dropdown" data-dropdown>
+            <input type="hidden" name="min_match" id="min_match" value="{{ current_min_match|default:'' }}">
+
+            <button
+              type="button"
+              class="pixel-dropdown-toggle"
+              data-dropdown-toggle
+              aria-expanded="false"
+            >
+              <span data-dropdown-label>
+                {% if current_min_match == "25" %}
+                  25%+
+                {% elif current_min_match == "50" %}
+                  50%+
+                {% elif current_min_match == "75" %}
+                  75%+
+                {% else %}
+                  Any
+                {% endif %}
+              </span>
+              <span class="pixel-caret">▼</span>
+            </button>
+
+              <div class="pixel-dropdown-menu" data-dropdown-menu>
+              <button type="button" class="pixel-dropdown-item {% if current_min_match == '' %}active{% endif %}"
+                      data-value="" data-label="Any">
+                Any
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_min_match == '25' %}active{% endif %}"
+                      data-value="25" data-label="25%+">
+                25%+
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_min_match == '50' %}active{% endif %}"
+                      data-value="50" data-label="50%+">
+                50%+
+              </button>
+              <button type="button" class="pixel-dropdown-item {% if current_min_match == '75' %}active{% endif %}"
+                      data-value="75" data-label="75%+">
+                75%+
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="d-flex gap-2 mt-md-4 pt-md-2">
-        <button type="submit" class="btn btn-primary">
-          Apply
-        </button>
-        <a href="{% url 'jobs:recommended_jobs' %}" class="btn btn-outline-secondary">
-          Reset
-        </a>
+        <div class="col-12 col-md-2 d-flex align-items-end">
+          <div class="form-check filter-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="remote"
+              value="1"
+              id="remoteOnly"
+              {% if remote_only %}checked{% endif %}
+            >
+            <label class="form-check-label" for="remoteOnly">
+              Remote only
+            </label>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-2 d-flex align-items-end">
+          <div class="form-check filter-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="visa"
+              value="1"
+              id="visaOnly"
+              {% if visa_only %}checked{% endif %}
+            >
+            <label class="form-check-label" for="visaOnly">
+              Visa sponsorship
+            </label>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-2 d-flex gap-2 mt-md-4 pt-md-2">
+          <button type="submit" class="btn">
+            Apply
+          </button>
+          <a href="{% url 'jobs:recommended_jobs' %}" class="btn">
+            Reset
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
+
   <div class="row g-4">
     {% for job, score, matched_skills, missing_skills in recommended %}
       <div class="col-12 col-sm-6 col-lg-4">
         <div
-          class="card job-card h-100 shadow-sm"
+          class="card job-card h-100"
           onclick="openJobModal(this)"
           data-title="{{ job.title|escape }}"
           data-company="{{ job.company_name|default:''|escape }}"
@@ -300,8 +726,8 @@
           data-apply-url="{% url 'applications:apply_to_job' job.id %}"
         >
           <div class="card-body d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <h5 class="mb-1 fw-semibold">{{ job.title }}</h5>
+            <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+              <h5 class="job-card-title">{{ job.title }}</h5>
               {% if score >= 75 %}
                 <span class="badge match-badge match-badge-high">{{ score }}% Match</span>
               {% elif score >= 40 %}
@@ -310,7 +736,8 @@
                 <span class="badge match-badge match-badge-low">{{ score }}% Match</span>
               {% endif %}
             </div>
-            <div class="match-progress-wrapper mb-3">
+
+            <div class="match-progress-wrapper">
               {% if score >= 75 %}
                 <div class="match-progress-fill high" data-score="{{ score }}"></div>
               {% elif score >= 40 %}
@@ -321,7 +748,7 @@
             </div>
 
             {% if job.company_name %}
-              <p class="text-muted mb-1">{{ job.company_name }}</p>
+              <p class="job-company">{{ job.company_name }}</p>
             {% endif %}
 
             <div class="d-flex flex-wrap gap-2 mb-3">
@@ -348,28 +775,33 @@
 
             <div class="required-skills-preview mb-3">
               {% if job.skills %}
-                <p class="small mb-0">
+                <p class="mb-0">
                   <strong>Skills:</strong> {{ job.skills|truncatechars:60 }}
+                </p>
+              {% else %}
+                <p class="mb-0">
+                  <strong>Skills:</strong> Not listed
                 </p>
               {% endif %}
             </div>
 
             <div class="mt-auto">
-              <p class="text-muted click-hint mb-0">Click to view match details</p>
+              <p class="click-hint mb-0">Click to view match details</p>
             </div>
           </div>
         </div>
       </div>
     {% empty %}
       <div class="col-12">
-        <div class="alert alert-warning mb-0">
+        <div class="empty-state">
           No matching jobs found based on your current skills.
         </div>
       </div>
     {% endfor %}
-    <div class="text-center mt-4 text-muted small">
-      Showing {{ recommended|length }} job{{ recommended|length|pluralize }} based on your filters
-    </div>
+  </div>
+
+  <div class="text-center mt-4 jobs-count">
+    Showing {{ recommended|length }} job{{ recommended|length|pluralize }} based on your filters
   </div>
 </div>
 
@@ -379,8 +811,8 @@
 
     <div class="row g-4 align-items-start">
       <div class="col-12 col-lg-7">
-        <h2 id="modalJobTitle" class="modal-job-title h3 mb-2"></h2>
-        <p id="modalCompanyName" class="text-muted mb-3"></p>
+        <h2 id="modalJobTitle" class="modal-job-title"></h2>
+        <p id="modalCompanyName" class="modal-company-name mb-3"></p>
 
         <div class="row g-3 mb-4">
           <div class="col-6">
@@ -412,13 +844,13 @@
           </div>
         </div>
 
-        <h6 class="fw-semibold">Job Description</h6>
-        <div id="modalDescription" class="text-muted mb-4"></div>
+        <h6 class="section-heading">Job Description</h6>
+        <div id="modalDescription" class="modal-body-copy mb-4"></div>
 
-        <h6 class="fw-semibold">Required Skills</h6>
-        <p id="modalRequiredSkills" class="text-muted mb-0"></p>
+        <h6 class="section-heading">Required Skills</h6>
+        <p id="modalRequiredSkills" class="modal-body-copy mb-0"></p>
 
-        <p class="text-muted small mb-0">
+        <p class="posted-line">
           Posted <span id="modalPostedTime"></span>
         </p>
       </div>
@@ -429,54 +861,59 @@
             <circle
               cx="110"
               cy="110"
-              r="85"
+              r="80"
               stroke="#e9ecef"
-              stroke-width="30"
+              stroke-width="40"
               fill="none"
-            ></circle>
-
+              style="shape-rendering:crispEdges"
+            />
             <circle
               id="progressCircle"
               cx="110"
               cy="110"
-              r="85"
-              stroke="#198754"
-              stroke-width="30"
+              r="80"
+              stroke="#4caf50"
+              stroke-width="40"
               fill="none"
-              stroke-linecap="round"
-              stroke-dasharray="534"
-              stroke-dashoffset="534"
+              stroke-dasharray="502"
+              stroke-dashoffset="502"
               transform="rotate(-90 110 110)"
-            ></circle>
+              style="
+                stroke-linecap:butt;
+                shape-rendering:crispEdges;
+                image-rendering:pixelated;
+                "
+            />
 
             <text
               id="circleScoreText"
               x="110"
-              y="118"
+              y="120"
               text-anchor="middle"
               class="circle-score-text"
             >
-              0%
-            </text>
-          </svg>
+            0%
+           </text>
+
+        </svg>
 
           <p id="circleCaption" class="circle-caption mb-0"></p>
         </div>
 
-        <div class="mb-3">
-          <h6 class="fw-semibold">Matched Skills</h6>
+        <div class="skill-group-box mb-3">
+          <h6 class="section-heading mb-2">Matched Skills</h6>
           <div id="matchedSkillsContainer"></div>
         </div>
 
-        <div class="mb-4">
-          <h6 class="fw-semibold">Missing Skills</h6>
+        <div class="skill-group-box mb-4">
+          <h6 class="section-heading mb-2">Missing Skills</h6>
           <div id="missingSkillsContainer"></div>
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
-          <a id="viewJobBtn" href="#" class="btn btn-primary">View Job</a>
-          <a id="applyBtn" href="#" class="btn btn-outline-success">Apply</a>
-          <a id="mapBtn" href="#" class="btn btn-outline-secondary">See on Map</a>
+          <a id="viewJobBtn" href="#" class="btn">View Job</a>
+          <a id="applyBtn" href="#" class="btn">Apply</a>
+          <a id="mapBtn" href="#" class="btn">See on Map</a>
         </div>
       </div>
     </div>
@@ -488,7 +925,7 @@
   const progressCircle = document.getElementById("progressCircle");
   const circleScoreText = document.getElementById("circleScoreText");
 
-  const radius = 85;
+  const radius = 80;
   const circumference = 2 * Math.PI * radius;
 
   progressCircle.style.strokeDasharray = `${circumference}`;
@@ -504,7 +941,7 @@
       .filter(s => s.length > 0);
 
     if (skills.length === 0) {
-      container.innerHTML = `<span class="text-muted small">None</span>`;
+      container.innerHTML = `<span class="text-muted">None</span>`;
       return;
     }
 
@@ -565,6 +1002,7 @@
     }
 
     document.getElementById("modalPostedTime").textContent = postedText;
+
     const title = card.dataset.title;
     const company = card.dataset.company;
     const description = card.dataset.description;
@@ -572,15 +1010,16 @@
     let circleColor;
 
     if (score >= 75) {
-      circleColor = "#198754";  
+      circleColor = "#4caf50";
     } else if (score >= 40) {
-      circleColor = "#f59f00";   
+      circleColor = "#ff9800";
     } else {
-      circleColor = "#6c757d";   
+      circleColor = "#757575";
     }
 
     progressCircle.setAttribute("stroke", circleColor);
     circleScoreText.style.fill = circleColor;
+
     const requiredSkills = card.dataset.required;
     const matchedSkills = card.dataset.matched;
     const missingSkills = card.dataset.missing;
@@ -590,6 +1029,7 @@
     const salary = card.dataset.salary;
     const viewUrl = card.dataset.viewUrl;
     const applyUrl = card.dataset.applyUrl;
+
     const mapBtn = document.getElementById("mapBtn");
     mapBtn.href = mapUrl;
 
@@ -618,7 +1058,7 @@
     document.body.style.overflow = "hidden";
 
     animateCircle(score);
-}
+  }
 
   function forceCloseJobModal() {
     overlay.classList.remove("show");
@@ -636,11 +1076,71 @@
       forceCloseJobModal();
     }
   });
+
   document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll(".match-progress-fill").forEach(el => {
-    const score = el.dataset.score;
-    el.style.width = score + "%";
+    document.querySelectorAll(".match-progress-fill").forEach(el => {
+      const score = el.dataset.score;
+      el.style.width = score + "%";
+    });
+    initPixelDropdowns();
   });
-});
+
+    function closeAllDropdowns() {
+    document.querySelectorAll("[data-dropdown]").forEach(dropdown => {
+      dropdown.classList.remove("open");
+      const toggle = dropdown.querySelector("[data-dropdown-toggle]");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function initPixelDropdowns() {
+    document.querySelectorAll("[data-dropdown]").forEach(dropdown => {
+      const toggle = dropdown.querySelector("[data-dropdown-toggle]");
+      const hiddenInput = dropdown.querySelector('input[type="hidden"]');
+      const label = dropdown.querySelector("[data-dropdown-label]");
+      const items = dropdown.querySelectorAll(".pixel-dropdown-item");
+
+      if (!toggle || !hiddenInput || !label) return;
+
+      toggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains("open");
+        closeAllDropdowns();
+
+        if (!isOpen) {
+          dropdown.classList.add("open");
+          toggle.setAttribute("aria-expanded", "true");
+        }
+      });
+
+      items.forEach(item => {
+        item.addEventListener("click", function () {
+          const value = item.dataset.value;
+          const text = item.dataset.label;
+
+          hiddenInput.value = value;
+          label.textContent = text;
+
+          items.forEach(i => i.classList.remove("active"));
+          item.classList.add("active");
+
+          dropdown.classList.remove("open");
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+    });
+
+    document.addEventListener("click", function () {
+      closeAllDropdowns();
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeAllDropdowns();
+      }
+    });
+  }
 </script>
 {% endblock %}

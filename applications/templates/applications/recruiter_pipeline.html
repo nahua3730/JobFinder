@@ -2,42 +2,440 @@
 {% block title %}Recruiter Pipeline{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-    <h1 class="h3 mb-0">Applicant Pipeline</h1>
-    <div style="max-width: 320px; width: 100%;">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  .cr-theme {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    color: #333;
+    background-color: #795548;
+    padding: 20px;
+    border: 8px solid #3e2723;
+    border-radius: 8px;
+  }
+
+  .cr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #aad751;
+    border: 6px solid #8cbf3f;
+    padding: 15px;
+    box-shadow: 0px 8px 0px #3e2723;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cr-title {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 2.6rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .cr-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000;
+    border-bottom: 8px solid #000;
+    cursor: pointer;
+    transition: transform 0.1s, border-bottom-width 0.1s;
+  }
+
+  .cr-btn:active {
+    transform: translateY(4px);
+    border-bottom: 4px solid #000;
+  }
+
+  .cr-search {
+    width: 100%;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    padding: 10px 14px;
+    border: 4px solid #333;
+    background-color: #f5f5f5;
+    outline: none;
+  }
+
+  .cr-search:focus {
+    background-color: #fffde7;
+    border-color: #00a8f3;
+  }
+
+  .pipeline-board {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .pipeline-stage {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cr-stage-card {
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .cr-stage-header {
+    font-size: 2rem;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: 6px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cr-stage-body {
+    min-height: 220px;
+    padding: 14px;
+  }
+
+  .cr-stage-body {
+  position: relative;
+}
+
+.cr-stage-body::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 8px;
+
+  background: repeating-linear-gradient(
+    to right,
+    #ffffff 0px,
+    #ffffff 20px,
+    transparent 28px,
+    transparent 56px
+  );
+
+  opacity: 0.9;
+}
+
+  .cr-count {
+    background: #f1f1f1;
+    color: #333;
+    border: 3px solid #333;
+    border-radius: 999px;
+    font-size: 1.2rem;
+    padding: 2px 10px;
+    line-height: 1.2;
+  }
+
+  .lane-applied .cr-stage-header {
+    background-color: #9e9e9e;
+    color: #fff;
+  }
+
+  .lane-applied .cr-stage-body {
+    background-color: #4a4a4a;
+    color: #fff;
+  }
+
+  .lane-review .cr-stage-header {
+    background-color: #00a8f3;
+    color: #fff;
+  }
+
+  .lane-review .cr-stage-body {
+    background-color: #d9f2ff;
+  }
+
+  .lane-interview .cr-stage-header {
+    background-color: #8e44ad;
+    color: #fff;
+  }
+
+  .lane-interview .cr-stage-body {
+    background-color: #ebe1f4;
+  }
+
+  .lane-offer .cr-stage-header {
+    background-color: #4caf50;
+    color: #fff;
+  }
+
+  .lane-offer .cr-stage-body {
+    background-color: #cdeccf;
+  }
+
+  .lane-closed .cr-stage-header {
+    background-color: #e53935;
+    color: #fff;
+  }
+
+  .lane-closed .cr-stage-body {
+    background-color: #f7d6d6;
+  }
+
+  .pipeline-card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 4px solid #333 !important;
+    border-radius: 0 !important;
+    box-shadow: 0px 4px 0px #999;
+    font-family: 'VT323', monospace;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    cursor: grab;
+    line-height: 1.35;
+  }
+
+  .pipeline-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 6px 0px #777;
+  }
+
+  .pipeline-card:active {
+    cursor: grabbing;
+  }
+
+  .pipeline-card.dragging {
+    opacity: 0.55;
+    transform: rotate(1deg);
+  }
+
+  .pipeline-card .fw-semibold {
+    font-size: 2rem;
+    color: #222;
+  }
+
+  .pipeline-card .text-muted,
+  .pipeline-card .small {
+    color: #444 !important;
+    font-size: 1.45rem !important;
+  }
+
+  .pipeline-card .btn {
+    font-family: 'VT323', monospace;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    border: 3px solid #000;
+    border-bottom: 6px solid #000;
+    border-radius: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  .pipeline-card .btn:active {
+    transform: translateY(3px);
+    border-bottom-width: 3px;
+  }
+
+  .candidate-preview {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.25s ease;
+    margin-top: 6px;
+  }
+
+  .pipeline-card:hover .candidate-preview {
+    max-height: 120px;
+    opacity: 1;
+  }
+
+  .pipeline-column.drag-over {
+    outline: 4px dashed #ffeb3b;
+    outline-offset: -6px;
+  }
+
+  .empty-placeholder {
+    font-size: 2rem;
+    opacity: 0.9;
+  }
+
+  .lane-applied .empty-placeholder {
+    color: #fff !important;
+  }
+
+  .cr-summary {
+    font-size: 1.5rem;
+    color: #fff;
+    text-shadow: 2px 2px 0px #333;
+  }
+
+  .search-hidden {
+    display: none !important;
+  }
+
+  mark.pipeline-highlight {
+    background-color: #ffeb3b;
+    color: #000;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .candidate-panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+    z-index: 1040;
+  }
+
+  .candidate-panel-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .candidate-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    max-width: 95vw;
+    height: 100vh;
+    background: #fff8dc;
+    border-left: 8px solid #3e2723;
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    z-index: 1050;
+    padding: 24px;
+    overflow-y: auto;
+    font-family: 'VT323', monospace;
+  }
+
+  .candidate-panel.show {
+    transform: translateX(0);
+  }
+
+  .candidate-panel-header h4 {
+    font-size: 2rem;
+    margin-bottom: 0;
+  }
+
+  .panel-label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  .candidate-panel-section {
+    line-height: 1.5;
+    font-size: 1.45rem;
+  }
+
+  .panel-multiline {
+    white-space: pre-line;
+  }
+
+  @media (max-width: 1200px) {
+    .pipeline-board {
+      flex-wrap: wrap;
+    }
+
+    .pipeline-stage {
+      min-width: calc(50% - 8px);
+      flex: 0 0 calc(50% - 8px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pipeline-stage {
+      min-width: 100%;
+      flex: 0 0 100%;
+    }
+  }
+
+  .pipeline-card.lane-hop {
+  animation: laneHop 0.32s ease;
+}
+
+@keyframes laneHop {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  35% {
+    transform: translate(-4px, -10px) scale(1.03);
+  }
+  70% {
+    transform: translateY(2px) scale(0.99);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+.cr-stage-card,
+.cr-stage-body,
+.pipeline-card,
+.empty-placeholder,
+.cr-stage-card * {
+  border-radius: 0 !important;
+}
+</style>
+
+<div class="container mt-4 cr-theme">
+  <div class="cr-header">
+    <h2 class="cr-title">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      Applicant Pipeline
+    </h2>
+
+    <div class="d-flex align-items-center gap-2 flex-wrap" style="max-width: 420px; width: 100%;">
       <input
         type="text"
         id="pipelineSearch"
-        class="form-control"
+        class="cr-search"
         placeholder="Search applicants..."
       >
     </div>
   </div>
+
   <div class="pipeline-board">
     {% for col_name, apps in columns.items %}
       <div class="pipeline-stage">
-        <div class="card shadow-sm">
-          <div class="card-header fw-semibold d-flex justify-content-between align-items-center
-            {% if col_name == 'Applied' %}pipeline-header-applied{% endif %}
-            {% if col_name == 'Review' %}pipeline-header-review{% endif %}
-            {% if col_name == 'Interview' %}pipeline-header-interview{% endif %}
-            {% if col_name == 'Offer' %}pipeline-header-offer{% endif %}
-            {% if col_name == 'Closed' %}pipeline-header-closed{% endif %}">
+        <div class="cr-stage-card
+          {% if col_name == 'Applied' %}lane-applied{% endif %}
+          {% if col_name == 'Review' %}lane-review{% endif %}
+          {% if col_name == 'Interview' %}lane-interview{% endif %}
+          {% if col_name == 'Offer' %}lane-offer{% endif %}
+          {% if col_name == 'Closed' %}lane-closed{% endif %}">
+          
+          <div class="cr-stage-header">
             <span>{{ col_name }}</span>
-            <span class="badge rounded-pill bg-light text-dark border">{{ apps|length }}</span>
-        </div>
-          <div class="card-body pipeline-column" id="column-{{ col_name|lower }}"
+            <span class="cr-count">{{ apps|length }}</span>
+          </div>
+
+          <div class="cr-stage-body pipeline-column" id="column-{{ col_name|lower }}"
                 {% if col_name == "Applied" %}data-status="applied"{% endif %}
                 {% if col_name == "Review" %}data-status="review"{% endif %}
                 {% if col_name == "Interview" %}data-status="interview"{% endif %}
                 {% if col_name == "Offer" %}data-status="offer"{% endif %}
                 {% if col_name == "Closed" %}data-status="closed"{% endif %}
                 ondragover="handleDragOver(event)"
-                ondrop="handleDrop(event)"
-                style="min-height: 200px;">
+                ondrop="handleDrop(event)">
             {% for app in apps %}
-              <div class="pipeline-card border rounded p-3 mb-3"
+              <div class="pipeline-card p-3 mb-3"
                     draggable="true"
                     data-app-id="{{ app.id }}"
                     data-update-url="{% url 'applications:recruiter_update_application_status_api' app.id %}"
@@ -48,7 +446,7 @@
                     data-profile-url="{% url 'users:profile_detail' app.applicant.username %}"
                     data-headline="{{ app.applicant.seeker_profile.headline|default:''|escapejs }}"
                     data-location="{{ app.applicant.seeker_profile.location|default:''|escapejs }}"
-                    data-commute="{{ app.applicant.seeker_profile.preferred_commute_radius|default:''|escapejs }}"
+                    data-commute="{{ app.applicant.seeker_profile.preferred_commute_radius_miles|default:''|escapejs }}"
                     data-skills="{{ app.applicant.seeker_profile.skills|default:''|escapejs }}"
                     data-education="{{ app.applicant.seeker_profile.education|default:''|escapejs }}"
                     data-work="{{ app.applicant.seeker_profile.work_experience|default:''|escapejs }}"
@@ -67,36 +465,38 @@
                 <div class="text-muted small">Applied {{ app.created_at|timesince }} ago</div>
 
                 <div class="candidate-preview">
-                    {% if app.applicant.seeker_profile.skills %}
-                        <div class="text-muted small">
-                            <strong>Skills:</strong> {{ app.applicant.seeker_profile.skills }}
-                        </div>
-                    {% endif %}
+                  {% if app.applicant.seeker_profile.skills %}
+                    <div class="text-muted small">
+                      <strong>Skills:</strong> {{ app.applicant.seeker_profile.skills }}
+                    </div>
+                  {% endif %}
 
-                    {% if app.applicant.seeker_profile.headline %}
-                        <div class="text-muted small mt-1">
-                            <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
-                        </div>
-                    {% endif %}
+                  {% if app.applicant.seeker_profile.headline %}
+                    <div class="text-muted small mt-1">
+                      <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
+                    </div>
+                  {% endif %}
                 </div>
 
-                <a class="btn btn-sm btn-outline-dark mt-2"
+                <a class="btn btn-sm mt-2"
                    href="{% url 'applications:recruiter_update_application_status' app.id %}">
-                    Move Stage
+                  Move Stage
                 </a>
               </div>
             {% empty %}
-              <div class="text-muted empty-placeholder">No applicants</div>
+              <div class="empty-placeholder">No applicants</div>
             {% endfor %}
           </div>
         </div>
       </div>
     {% endfor %}
   </div>
-  <div class="mt-3 text-muted small" id="pipelineSummary">
+
+  <div class="mt-3 cr-summary" id="pipelineSummary">
     Showing 0 applicants
   </div>
 </div>
+
 <div id="candidatePanelOverlay" class="candidate-panel-overlay" onclick="closeCandidatePanel()"></div>
 
 <div id="candidatePanel" class="candidate-panel">
@@ -110,7 +510,6 @@
 
   <hr>
 
-  <!-- always visible quick preview -->
   <div class="candidate-panel-section">
     <div class="panel-label">Applied for</div>
     <div id="panelJob" class="fw-semibold"></div>
@@ -184,39 +583,40 @@
 
   function clearDragOverStates() {
     document.querySelectorAll(".pipeline-column").forEach(column => {
-    column.classList.remove("drag-over");
+      column.classList.remove("drag-over");
     });
   }
 
   function updateEmptyPlaceholders() {
     document.querySelectorAll(".pipeline-column").forEach(column => {
-    const visibleCards = Array.from(
-      column.querySelectorAll(".pipeline-card")
-    ).filter(card => !card.classList.contains("search-hidden"));
+      const visibleCards = Array.from(
+        column.querySelectorAll(".pipeline-card")
+      ).filter(card => !card.classList.contains("search-hidden"));
 
-    const placeholder = column.querySelector(".empty-placeholder");
+      const placeholder = column.querySelector(".empty-placeholder");
 
-    if (visibleCards.length > 0) {
-      if (placeholder) {
-        placeholder.remove();
+      if (visibleCards.length > 0) {
+        if (placeholder) {
+          placeholder.remove();
+        }
+      } else {
+        if (!placeholder) {
+          const emptyDiv = document.createElement("div");
+          emptyDiv.className = "empty-placeholder";
+          emptyDiv.textContent = "No applicants";
+          column.appendChild(emptyDiv);
+        }
       }
-    } else {
-      if (!placeholder) {
-        const emptyDiv = document.createElement("div");
-        emptyDiv.className = "text-muted empty-placeholder";
-        emptyDiv.textContent = "No applicants";
-        column.appendChild(emptyDiv);
-      }
-    }
-  });
-}
-    function updateColumnCounts() {
-      document.querySelectorAll(".pipeline-column").forEach(column => {
+    });
+  }
+
+  function updateColumnCounts() {
+    document.querySelectorAll(".pipeline-column").forEach(column => {
       const visibleCards = Array.from(
         column.querySelectorAll(".pipeline-card")
       ).filter(card => !card.classList.contains("search-hidden")).length;
 
-      const header = column.closest(".card").querySelector(".badge");
+      const header = column.closest(".cr-stage-card").querySelector(".cr-count");
       if (header) {
         header.textContent = visibleCards;
       }
@@ -240,11 +640,13 @@
       isDraggingCard = false;
     }, 50);
   }
+
   function handleDragLeave(e) {
     clearDragOverStates();
   }
+
   function handleDragOver(e) {
-    e.preventDefault(); 
+    e.preventDefault();
     e.dataTransfer.dropEffect = "move";
     e.currentTarget.classList.add("drag-over");
   }
@@ -266,14 +668,20 @@
     if (!draggedCard || !appId || !newStatus) return;
 
     const csrfToken = getCookie("csrftoken");
-
     const formData = new URLSearchParams();
     formData.append("status", newStatus);
 
     const url = `/recruiter/pipeline/${appId}/status-api/`;
     const oldColumn = draggedCard.parentElement;
+
     dropZone.appendChild(draggedCard);
     draggedCard.classList.remove("dragging");
+
+    draggedCard.classList.add("lane-hop");
+    setTimeout(() => {
+      draggedCard.classList.remove("lane-hop");
+    }, 320);
+
     filterPipeline();
 
     const resp = await fetch(url, {
@@ -287,19 +695,20 @@
 
     if (!resp.ok) {
       oldColumn.appendChild(draggedCard);
-      updateColumnCounts();
-      updateEmptyPlaceholders();
+      filterPipeline();
       alert("Failed to move candidate.");
     }
+
     draggedCard = null;
     draggedAppId = null;
   }
+
   function openCandidatePanel(event, card) {
     if (isDraggingCard) return;
     if (event.target.closest("a") || event.target.closest("button")) return;
 
     const name = card.dataset.name || "—";
-    const username = card.dataset.username || "";
+    const username = card.dataset.username || "—";
     const job = card.dataset.job || "—";
     const applied = card.dataset.applied || "—";
     const headline = card.dataset.headline || "—";
@@ -330,7 +739,7 @@
     document.getElementById("candidatePanel").classList.add("show");
     document.getElementById("candidatePanelOverlay").classList.add("show");
     document.body.style.overflow = "hidden";
-    }
+  }
 
   function closeCandidatePanel() {
     document.getElementById("candidatePanel").classList.remove("show");
@@ -343,59 +752,62 @@
     const button = document.getElementById("panelExpandButton");
 
     if (fullSection.classList.contains("d-none")) {
-        fullSection.classList.remove("d-none");
-        button.textContent = "Hide Full Profile";
+      fullSection.classList.remove("d-none");
+      button.textContent = "Hide Full Profile";
     } else {
-        fullSection.classList.add("d-none");
-        button.textContent = "View Full Profile";
+      fullSection.classList.add("d-none");
+      button.textContent = "View Full Profile";
     }
   }
+
   function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
 
-function highlightText(text, query) {
-  if (!query) return text;
-  const escaped = escapeRegExp(query);
-  const regex = new RegExp(`(${escaped})`, "ig");
-  return text.replace(regex, '<mark class="pipeline-highlight">$1</mark>');
-}
+  function highlightText(text, query) {
+    if (!query) return text;
+    const escaped = escapeRegExp(query);
+    const regex = new RegExp(`(${escaped})`, "ig");
+    return text.replace(regex, '<mark class="pipeline-highlight">$1</mark>');
+  }
 
-function filterPipeline() {
-  const searchInput = document.getElementById("pipelineSearch");
-  const query = searchInput.value.trim().toLowerCase();
+  function filterPipeline() {
+    const searchInput = document.getElementById("pipelineSearch");
+    const query = searchInput.value.trim().toLowerCase();
 
-  document.querySelectorAll(".pipeline-card").forEach(card => {
-    const name = (card.dataset.name || "");
-    const username = (card.dataset.username || "");
-    const job = (card.dataset.job || "");
-    const searchableName = name.toLowerCase();
-    const searchableUsername = username.toLowerCase();
-    const searchableJob = job.toLowerCase();
+    document.querySelectorAll(".pipeline-card").forEach(card => {
+      const name = (card.dataset.name || "");
+      const username = (card.dataset.username || "");
+      const job = (card.dataset.job || "");
 
-    const matches =
-      searchableName.includes(query) ||
-      searchableUsername.includes(query) ||
-      searchableJob.includes(query);
+      const searchableName = name.toLowerCase();
+      const searchableUsername = username.toLowerCase();
+      const searchableJob = job.toLowerCase();
 
-    card.classList.toggle("search-hidden", !matches);
+      const matches =
+        searchableName.includes(query) ||
+        searchableUsername.includes(query) ||
+        searchableJob.includes(query);
 
-    const nameEl = card.querySelector(".applicant-name-text");
-    const jobEl = card.querySelector(".applicant-job-text");
+      card.classList.toggle("search-hidden", !matches);
 
-    if (nameEl) {
-      nameEl.innerHTML = query ? highlightText(name, query) : name;
-    }
+      const nameEl = card.querySelector(".applicant-name-text");
+      const jobEl = card.querySelector(".applicant-job-text");
 
-    if (jobEl) {
-      jobEl.innerHTML = query ? highlightText(job, query) : job;
-    }
-  });
+      if (nameEl) {
+        nameEl.innerHTML = query ? highlightText(name, query) : name;
+      }
+
+      if (jobEl) {
+        jobEl.innerHTML = query ? highlightText(job, query) : job;
+      }
+    });
 
     updateEmptyPlaceholders();
     updateColumnCounts();
     updatePipelineSummary();
   }
+
   function updatePipelineSummary() {
     const allCards = document.querySelectorAll(".pipeline-card").length;
     const visibleCards = Array.from(
@@ -403,14 +815,16 @@ function filterPipeline() {
     ).filter(card => !card.classList.contains("search-hidden")).length;
 
     const summary = document.getElementById("pipelineSummary");
+
     if (visibleCards === 0) {
-    summary.textContent = "No applicants match your search";
+      summary.textContent = "No applicants match your search";
     } else if (visibleCards === allCards) {
       summary.textContent = `Showing ${visibleCards} applicants`;
     } else {
       summary.textContent = `Showing ${visibleCards} of ${allCards} applicants`;
     }
   }
+
   document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("pipelineSearch");
     searchInput.addEventListener("input", filterPipeline);

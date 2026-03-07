@@ -1,98 +1,203 @@
 <!DOCTYPE html>
 <html>
-  {% load static %}
-  <head>
-    <title>{% block title %}GT Job Search{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
+{% load static %}
+<head>
+  <title>{% block title %}GT Job Search{% endblock %}</title>
 
-  <body>
-    <nav class="p-3 navbar navbar-dark bg-dark navbar-expand-lg">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'jobs:home' %}">
-            GT Job Search
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav ms-auto navbar-ml">
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-            {% if not user.is_authenticated or user.is_job_seeker %}
-              <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
-              <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
-            {% endif %}
-            {% if user.is_authenticated and user.is_job_seeker %}
-            <a class="nav-link" href="{% url 'applications:my_applications' %}">My Applications</a>
-            {% endif %}
-            {% if user.is_authenticated %}
-                {% if user.is_recruiter %}
-                    <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
-                    <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
-                    <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
-                    <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
-                {% else %}
-                    <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
-                {% endif %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
-                <div class="vr bg-white mx-2 d-none d-lg-block"></div>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
-                {% if user.is_job_seeker %}
-                  <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
-                {% else %}
-                  <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
-                {% endif %}
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-                <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
-                  {% csrf_token %}
-                </form>
+  <style>
+    body {
+      background: #e7e2cf;
+      font-family: 'VT323', monospace;
+    }
 
-                <a class="nav-link" href="#"
-                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  Logout ({{ user.username }})
-                </a>
-            {% else %}
-                <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-                <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>
-            {% endif %}
-          </div>
+    .pixel-navbar {
+      background: #795548;
+      border-bottom: 8px solid #3e2723;
+      box-shadow: 0px 6px 0px #2b1d1a;
+    }
+
+    .pixel-navbar .navbar-brand {
+      font-size: 2rem;
+      text-transform: uppercase;
+      color: #fff !important;
+      text-shadow: 3px 3px 0px #333;
+      letter-spacing: 1px;
+    }
+
+    .pixel-navbar .nav-link {
+      font-size: 1.35rem;
+      color: #fff !important;
+      text-shadow: 2px 2px 0px #333;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .pixel-navbar .nav-link:hover {
+      color: #f4ffe0 !important;
+    }
+
+    .pixel-navbar .navbar-toggler {
+      border: 4px solid #000;
+      border-radius: 0;
+      background: #fff;
+    }
+
+    .pixel-footer {
+      margin-top: 60px;
+      background: #795548;
+      border-top: 8px solid #3e2723;
+      box-shadow: inset 0px 6px 0px #5d4037;
+      padding: 30px 0;
+      color: #fff;
+    }
+
+    .pixel-footer b {
+      font-size: 1.4rem;
+      text-shadow: 2px 2px 0px #333;
+    }
+
+    .pixel-footer p {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .pixel-footer hr {
+      border-top: 4px solid #fff;
+      width: 80px;
+      opacity: 1;
+    }
+
+    .alert {
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+      border-radius: 0;
+      border: 4px solid #333;
+      box-shadow: 0px 4px 0px #b8a98e;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg pixel-navbar">
+    <div class="container">
+
+      <a class="navbar-brand" href="{% url 'jobs:home' %}">
+        GT Job Search
+      </a>
+
+      <button class="navbar-toggler" type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNavAltMarkup">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+        <div class="navbar-nav ms-auto">
+
+          {% if not user.is_authenticated or user.is_job_seeker %}
+            <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
+            <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
+          {% endif %}
+
+          {% if user.is_authenticated and user.is_job_seeker %}
+            <a class="nav-link" href="{% url 'applications:my_applications' %}">
+              My Applications
+            </a>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+
+              {% if user.is_recruiter %}
+                <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
+                <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
+                <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
+                <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
+              {% endif %}
+
+              <div class="vr bg-white mx-2 d-none d-lg-block"></div>
+
+              {% if user.is_job_seeker %}
+                <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
+              {% endif %}
+
+              <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
+                {% csrf_token %}
+              </form>
+
+              <a class="nav-link"
+                 href="#"
+                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout ({{ user.username }})
+              </a>
+
+          {% else %}
+
+              <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+              <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>
+
+          {% endif %}
+
         </div>
       </div>
-    </nav>
-
-    <div class="container mt-4">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-
-      {% block content %}
-      {% endblock content %}
     </div>
-    <section class="p-3 ms-footer d-none d-md-block mt-5">
-      <div class="container">
-        <div class="row mt-3 text-white">
-          <div class="col-md-6 mx-auto mb-4">
-            <b>GT JOB SEARCH</b>
-            <hr />
-            <p>Bridging the gap between early-career professionals and recruiters.</p>
-          </div>
+  </nav>
 
-          <div class="col-md-3 mx-auto mb-4">
-            <b>CONTACT</b>
-            <hr />
-            <p><i class="fas fa-envelope me-2"></i> help@gtjobsearch.com</p>
-          </div>
+  <div class="container mt-4">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
         </div>
+      {% endfor %}
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+
+  </div>
+
+  <section class="pixel-footer d-none d-md-block">
+    <div class="container">
+
+      <div class="row text-white">
+
+        <div class="col-md-6 mx-auto mb-4">
+          <b>GT JOB SEARCH</b>
+          <hr />
+          <p>
+            Bridging the gap between early-career professionals and recruiters.
+          </p>
+        </div>
+
+        <div class="col-md-3 mx-auto mb-4">
+          <b>CONTACT</b>
+          <hr />
+          <p><i class="fas fa-envelope me-2"></i> help@gtjobsearch.com</p>
+        </div>
+
       </div>
-    </section>
-  </body>
+
+    </div>
+  </section>
+
+</body>
 </html>
