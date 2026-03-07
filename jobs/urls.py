@@ -14,4 +14,5 @@ urlpatterns = [
     path("recommended/", views.recommended_jobs, name="recommended_jobs"),
     path("map/", views.job_map, name="job_map"),
     path("map-data/", views.job_map_data, name="job_map_data"),
+    path('<int:job_id>/applications/', views.job_applications, name='job_applications'),
 ]

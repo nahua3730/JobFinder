@@ -2,14 +2,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models import Prefetch
 from jobs.models import JobPosting
 from .models import Application
 from .forms import ApplicationForm, ApplicationStatusForm
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
-from .models import Application
-from .forms import ApplicationStatusForm
+
 def index(request):
     return render(request, "applications/index.html")
 

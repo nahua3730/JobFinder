@@ -8,6 +8,18 @@ class JobPosting(models.Model):
     """
     User Story 10: Recruiters post and edit job roles.
     """
+    class Status(models.TextChoices):
+        PENDING = 'PENDING', 'Pending Review'
+        APPROVED = 'APPROVED', 'Approved'
+        SPAM = 'SPAM', 'Spam / Rejected'
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.APPROVED,
+        help_text="Moderation status of the job posting"
+    )
+
     recruiter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='job_posts')
     title = models.CharField(max_length=255)
     description = models.TextField()
