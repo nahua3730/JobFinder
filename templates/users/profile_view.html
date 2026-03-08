@@ -2,100 +2,96 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
+<div class="arcade-page">
 
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h3 mb-0">My Profile</h1>
-
-        {% if is_owner %}
-          <div class="d-flex gap-2">
-            <a class="btn btn-dark btn-sm" href="{% url 'users:profile_edit' %}">
-              Edit Profile
-            </a>
-
-            <a class="btn btn-outline-secondary btn-sm" href="{% url 'users:privacy_settings' %}">
-              Privacy Settings
-            </a>
-          </div>
-        {% endif %}
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1 class="arcade-title">MY PROFILE</h1>
+        <p class="arcade-subtitle">Let recruiters learn about you lane by lane</p>
       </div>
 
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-
-          {# ---------- HARD GUARD: profile might be None ---------- #}
-          {% if not profile %}
-            <p class="text-muted mb-0">
-              Profile not found. If you’re a recruiter, use your recruiter profile page.
-            </p>
-
-          {% else %}
-
-            {# ---------- Privacy guard (only evaluate if profile exists) ---------- #}
-            {% if not is_owner and profile.privacy_enabled %}
-              <p class="text-muted mb-0">This profile is hidden.</p>
-            {% else %}
-
-              <p class="mb-2">
-                <b>Name:</b><br>
-                {{ profile.user.get_full_name|default:profile.user.username }}
-              </p>
-              <hr>
-
-              {% if is_owner or profile.show_headline %}
-                <p class="mb-2">
-                  <b>Headline:</b><br>
-                  {{ profile.headline|default:"—" }}
-                </p>
-                <hr>
-              {% endif %}
-
-              {% if is_owner or profile.show_skills %}
-                <p class="mb-2">
-                  <b>Skills:</b><br>
-                  {{ profile.skills|default:"—" }}
-                </p>
-                <hr>
-              {% endif %}
-
-              {% if is_owner or profile.show_education %}
-                <p class="mb-2">
-                  <b>Education:</b><br>
-                  {{ profile.education|default:"—"|linebreaks }}
-                </p>
-                <hr>
-              {% endif %}
-
-              {% if is_owner or profile.show_work_experience %}
-                <p class="mb-2">
-                  <b>Work Experience:</b><br>
-                  {{ profile.work_experience|default:"—"|linebreaks }}
-                </p>
-                <hr>
-              {% endif %}
-
-              {% if is_owner or profile.show_links %}
-                <p class="mb-0">
-                  <b>Links:</b><br>
-                  {{ profile.links|default:"—" }}
-                </p>
-              {% endif %}
-
-            {% endif %}
-          {% endif %}
-
+      {% if is_owner %}
+        <div class="arcade-actions">
+          <a class="btn arcade-btn arcade-btn-blue" href="{% url 'users:profile_edit' %}">
+            Edit Profile
+          </a>
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:privacy_settings' %}">
+            Privacy
+          </a>
         </div>
-      </div>
+      {% endif %}
+    </div>
 
-      <div class="d-flex justify-content-end mt-3">
-        <a class="btn btn-outline-secondary" href="{% url 'jobs:home' %}">
-          Back to Jobs
-        </a>
-      </div>
+    <div class="arcade-panel">
 
+      {% if not profile %}
+        <div class="arcade-value">
+          Profile not found. If you’re a recruiter, use your recruiter profile page.
+        </div>
+
+      {% else %}
+        {% if not is_owner and profile.privacy_enabled %}
+          <div class="arcade-value">This profile is hidden.</div>
+        {% else %}
+
+          <div class="arcade-grid">
+            <div class="arcade-col-12">
+              <div class="arcade-label">Name</div>
+              <div class="arcade-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+            </div>
+
+            {% if is_owner or profile.show_headline %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Headline</div>
+                <div class="arcade-value">{{ profile.headline|default:"—" }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_skills %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Skills</div>
+                <div class="arcade-value">{{ profile.skills|default:"—" }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_education %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Education</div>
+                <div class="arcade-value">{{ profile.education|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_work_experience %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Work Experience</div>
+                <div class="arcade-value">{{ profile.work_experience|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_links %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Links</div>
+                <div class="arcade-value">{{ profile.links|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="arcade-actions justify-content-end">
+      <a class="btn arcade-btn arcade-btn-gray" href="{% url 'jobs:home' %}">
+        Back to Jobs
+      </a>
     </div>
   </div>
+
 </div>
 {% endblock %}

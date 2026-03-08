@@ -4,86 +4,87 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
+<div class="arcade-page">
 
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h3 mb-0">Edit Profile</h1>
-        <a class="btn btn-outline-secondary btn-sm" href="{% url 'users:profile_view' %}">Back</a>
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1 class="arcade-title">EDIT PROFILE</h1>
+        <p class="arcade-subtitle">Update your player card for better recruiter matching</p>
       </div>
 
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-
-          <form method="post" novalidate>
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger">
-                {{ form.non_field_errors }}
-              </div>
-            {% endif %}
-
-            <div class="mb-3">
-              <label class="form-label" for="{{ form.headline.id_for_label }}">Headline</label>
-              {{ form.headline }}
-              {% for error in form.headline.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="{{ form.skills.id_for_label }}">Skills</label>
-              {{ form.skills }}
-              <div class="form-text">Comma-separated (e.g., Python, Java, SQL)</div>
-              {% for error in form.skills.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="{{ form.education.id_for_label }}">Education</label>
-              {{ form.education }}
-              {% for error in form.education.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
-              {{ form.work_experience }}
-              {% for error in form.work_experience.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="{{ form.links.id_for_label }}">Links</label>
-              {{ form.links }}
-              <div class="form-text">LinkedIn / GitHub / portfolio (one per line)</div>
-              {% for error in form.links.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <hr class="my-4" />
-
-            <div class="d-flex gap-2 justify-content-end">
-              <a class="btn btn-outline-secondary" href="{% url 'users:profile_view' %}">Cancel</a>
-              <button type="submit" class="btn btn-dark">Save changes</button>
-            </div>
-
-          </form>
-
-        </div>
+      <div class="arcade-actions">
+        <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:profile_view' %}">Back</a>
       </div>
-
-      <p class="text-muted small mt-3 mb-0">
-        Tip: Keep your headline short and skills specific for better matching.
-      </p>
-
     </div>
+
+    <div class="arcade-panel">
+      <form method="post" novalidate class="arcade-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="arcade-grid">
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.headline.id_for_label }}">Headline</label>
+            {{ form.headline }}
+            {% for error in form.headline.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.skills.id_for_label }}">Skills</label>
+            {{ form.skills }}
+            <div class="arcade-help">Comma-separated (e.g. Python, Java, SQL)</div>
+            {% for error in form.skills.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.education.id_for_label }}">Education</label>
+            {{ form.education }}
+            {% for error in form.education.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
+            {{ form.work_experience }}
+            {% for error in form.work_experience.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.links.id_for_label }}">Links</label>
+            {{ form.links }}
+            <div class="arcade-help">LinkedIn / GitHub / portfolio (one per line)</div>
+            {% for error in form.links.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <hr class="arcade-divider">
+
+        <div class="arcade-actions justify-content-end">
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:profile_view' %}">Cancel</a>
+          <button type="submit" class="btn arcade-btn arcade-btn-blue">Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    <p class="arcade-meta mb-0">
+      Tip: Keep your headline short and your skills specific for better matching.
+    </p>
   </div>
+
 </div>
 {% endblock %}
