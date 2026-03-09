@@ -63,7 +63,21 @@
               {% for s in searches %}
                 <tr>
                   <td>{{ s.name|default:"Saved Search" }}</td>
-                  <td>{{ s.filters }}</td>
+                  <td>
+                    {% if s.filters.query or s.filters.location or s.filters.has_projects %}
+                      {% if s.filters.query %}
+                        <div>Query: {{ s.filters.query }}</div>
+                      {% endif %}
+                      {% if s.filters.location %}
+                        <div>Location: {{ s.filters.location }}</div>
+                      {% endif %}
+                      {% if s.filters.has_projects %}
+                        <div>Has projects</div>
+                      {% endif %}
+                      {% else %}
+                        <span class="text-muted">No filters</span>
+                    {% endif %}
+                  </td>
                   <td>{{ s.last_checked_at|default:"never" }}</td>
                   <td>
                     <div class="arcade-actions">
