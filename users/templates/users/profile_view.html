@@ -4,225 +4,15 @@
 {% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<div class="arcade-page">
 
-<style>
-  .cr-theme {
-    font-family: 'VT323', monospace;
-    font-size: 1.4rem;
-    color: #333;
-    background-color: #795548;
-    padding: 20px;
-    border: 8px solid #3e2723;
-    border-radius: 0;
-  }
-
-  .cr-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-    background-color: #aad751;
-    border: 6px solid #8cbf3f;
-    padding: 15px;
-    box-shadow: 0px 8px 0px #3e2723;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .cr-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .cr-title {
-    text-transform: uppercase;
-    color: #fff;
-    text-shadow: 3px 3px 0px #333;
-    font-size: 2.6rem;
-    margin: 0;
-    line-height: 1;
-  }
-
-  .cr-subtitle {
-    color: #f4ffe0;
-    font-size: 1.4rem;
-    margin: 4px 0 0 0;
-    text-shadow: 2px 2px 0px #5f7f2e;
-  }
-
-  .cr-btn {
-    display: inline-block;
-    padding: 8px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #000;
-    background-color: #fff;
-    border: 4px solid #000 !important;
-    border-bottom: 8px solid #000 !important;
-    border-radius: 0 !important;
-    cursor: pointer;
-    transition: transform 0.1s, border-bottom-width 0.1s;
-    box-shadow: none !important;
-  }
-
-  .cr-btn:hover {
-    color: #000;
-    transform: translateY(-2px);
-  }
-
-  .cr-btn:active {
-    transform: translateY(4px);
-    border-bottom-width: 4px !important;
-  }
-
-  .pixel-panel {
-    background: #fff8dc;
-    border: 6px solid #333;
-    border-radius: 0;
-    box-shadow: 0px 6px 0px #3e2723;
-  }
-
-  .pixel-panel .card-body {
-    padding: 24px;
-  }
-
-  .profile-name-box {
-    background: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 4px 0px #b8a98e;
-    padding: 14px 16px;
-    margin-bottom: 18px;
-  }
-
-  .profile-name-label {
-    font-size: 1.15rem;
-    text-transform: uppercase;
-    color: #666;
-    margin-bottom: 0.25rem;
-    line-height: 1;
-  }
-
-  .profile-name-value {
-    font-size: 2rem;
-    color: #222;
-    line-height: 1;
-    text-transform: uppercase;
-    margin: 0;
-  }
-
-  .profile-section {
-    background: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 4px 0px #b8a98e;
-    padding: 14px 16px;
-    margin-bottom: 16px;
-  }
-
-  .profile-section:last-child {
-    margin-bottom: 0;
-  }
-
-  .profile-section-title {
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    color: #222;
-    margin-bottom: 0.45rem;
-    line-height: 1;
-  }
-
-  .profile-section-body {
-    font-size: 1.3rem;
-    color: #444;
-    line-height: 1.25;
-    margin-bottom: 0;
-  }
-
-  .profile-section-body p {
-    margin-bottom: 0.5rem;
-  }
-
-  .profile-section-body p:last-child {
-    margin-bottom: 0;
-  }
-
-  .profile-empty {
-    background: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 4px 0px #b8a98e;
-    padding: 16px;
-    font-size: 1.35rem;
-    color: #444;
-  }
-
-  .profile-hidden {
-    background: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 4px 0px #b8a98e;
-    padding: 16px;
-    font-size: 1.35rem;
-    color: #444;
-  }
-
-  .profile-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .bottom-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 18px;
-  }
-
-  @media (max-width: 768px) {
-    .cr-title {
-      font-size: 2.1rem;
-    }
-
-    .cr-subtitle {
-      font-size: 1.2rem;
-    }
-
-    .pixel-panel .card-body {
-      padding: 18px;
-    }
-
-    .profile-name-value {
-      font-size: 1.7rem;
-    }
-  }
-</style>
-
-<div class="container py-4 cr-theme">
-  <div class="cr-header">
-    <div class="cr-title-wrap">
-      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-      </svg>
-
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
       <div>
-        <h1 class="cr-title">
-          {% if is_owner %}
-            My Profile
-          {% else %}
-            Candidate Profile
-          {% endif %}
+        <h1 class="arcade-title">
+          {% if is_owner %}MY PROFILE{% else %}CANDIDATE PROFILE{% endif %}
         </h1>
-        <p class="cr-subtitle">
+        <p class="arcade-subtitle">
           {% if is_owner %}
             Manage and preview your public-facing candidate profile
           {% else %}
@@ -230,134 +20,120 @@
           {% endif %}
         </p>
       </div>
+
+      {% if is_owner %}
+        <div class="arcade-actions">
+          <a class="btn arcade-btn arcade-btn-blue" href="{% url 'users:profile_edit' %}">
+            Edit Profile
+          </a>
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:privacy_settings' %}">
+            Privacy Settings
+          </a>
+        </div>
+      {% endif %}
     </div>
 
-    {% if is_owner %}
-      <div class="profile-actions">
-        <a class="cr-btn" href="{% url 'users:profile_edit' %}">
-          Edit Profile
-        </a>
+    <div class="arcade-panel">
 
-        <a class="cr-btn" href="{% url 'users:privacy_settings' %}">
-          Privacy Settings
-        </a>
-      </div>
-    {% endif %}
-  </div>
+      {% if not profile %}
+        <div class="arcade-value">
+          Profile not found. If you’re a recruiter, use your recruiter profile page.
+        </div>
 
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card pixel-panel">
-        <div class="card-body">
+      {% else %}
+        {% if not is_owner and profile.privacy_enabled %}
+          <div class="arcade-value">This profile is hidden.</div>
+        {% else %}
 
-          {% if not profile %}
-            <div class="profile-empty">
-              Profile not found. If you’re a recruiter, use your recruiter profile page.
+          <div class="arcade-grid">
+            <div class="arcade-col-12">
+              <div class="arcade-label">Name</div>
+              <div class="arcade-value">
+                {{ profile.user.get_full_name|default:profile.user.username }}
+              </div>
             </div>
 
-          {% else %}
-
-            {% if not is_owner and profile.privacy_enabled %}
-              <div class="profile-hidden">
-                This profile is hidden.
+            {% if is_owner or profile.show_headline %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Headline</div>
+                <div class="arcade-value">{{ profile.headline|default:"—" }}</div>
               </div>
-            {% else %}
-
-              <div class="profile-name-box">
-                <div class="profile-name-label">Name</div>
-                <p class="profile-name-value">
-                  {{ profile.user.get_full_name|default:profile.user.username }}
-                </p>
-              </div>
-
-              {% if is_owner or profile.show_headline %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Headline</div>
-                  <div class="profile-section-body">
-                    {{ profile.headline|default:"—" }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_location %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Location</div>
-                  <div class="profile-section-body">
-                    {{ profile.location|default:"—" }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_commute_radius %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Preferred Commute Radius</div>
-                  <div class="profile-section-body">
-                    {% if profile.preferred_commute_radius_miles %}
-                      {{ profile.preferred_commute_radius_miles }} miles
-                    {% else %}
-                      —
-                    {% endif %}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_skills %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Skills</div>
-                  <div class="profile-section-body">
-                    {{ profile.skills|default:"—" }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_education %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Education</div>
-                  <div class="profile-section-body">
-                    {{ profile.education|default:"—"|linebreaks }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_work_experience %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Work Experience</div>
-                  <div class="profile-section-body">
-                    {{ profile.work_experience|default:"—"|linebreaks }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_projects %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Projects</div>
-                  <div class="profile-section-body">
-                    {{ profile.projects|default:"—"|linebreaks }}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if is_owner or profile.show_links %}
-                <div class="profile-section">
-                  <div class="profile-section-title">Links</div>
-                  <div class="profile-section-body">
-                    {{ profile.links|default:"—"|linebreaks }}
-                  </div>
-                </div>
-              {% endif %}
-
             {% endif %}
-          {% endif %}
 
-        </div>
-      </div>
+            {% if is_owner or profile.show_location %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Location</div>
+                <div class="arcade-value">{{ profile.location|default:"—" }}</div>
+              </div>
+            {% endif %}
 
-      <div class="bottom-actions">
-        <a class="cr-btn" href="{% url 'jobs:home' %}">
-          Back to Jobs
-        </a>
-      </div>
+            {% if is_owner or profile.show_commute_radius %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Preferred Commute Radius</div>
+                <div class="arcade-value">
+                  {% if profile.preferred_commute_radius_miles %}
+                    {{ profile.preferred_commute_radius_miles }} miles
+                  {% else %}
+                    —
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_skills %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Skills</div>
+                <div class="arcade-value">{{ profile.skills|default:"—" }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_education %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Education</div>
+                <div class="arcade-value">{{ profile.education|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_work_experience %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Work Experience</div>
+                <div class="arcade-value">{{ profile.work_experience|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_projects %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Projects</div>
+                <div class="arcade-value">{{ profile.projects|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+
+            {% if is_owner or profile.show_links %}
+              <div class="arcade-col-12">
+                <hr class="arcade-divider">
+                <div class="arcade-label">Links</div>
+                <div class="arcade-value">{{ profile.links|default:"—"|linebreaks }}</div>
+              </div>
+            {% endif %}
+          </div>
+
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="arcade-actions justify-content-end">
+      <a class="btn arcade-btn arcade-btn-gray" href="{% url 'jobs:home' %}">
+        Back to Jobs
+      </a>
     </div>
   </div>
+
 </div>
 {% endblock %}

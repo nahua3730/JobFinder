@@ -1,13 +1,21 @@
-<<<<<<< HEAD
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from jobs.models import JobPosting
-from .models import Application
-from .forms import ApplicationForm, ApplicationStatusForm
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
+from django.utils import timezone
+from django.db.models import Q
+
+from jobs.models import JobPosting
+from users.models import JobSeekerProfile
+from .models import (
+    Application,
+    SavedCandidateSearch,
+    SavedSearchSeenCandidate,
+    RecruiterNotification,
+)
+from .forms import ApplicationForm, ApplicationStatusForm
+
 
 def index(request):
     return render(request, "applications/index.html")
@@ -37,7 +45,12 @@ def apply_to_job(request, job_id):
     else:
         form = ApplicationForm(instance=existing)
 
-    return render(request, "applications/apply.html", {"job": job, "form": form, "application": existing})
+    return render(request, "applications/apply.html", {
+        "job": job,
+        "form": form,
+        "application": existing,
+    })
+
 
 @login_required
 def my_applications(request):
@@ -68,7 +81,11 @@ def update_application_status(request, app_id):
     else:
         form = ApplicationStatusForm(instance=app)
 
-    return render(request, "applications/update_status.html", {"application": app, "form": form})
+    return render(request, "applications/update_status.html", {
+        "application": app,
+        "form": form,
+    })
+
 
 @login_required
 def recruiter_pipeline(request):
@@ -92,6 +109,7 @@ def recruiter_pipeline(request):
 
     return render(request, "applications/recruiter_pipeline.html", {"columns": columns})
 
+
 @login_required
 def recruiter_update_application_status(request, app_id):
     if not getattr(request.user, "is_recruiter", False):
@@ -108,7 +126,11 @@ def recruiter_update_application_status(request, app_id):
     else:
         form = ApplicationStatusForm(instance=app)
 
-    return render(request, "applications/recruiter_update_status.html", {"application": app, "form": form})
+    return render(request, "applications/recruiter_update_status.html", {
+        "application": app,
+        "form": form,
+    })
+
 
 @require_POST
 @login_required
@@ -126,19 +148,11 @@ def recruiter_update_application_status_api(request, app_id):
     app.status = new_status
     app.save(update_fields=["status", "updated_at"])
     return JsonResponse({"ok": True})
-=======
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from django.db.models import Q
-
-from users.models import JobSeekerProfile
-from .models import SavedCandidateSearch, SavedSearchSeenCandidate, RecruiterNotification
 
 
 def _apply_candidate_filters(filters):
     """
-    Reuse your story 11 logic + enforce privacy.
+    Reuse candidate search logic + enforce privacy.
     filters: dict with keys query/location/has_projects
     """
     query = (filters.get("query") or "").strip()
@@ -147,7 +161,7 @@ def _apply_candidate_filters(filters):
 
     candidates = JobSeekerProfile.objects.filter(
         user__is_job_seeker=True,
-        privacy_enabled=False,  # IMPORTANT: hide private profiles
+        privacy_enabled=False,
     )
 
     if query:
@@ -168,15 +182,29 @@ def _apply_candidate_filters(filters):
     return candidates
 
 
+def _filters_to_querystring(filters):
+    parts = []
+    if filters.get("query"):
+        parts.append(f'query={filters["query"]}')
+    if filters.get("location"):
+        parts.append(f'location={filters["location"]}')
+    if filters.get("has_projects"):
+        parts.append("has_projects=on")
+    return "&".join(parts)
+
+
 def _refresh_saved_search_notifications(recruiter):
     """
     On-demand notification generation:
     - For each active saved search, re-run query
     - Find candidates not seen before
-    - Create ONE notification with the count
+    - Create one notification with the count
     - Mark candidates as seen
     """
-    saved_searches = SavedCandidateSearch.objects.filter(recruiter=recruiter, is_active=True)
+    saved_searches = SavedCandidateSearch.objects.filter(
+        recruiter=recruiter,
+        is_active=True
+    )
 
     for ss in saved_searches:
         candidates_qs = _apply_candidate_filters(ss.filters).select_related("user")
@@ -184,13 +212,13 @@ def _refresh_saved_search_notifications(recruiter):
         new_candidate_users = []
         for prof in candidates_qs:
             exists = SavedSearchSeenCandidate.objects.filter(
-                saved_search=ss, candidate_user=prof.user
+                saved_search=ss,
+                candidate_user=prof.user
             ).exists()
             if not exists:
                 new_candidate_users.append(prof.user)
 
         if new_candidate_users:
-            # create notification
             count = len(new_candidate_users)
             title = f'New matches for "{ss.name or "Saved Search"}"'
             body = f"{count} new candidate(s) match your saved search."
@@ -203,26 +231,16 @@ def _refresh_saved_search_notifications(recruiter):
                 url=url,
             )
 
-            # mark as seen
             SavedSearchSeenCandidate.objects.bulk_create(
-                [SavedSearchSeenCandidate(saved_search=ss, candidate_user=u) for u in new_candidate_users],
+                [
+                    SavedSearchSeenCandidate(saved_search=ss, candidate_user=u)
+                    for u in new_candidate_users
+                ],
                 ignore_conflicts=True,
             )
 
         ss.last_checked_at = timezone.now()
         ss.save(update_fields=["last_checked_at"])
-
-
-def _filters_to_querystring(filters):
-    # minimal safe building (no imports needed)
-    parts = []
-    if filters.get("query"):
-        parts.append(f'query={filters["query"]}')
-    if filters.get("location"):
-        parts.append(f'location={filters["location"]}')
-    if filters.get("has_projects"):
-        parts.append("has_projects=on")
-    return "&".join(parts)
 
 
 @login_required
@@ -249,10 +267,12 @@ def saved_searches(request):
         )
         return redirect("applications:saved_searches")
 
-    # Generate notifications when recruiter visits saved searches (on-demand)
     _refresh_saved_search_notifications(request.user)
 
-    searches = SavedCandidateSearch.objects.filter(recruiter=request.user).order_by("-created_at")
+    searches = SavedCandidateSearch.objects.filter(
+        recruiter=request.user
+    ).order_by("-created_at")
+
     return render(request, "applications/saved_searches.html", {"searches": searches})
 
 
@@ -264,7 +284,10 @@ def run_saved_search(request, search_id):
     ss = get_object_or_404(SavedCandidateSearch, id=search_id, recruiter=request.user)
     qs = _apply_candidate_filters(ss.filters)
 
-    return render(request, "applications/run_saved_search.html", {"search": ss, "candidates": qs})
+    return render(request, "applications/run_saved_search.html", {
+        "search": ss,
+        "candidates": qs,
+    })
 
 
 @login_required
@@ -282,15 +305,15 @@ def notifications(request):
     if not request.user.is_recruiter:
         return redirect("jobs:home")
 
-    # refresh on open (on-demand)
     _refresh_saved_search_notifications(request.user)
 
     notes = RecruiterNotification.objects.filter(user=request.user).order_by("-created_at")
 
     if request.method == "POST":
-        # mark all read
-        RecruiterNotification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        RecruiterNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).update(is_read=True)
         return redirect("applications:notifications")
 
     return render(request, "applications/notifications.html", {"notifications": notes})
->>>>>>> origin/userstory15n16

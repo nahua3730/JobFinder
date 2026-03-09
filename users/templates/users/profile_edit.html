@@ -4,366 +4,161 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<div class="arcade-page">
 
-<style>
-  .cr-theme {
-    font-family: 'VT323', monospace;
-    font-size: 1.4rem;
-    color: #333;
-    background-color: #795548;
-    padding: 20px;
-    border: 8px solid #3e2723;
-    border-radius: 0;
-  }
-
-  .cr-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-    background-color: #aad751;
-    border: 6px solid #8cbf3f;
-    padding: 15px;
-    box-shadow: 0px 8px 0px #3e2723;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .cr-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .cr-title {
-    text-transform: uppercase;
-    color: #fff;
-    text-shadow: 3px 3px 0px #333;
-    font-size: 2.6rem;
-    margin: 0;
-    line-height: 1;
-  }
-
-  .cr-subtitle {
-    color: #f4ffe0;
-    font-size: 1.4rem;
-    margin: 4px 0 0 0;
-    text-shadow: 2px 2px 0px #5f7f2e;
-  }
-
-  .cr-btn {
-    display: inline-block;
-    padding: 8px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #000;
-    background-color: #fff;
-    border: 4px solid #000 !important;
-    border-bottom: 8px solid #000 !important;
-    border-radius: 0 !important;
-    cursor: pointer;
-    transition: transform 0.1s, border-bottom-width 0.1s;
-    box-shadow: none !important;
-  }
-
-  .cr-btn:hover {
-    color: #000;
-    transform: translateY(-2px);
-  }
-
-  .cr-btn:active {
-    transform: translateY(4px);
-    border-bottom-width: 4px !important;
-  }
-
-  .pixel-panel {
-    background: #fff8dc;
-    border: 6px solid #333;
-    border-radius: 0;
-    box-shadow: 0px 6px 0px #3e2723;
-  }
-
-  .pixel-panel .card-body {
-    padding: 24px;
-  }
-
-  .form-section-title {
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    color: #222;
-    margin-bottom: 0.85rem;
-    letter-spacing: 0.02em;
-  }
-
-  .pixel-form-group {
-    margin-bottom: 18px;
-  }
-
-  .pixel-form-label {
-    display: block;
-    font-size: 1.35rem;
-    color: #222;
-    margin-bottom: 6px;
-  }
-
-  .pixel-form-text {
-    font-size: 1.12rem;
-    color: #666 !important;
-    margin-top: 6px;
-    line-height: 1.15;
-  }
-
-  .pixel-error {
-    font-size: 1.1rem;
-    color: #b3261e;
-    margin-top: 4px;
-  }
-
-  .pixel-alert {
-    background: #fff;
-    border: 4px solid #333;
-    border-radius: 0;
-    color: #222;
-    box-shadow: 0px 4px 0px #b8a98e;
-    font-size: 1.25rem;
-    margin-bottom: 18px;
-  }
-
-  .pixel-divider {
-    border: 0;
-    border-top: 4px solid #333;
-    opacity: 1;
-    margin: 1.25rem 0;
-  }
-
-  .tip-text {
-    font-size: 1.2rem;
-    color: #f4ffe0 !important;
-    text-shadow: 2px 2px 0px #333;
-    margin-top: 16px;
-  }
-
-  .pixel-panel input,
-  .pixel-panel textarea,
-  .pixel-panel select {
-    width: 100%;
-    font-family: 'VT323', monospace !important;
-    font-size: 1.3rem !important;
-    color: #222 !important;
-    background: #fff !important;
-    border: 4px solid #333 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    padding: 10px 12px !important;
-  }
-
-  .pixel-panel textarea {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  .pixel-panel input:focus,
-  .pixel-panel textarea:focus,
-  .pixel-panel select:focus {
-    outline: none !important;
-    border-color: #00a8f3 !important;
-    box-shadow: none !important;
-    background: #fffef2 !important;
-  }
-
-  .action-row {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-
-  @media (max-width: 768px) {
-    .cr-title {
-      font-size: 2.1rem;
-    }
-
-    .cr-subtitle {
-      font-size: 1.2rem;
-    }
-
-    .pixel-panel .card-body {
-      padding: 18px;
-    }
-  }
-</style>
-
-<div class="container py-4 cr-theme">
-  <div class="cr-header">
-    <div class="cr-title-wrap">
-      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-      </svg>
-
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
       <div>
-        <h1 class="cr-title">Edit Profile</h1>
-        <p class="cr-subtitle">Update the information recruiters can use to find you</p>
+        <h1 class="arcade-title">EDIT PROFILE</h1>
+        <p class="arcade-subtitle">Update your player card for better recruiter matching</p>
+      </div>
+
+      <div class="arcade-actions">
+        <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:profile_view' %}">
+          Back
+        </a>
       </div>
     </div>
 
-    <a class="cr-btn" href="{% url 'users:profile_view' %}">Back</a>
-  </div>
+    <div class="arcade-panel">
+      <form method="post" novalidate class="arcade-form">
+        {% csrf_token %}
 
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-10 col-lg-8">
-      <div class="card pixel-panel">
-        <div class="card-body">
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
 
-          <form method="post" novalidate>
-            {% csrf_token %}
+        <h2 class="arcade-section-title">PROFILE BASICS</h2>
 
-            {% if form.non_field_errors %}
-              <div class="alert pixel-alert">
-                {{ form.non_field_errors }}
-              </div>
-            {% endif %}
+        <div class="arcade-grid">
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.headline.id_for_label }}">Headline</label>
+            {{ form.headline }}
+            {% for error in form.headline.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <div class="form-section-title">Profile Basics</div>
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.street_address.id_for_label }}">Street Address</label>
+            {{ form.street_address }}
+            {% for error in form.street_address.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.headline.id_for_label }}">Headline</label>
-              {{ form.headline }}
-              {% for error in form.headline.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <div class="arcade-col-6">
+            <label class="arcade-label" for="{{ form.city.id_for_label }}">City</label>
+            {{ form.city }}
+            {% for error in form.city.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.street_address.id_for_label }}">Street Address</label>
-              {{ form.street_address }}
-              {% for error in form.street_address.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <div class="arcade-col-3">
+            <label class="arcade-label" for="{{ form.state.id_for_label }}">State</label>
+            {{ form.state }}
+            {% for error in form.state.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <div class="row g-3">
-              <div class="col-md-5">
-                <div class="pixel-form-group">
-                  <label class="pixel-form-label" for="{{ form.city.id_for_label }}">City</label>
-                  {{ form.city }}
-                  {% for error in form.city.errors %}
-                    <div class="pixel-error">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              </div>
+          <div class="arcade-col-3">
+            <label class="arcade-label" for="{{ form.zip_code.id_for_label }}">ZIP Code</label>
+            {{ form.zip_code }}
+            {% for error in form.zip_code.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-              <div class="col-md-3">
-                <div class="pixel-form-group">
-                  <label class="pixel-form-label" for="{{ form.state.id_for_label }}">State</label>
-                  {{ form.state }}
-                  {% for error in form.state.errors %}
-                    <div class="pixel-error">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="pixel-form-group">
-                  <label class="pixel-form-label" for="{{ form.zip_code.id_for_label }}">ZIP Code</label>
-                  {{ form.zip_code }}
-                  {% for error in form.zip_code.errors %}
-                    <div class="pixel-error">{{ error }}</div>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-
-            <div class="pixel-form-text mb-3">
+          <div class="arcade-col-12">
+            <div class="arcade-help">
               This sets your default map location. Clicking “Use My Current Location” on the map won’t change your profile.
             </div>
+          </div>
 
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.preferred_commute_radius_miles.id_for_label }}">
-                Preferred Commute Radius (miles)
-              </label>
-              {{ form.preferred_commute_radius_miles }}
-              <div class="pixel-form-text">Used as the default distance filter on the jobs map.</div>
-              {% for error in form.preferred_commute_radius_miles.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.preferred_commute_radius_miles.id_for_label }}">
+              Preferred Commute Radius (miles)
+            </label>
+            {{ form.preferred_commute_radius_miles }}
+            <div class="arcade-help">Used as the default distance filter on the jobs map.</div>
+            {% for error in form.preferred_commute_radius_miles.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
 
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.skills.id_for_label }}">Skills</label>
-              {{ form.skills }}
-              <div class="pixel-form-text">Comma-separated (e.g., Python, Java, SQL)</div>
-              {% for error in form.skills.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <hr class="pixel-divider">
-
-            <div class="form-section-title">Experience & Projects</div>
-
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.education.id_for_label }}">Education</label>
-              {{ form.education }}
-              {% for error in form.education.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
-              {{ form.work_experience }}
-              {% for error in form.work_experience.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.projects.id_for_label }}">Projects</label>
-              {{ form.projects }}
-              <div class="pixel-form-text">
-                List key projects to help recruiters find you (e.g., “Built a Django Job Board”).
-              </div>
-              {% for error in form.projects.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <div class="pixel-form-group">
-              <label class="pixel-form-label" for="{{ form.links.id_for_label }}">Links</label>
-              {{ form.links }}
-              <div class="pixel-form-text">LinkedIn / GitHub / portfolio (one per line)</div>
-              {% for error in form.links.errors %}
-                <div class="pixel-error">{{ error }}</div>
-              {% endfor %}
-            </div>
-
-            <hr class="pixel-divider">
-
-            <div class="action-row">
-              <a class="cr-btn" href="{% url 'users:profile_view' %}">Cancel</a>
-              <button type="submit" class="cr-btn">Save Changes</button>
-            </div>
-          </form>
-
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.skills.id_for_label }}">Skills</label>
+            {{ form.skills }}
+            <div class="arcade-help">Comma-separated (e.g. Python, Java, SQL)</div>
+            {% for error in form.skills.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
         </div>
-      </div>
 
-      <p class="tip-text mb-0">
-        Tip: Keep your headline short and skills specific for better matching.
-      </p>
+        <hr class="arcade-divider">
+
+        <h2 class="arcade-section-title">EXPERIENCE & PROJECTS</h2>
+
+        <div class="arcade-grid">
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.education.id_for_label }}">Education</label>
+            {{ form.education }}
+            {% for error in form.education.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
+            {{ form.work_experience }}
+            {% for error in form.work_experience.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.projects.id_for_label }}">Projects</label>
+            {{ form.projects }}
+            <div class="arcade-help">
+              List key projects to help recruiters find you (e.g. “Built a Django Job Board”).
+            </div>
+            {% for error in form.projects.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="arcade-col-12">
+            <label class="arcade-label" for="{{ form.links.id_for_label }}">Links</label>
+            {{ form.links }}
+            <div class="arcade-help">LinkedIn / GitHub / portfolio (one per line)</div>
+            {% for error in form.links.errors %}
+              <div class="text-danger small mt-1">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <hr class="arcade-divider">
+
+        <div class="arcade-actions justify-content-end">
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:profile_view' %}">
+            Cancel
+          </a>
+          <button type="submit" class="btn arcade-btn arcade-btn-blue">
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
+
+    <p class="arcade-meta mb-0">
+      Tip: Keep your headline short and your skills specific for better matching.
+    </p>
   </div>
+
 </div>
 {% endblock %}

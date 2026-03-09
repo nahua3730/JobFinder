@@ -20,13 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-<<<<<<< HEAD
-    path("", include('jobs.urls')),
-    path("", include("applications.urls")),
-=======
-    path('applications/', include('applications.urls')),
-    path('', include('jobs.urls')),  # This sends the empty path '/' straight to the jobs app
-    path("", include("jobs.urls")),
-    path("applications/", include("applications.urls")),
->>>>>>> origin/userstory15n16
+    path('', include('applications.urls')),
+    path('', include('jobs.urls')), 
 ]

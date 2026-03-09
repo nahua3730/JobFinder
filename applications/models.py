@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-# Create your models here.
 from django.conf import settings
 from django.db import models
 
@@ -27,7 +24,6 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.applicant} -> {self.job} ({self.status})"
-=======
 from django.db import models
 from django.conf import settings
 
@@ -70,4 +66,3 @@ class RecruiterNotification(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.title}"
->>>>>>> origin/userstory15n16

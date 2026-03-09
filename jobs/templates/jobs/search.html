@@ -9,27 +9,6 @@
       <p class="arcade-subtitle">Filter jobs and find the best match for your next move</p>
     </div>
 
-<<<<<<< HEAD
-    <div class="d-flex gap-2 justify-content-end mt-3">
-      <a class="btn btn-outline-secondary" href="{% url 'jobs:search' %}">Clear</a>
-      <a class="btn btn-outline-primary"
-        href="{% url 'jobs:job_map' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}">
-        View on Map
-      </a>
-      <button class="btn btn-dark" type="submit">Search</button>
-    </div>
-  </div>
-</form>
-
-{% for job in jobs %}
-  <div class="card mb-3">
-    <div class="card-body">
-      <div class="d-flex justify-content-between">
-          <h5 class="card-title"><a class="text-decoration-none" href="{% url 'jobs:job_detail' job.id %}"> {{ job.title }} </a></h5>
-          {% if user == job.recruiter %}
-              <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-warning btn-sm" style="height: fit-content;">Edit</a>
-          {% endif %}
-=======
     <div class="arcade-panel">
       <form method="get" class="arcade-form">
         <h2 class="arcade-section-title">SEARCH & FILTERS</h2>
@@ -38,7 +17,6 @@
           <div class="arcade-col-4">
             <label class="arcade-label">Title</label>
             {{ form.title }}
->>>>>>> origin/userstory15n16
           </div>
 
           <div class="arcade-col-4">
@@ -75,6 +53,10 @@
 
         <div class="arcade-actions mt-4 justify-content-end">
           <a class="btn arcade-btn arcade-btn-gray" href="{% url 'jobs:search' %}">Clear</a>
+          <a class="btn arcade-btn arcade-btn-purple"
+             href="{% url 'jobs:job_map' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}">
+            View on Map
+          </a>
           <button class="btn arcade-btn arcade-btn-blue" type="submit">Search</button>
         </div>
       </form>
@@ -83,7 +65,11 @@
     {% for job in jobs %}
       <div class="arcade-job-card">
         <div class="arcade-job-header d-flex justify-content-between align-items-start gap-3">
-          <h2 class="arcade-job-title">{{ job.title }}</h2>
+          <h2 class="arcade-job-title">
+            <a class="arcade-link" href="{% url 'jobs:job_detail' job.id %}">
+              {{ job.title }}
+            </a>
+          </h2>
 
           {% if user == job.recruiter %}
             <a href="{% url 'jobs:edit_job' job.id %}" class="btn arcade-btn arcade-btn-yellow arcade-btn-sm">

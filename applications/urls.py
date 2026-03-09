@@ -4,7 +4,6 @@ from . import views
 app_name = "applications"
 
 urlpatterns = [
-<<<<<<< HEAD
     path('', views.index, name='applications.index'),
     path("jobs/<int:job_id>/apply/", views.apply_to_job, name="apply_to_job"),
     path("my-applications/", views.my_applications, name="my_applications"),
@@ -13,10 +12,8 @@ urlpatterns = [
     path("recruiter/pipeline/<int:app_id>/status/", views.recruiter_update_application_status, name="recruiter_update_application_status"),
     path("recruiter/pipeline/<int:app_id>/status-api/", views.recruiter_update_application_status_api, name="recruiter_update_application_status_api",
 ),
-=======
     path("saved-searches/", views.saved_searches, name="saved_searches"),
     path("saved-searches/<int:search_id>/run/", views.run_saved_search, name="run_saved_search"),
     path("saved-searches/<int:search_id>/delete/", views.delete_saved_search, name="delete_saved_search"),
     path("notifications/", views.notifications, name="notifications"),
->>>>>>> origin/userstory15n16
 ]
