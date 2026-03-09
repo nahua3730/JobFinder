@@ -16,4 +16,8 @@ urlpatterns = [
     path("map-data/", views.job_map_data, name="job_map_data"),
     path('<int:job_id>/applications/', views.job_applications, name='job_applications'),
     path("job/<int:job_id>/recommendations/", views.job_recommendations, name="job_recommendations"),
+    path("recruiter/geocode-search/", views.recruiter_geocode_search, name="recruiter_geocode_search"),
+    path("recruiter/reverse-geocode/", views.recruiter_reverse_geocode, name="recruiter_reverse_geocode"),
+    path("recruiter/jobs/<int:job_id>/applicant-map/", views.recruiter_applicant_map, name="recruiter_applicant_map"),
+    path("recruiter/jobs/<int:job_id>/applicant-map-data/", views.recruiter_applicant_map_data, name="recruiter_applicant_map_data"),
 ]

@@ -8,7 +8,7 @@
         font-family: 'VT323', monospace;
         font-size: 1.5rem;
         color: #333;
-        background-color: #795548; 
+        background-color: #795548;
         padding: 20px;
         border: 8px solid #3e2723;
         border-radius: 8px;
@@ -19,10 +19,12 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-        background-color: #aad751; 
+        background-color: #aad751;
         border: 6px solid #8cbf3f;
         padding: 15px;
-        box-shadow: 0px 8px 0px #3e2723; 
+        box-shadow: 0px 8px 0px #3e2723;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
     .cr-title {
@@ -49,12 +51,31 @@
         cursor: pointer;
         transition: transform 0.1s, border-bottom-width 0.1s;
     }
+
     .cr-btn:active {
         transform: translateY(4px);
         border-bottom: 4px solid #000;
     }
-    .cr-btn-primary { background-color: #00a8f3; color: white; }
-    .cr-btn-edit { background-color: #ffcc00; color: #000; }
+
+    .cr-btn-primary {
+        background-color: #00a8f3;
+        color: white;
+    }
+
+    .cr-btn-edit {
+        background-color: #ffcc00;
+        color: #000;
+    }
+
+    .cr-btn-secondary {
+        background-color: #4caf50;
+        color: white;
+    }
+
+    .cr-btn-map {
+        background-color: #8e44ad;
+        color: white;
+    }
 
     .cr-table {
         width: 100%;
@@ -62,7 +83,7 @@
         background-color: #fff;
         border: 8px solid #333;
     }
-    
+
     .cr-table th {
         background-color: #e0e0e0;
         border-bottom: 8px solid #333;
@@ -77,24 +98,30 @@
     }
 
     .lane-road {
-        background-color: #424242; 
+        background-color: #424242;
         color: #fff;
-        background-image: repeating-linear-gradient(to right, transparent, transparent 40px, #fff 40px, #fff 80px);
+        background-image: repeating-linear-gradient(
+            to right,
+            transparent,
+            transparent 40px,
+            #fff 40px,
+            #fff 80px
+        );
         background-size: 100% 6px;
         background-position: bottom;
         background-repeat: no-repeat;
     }
-    
+
     .lane-grass {
         background-color: #aad751;
         color: #000;
-        border-bottom: 6px solid #8cbf3f; 
+        border-bottom: 6px solid #8cbf3f;
     }
 
     .lane-river {
         background-color: #00a8f3;
         color: #fff;
-        border-bottom: 6px solid #005f8a; 
+        border-bottom: 6px solid #005f8a;
     }
 
     .cr-badge {
@@ -103,18 +130,47 @@
         text-transform: uppercase;
         font-size: 1.2rem;
     }
-    .badge-success { background-color: #4caf50; color: white; }
-    .badge-warning { background-color: #ffcc00; color: black; }
-    .badge-danger { background-color: #e53935; color: white; }
-    .badge-count { background-color: #e53935; color: white; font-size: 1.8rem; }
-    .cr-btn-secondary {
+
+    .badge-success {
         background-color: #4caf50;
         color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffcc00;
+        color: black;
+    }
+
+    .badge-danger {
+        background-color: #e53935;
+        color: white;
+    }
+
+    .badge-count {
+        background-color: #e53935;
+        color: white;
+        font-size: 1.8rem;
+    }
+
+    .cr-action-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .cr-title {
+            font-size: 2.2rem;
+        }
+
+        .cr-table th,
+        .cr-table td {
+            padding: 10px;
+        }
     }
 </style>
 
 <div class="container mt-4 cr-theme">
-    
     <div class="cr-header">
         <h2 class="cr-title">
             <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
@@ -131,8 +187,9 @@
             </svg>
             My Job Postings
         </h2>
+
         <a href="{% url 'jobs:create_job' %}" class="cr-btn cr-btn-primary">
-            PLAY NOW
+            Post New Job
         </a>
     </div>
 
@@ -152,7 +209,9 @@
                 <tbody>
                     {% for job in jobs %}
                     <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
-                        <td style="font-size: 1.8rem; font-weight: bold;">{{ job.title }}</td>
+                        <td style="font-size: 1.8rem; font-weight: bold;">
+                            {{ job.title }}
+                        </td>
                         <td>
                             {% if job.status == 'APPROVED' %}
                                 <span class="cr-badge badge-success">{{ job.get_status_display }}</span>
@@ -174,20 +233,24 @@
                         <td>{{ job.location }}</td>
                         <td>{{ job.created_at|date:"M d, Y" }}</td>
                         <td>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn" style="padding: 4px 10px;">
-                                View
-                            </a>
+                            <div class="cr-action-group">
+                                <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn" style="padding: 4px 10px;">
+                                    View
+                                </a>
 
-                            <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-edit" style="padding: 4px 10px;">
-                                Edit
-                            </a>
+                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-edit" style="padding: 4px 10px;">
+                                    Edit
+                                </a>
 
-                            <a href="{% url 'jobs:job_recommendations' job.id %}" class="cr-btn cr-btn-secondary" style="padding: 4px 10px;">
-                                Recommended Candidates
-                            </a>
-                        </div>
-                    </td>
+                                <a href="{% url 'jobs:job_recommendations' job.id %}" class="cr-btn cr-btn-secondary" style="padding: 4px 10px;">
+                                    Recommended Candidates
+                                </a>
+
+                                <a href="{% url 'jobs:recruiter_applicant_map' job.id %}" class="cr-btn cr-btn-map" style="padding: 4px 10px;">
+                                    Applicant Map
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

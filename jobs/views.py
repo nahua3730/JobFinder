@@ -6,21 +6,23 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from applications.models import Application
 from django.http import JsonResponse
-from .geocoding import geocode_us
+from django.views.decorators.http import require_GET
+from .geocoding import geocode_us, reverse_geocode_us
+
 
 def home(request):
     if request.user.is_authenticated and request.user.is_recruiter:
         return redirect("jobs:my_jobs")
-    
+
     jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by('-created_at')
     return render(request, "jobs/index.html", {"jobs": jobs})
+
 
 def search(request):
     if request.user.is_authenticated and request.user.is_recruiter:
         return redirect("jobs:my_jobs")
 
     form = JobSearchForm(request.GET or None)
-    
     jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
 
     if form.is_valid():
@@ -55,9 +57,9 @@ def search(request):
 
     return render(request, "jobs/search.html", {"form": form, "jobs": jobs})
 
+
 def _filtered_jobs_from_search_form(request):
     form = JobSearchForm(request.GET or None)
-    
     jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
 
     if form.is_valid():
@@ -122,12 +124,12 @@ def job_map(request):
         "home_label": home_label,
     })
 
+
 def job_map_data(request):
     if request.user.is_authenticated and request.user.is_recruiter:
         return JsonResponse({"error": "Recruiters do not use this endpoint."}, status=403)
 
     _, jobs = _filtered_jobs_from_search_form(request)
-
     jobs = jobs.exclude(latitude__isnull=True).exclude(longitude__isnull=True)
 
     data = []
@@ -143,9 +145,9 @@ def job_map_data(request):
 
     return JsonResponse(data, safe=False)
 
+
 @login_required
 def create_job(request):
-    ''' User Story 10: Recruiter post a job '''
     if not request.user.is_recruiter:
         return redirect('jobs:home')
 
@@ -160,53 +162,54 @@ def create_job(request):
                 job.latitude = None
                 job.longitude = None
             else:
-                coords = geocode_us(job.location)
-                if coords:
-                    job.latitude, job.longitude = coords
+                if job.latitude is None or job.longitude is None:
+                    coords = geocode_us(job.location)
+                    if coords:
+                        job.latitude, job.longitude = coords
 
             job.save()
-            return redirect('jobs:home')
+            return redirect('jobs:my_jobs')
     else:
         form = JobPostingForm()
 
-    return render(request, "jobs/create_job.html", {'form': form, 'title': 'Post a New Job'})
+    return render(request, "jobs/create_job.html", {
+        'form': form,
+        'title': 'Post a New Job'
+    })
+
 
 @login_required
 def edit_job(request, job_id):
-    """ User Story 10: Recruiter edits a job """
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
-    old_location = job.location
-    old_remote = job.is_remote
 
     if request.method == 'POST':
         form = JobPostingForm(request.POST, instance=job)
         if form.is_valid():
             job = form.save(commit=False)
-
             job.location = job.build_location_string()
-
-            location_changed = (job.location != old_location)
-            remote_changed = (job.is_remote != old_remote)
-            coords_missing = (job.latitude is None or job.longitude is None)
 
             if job.is_remote:
                 job.latitude = None
                 job.longitude = None
-            elif location_changed or remote_changed or coords_missing:
-                coords = geocode_us(job.location)
-                if coords:
-                    job.latitude, job.longitude = coords
+            else:
+                if job.latitude is None or job.longitude is None:
+                    coords = geocode_us(job.location)
+                    if coords:
+                        job.latitude, job.longitude = coords
 
             job.save()
-            return redirect('jobs:home')
+            return redirect('jobs:my_jobs')
     else:
         form = JobPostingForm(instance=job)
 
-    return render(request, 'jobs/create_job.html', {'form': form, 'title': 'Edit Job'})
+    return render(request, 'jobs/create_job.html', {
+        'form': form,
+        'title': 'Edit Job'
+    })
+
 
 @login_required
 def candidate_search(request):
-    """ User Story 11: Search candidates by skills, location, projects (respects privacy) """
     if not request.user.is_recruiter:
         return redirect("jobs:home")
 
@@ -241,14 +244,15 @@ def candidate_search(request):
 
     return render(request, "jobs/candidate_search.html", {"form": form, "candidates": candidates})
 
+
 @login_required
 def my_jobs(request):
-    """ Show only the jobs created by the logged-in recruiter """
     if not request.user.is_recruiter:
         return redirect('jobs:home')
 
     my_job_list = JobPosting.objects.filter(recruiter=request.user).order_by('-created_at')
     return render(request, 'jobs/my_jobs.html', {'jobs': my_job_list})
+
 
 def job_detail(request, job_id):
     if request.user.is_authenticated and request.user.is_recruiter:
@@ -257,23 +261,27 @@ def job_detail(request, job_id):
     job = get_object_or_404(JobPosting, id=job_id, status=JobPosting.Status.APPROVED)
     return render(request, "jobs/job_detail.html", {"job": job})
 
+
 @login_required
 def recommended_jobs(request):
     if not request.user.is_job_seeker:
         return redirect("jobs:home")
+
     profile, _ = JobSeekerProfile.objects.get_or_create(user=request.user)
     user_skills = {
         s.strip().lower()
         for s in (profile.skills or "").split(",")
         if s.strip()
     }
+
     sort = request.GET.get("sort", "match_desc")
     min_match = request.GET.get("min_match", "")
     remote_only = request.GET.get("remote") == "1"
     visa_only = request.GET.get("visa") == "1"
-    
+
     jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).order_by("-created_at")
-    recommended = [] 
+    recommended = []
+
     for job in jobs:
         raw_skills = getattr(job, "skills", "") or ""
         job_skills = {
@@ -283,6 +291,7 @@ def recommended_jobs(request):
         }
         if not job_skills:
             continue
+
         matched_skills = sorted(user_skills & job_skills)
         missing_skills = sorted(job_skills - user_skills)
         score = round(len(matched_skills) / len(job_skills) * 100)
@@ -309,6 +318,7 @@ def recommended_jobs(request):
         recommended.sort(key=lambda x: x[0].created_at)
     else:
         recommended.sort(key=lambda x: x[1], reverse=True)
+
     return render(request, "jobs/recommended_jobs.html", {
         "recommended": recommended,
         "user_skills": sorted(user_skills),
@@ -321,35 +331,37 @@ def recommended_jobs(request):
 
 @login_required
 def job_applications(request, job_id):
-    """ View for a recruiter to see and update applicants for a specific job """
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
-    
+
     if request.method == 'POST':
         application_id = request.POST.get('application_id')
         new_status = request.POST.get('status')
-        
+
         if application_id and new_status:
             application = get_object_or_404(Application, id=application_id, job=job)
-            
+
             valid_statuses = [choice[0] for choice in Application.Status.choices]
             if new_status in valid_statuses:
                 application.status = new_status
                 application.save()
-                
+
         return redirect('jobs:job_applications', job_id=job.id)
-        
+
     applications = job.applications.select_related('applicant').all()
-    
+
     context = {
         'job': job,
         'applications': applications,
-        'status_choices': Application.Status.choices
+        'status_choices': Application.Status.choices,
     }
     return render(request, 'jobs/job_applications.html', context)
+
+
 def _split_skills(text):
     if not text:
         return set()
     return {s.strip().lower() for s in text.split(",") if s.strip()}
+
 
 @login_required
 def job_recommendations(request, job_id):
@@ -357,7 +369,6 @@ def job_recommendations(request, job_id):
         return redirect("jobs:home")
 
     job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
-
     job_skills = _split_skills(job.skills)
 
     candidates = JobSeekerProfile.objects.filter(
@@ -374,7 +385,7 @@ def job_recommendations(request, job_id):
         reasons = []
 
         if matched:
-            score += min(len(matched) * 5, 30) 
+            score += min(len(matched) * 5, 30)
             reasons.append(f"Matched skills: {', '.join(matched[:8])}")
 
         if job.location and c.location and job.location.lower() in c.location.lower():
@@ -399,4 +410,106 @@ def job_recommendations(request, job_id):
     scored.sort(key=lambda x: x["score"], reverse=True)
     top = scored[:25]
 
-    return render(request, "jobs/recommendations.html", {"job": job, "recommendations": top})
+    return render(request, "jobs/recommendations.html", {
+        "job": job,
+        "recommendations": top,
+    })
+
+
+@login_required
+@require_GET
+def recruiter_reverse_geocode(request):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    lat = request.GET.get("lat")
+    lng = request.GET.get("lng")
+
+    try:
+        lat = float(lat)
+        lng = float(lng)
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Invalid coordinates."}, status=400)
+
+    data = reverse_geocode_us(lat, lng)
+    if not data:
+        return JsonResponse({"error": "Could not reverse geocode this point."}, status=404)
+
+    return JsonResponse(data)
+
+
+@login_required
+@require_GET
+def recruiter_geocode_search(request):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    query = (request.GET.get("q") or "").strip()
+    if not query:
+        return JsonResponse({"error": "Missing search query."}, status=400)
+
+    coords = geocode_us(query)
+    if not coords:
+        return JsonResponse({"error": "Address not found."}, status=404)
+
+    lat, lng = coords
+    data = reverse_geocode_us(lat, lng)
+
+    if data:
+        return JsonResponse(data)
+
+    return JsonResponse({
+        "display_name": query,
+        "street_address": "",
+        "city": "",
+        "state": "",
+        "zip_code": "",
+        "latitude": lat,
+        "longitude": lng,
+    })
+
+
+@login_required
+def recruiter_applicant_map(request, job_id):
+    if not request.user.is_recruiter:
+        return redirect("jobs:home")
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+    return render(request, "jobs/recruiter_applicant_map.html", {"job": job})
+
+
+@login_required
+def recruiter_applicant_map_data(request, job_id):
+    if not request.user.is_recruiter:
+        return JsonResponse({"error": "Only recruiters can use this endpoint."}, status=403)
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+
+    applications = (
+        Application.objects
+        .filter(job=job)
+        .select_related("applicant__seeker_profile", "applicant")
+    )
+
+    data = []
+    for application in applications:
+        user = application.applicant
+        profile = getattr(user, "seeker_profile", None)
+
+        if not profile:
+            continue
+        if profile.privacy_enabled:
+            continue
+        if profile.latitude is None or profile.longitude is None:
+            continue
+
+        data.append({
+            "name": user.get_full_name().strip() or user.username,
+            "headline": profile.headline or "",
+            "skills": profile.skills or "",
+            "location": profile.location or "",
+            "latitude": profile.latitude,
+            "longitude": profile.longitude,
+        })
+
+    return JsonResponse(data, safe=False)
