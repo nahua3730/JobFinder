@@ -222,7 +222,7 @@ def _refresh_saved_search_notifications(recruiter):
             count = len(new_candidate_users)
             title = f'New matches for "{ss.name or "Saved Search"}"'
             body = f"{count} new candidate(s) match your saved search."
-            url = "/jobs/candidate-search/?" + _filters_to_querystring(ss.filters)
+            url = "/candidate-search/?" + _filters_to_querystring(ss.filters)
 
             RecruiterNotification.objects.create(
                 user=recruiter,

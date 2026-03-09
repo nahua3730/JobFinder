@@ -2,28 +2,35 @@
 {% block title %}Edit Recruiter Profile{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h1 class="h3 mb-0">Edit Recruiter Profile</h1>
-  </div>
+<div class="arcade-page">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <form method="post">
+  <div class="arcade-frame">
+    <div class="arcade-banner">
+      <h1 class="arcade-title">EDIT RECRUITER PROFILE</h1>
+      <p class="arcade-subtitle">Update your recruiter and company information</p>
+    </div>
+
+    <div class="arcade-panel">
+      <form method="post" class="arcade-form">
         {% csrf_token %}
 
-        <h5 class="mb-3">Name</h5>
-        {{ user_form.as_p }}
+        <h2 class="arcade-section-title">NAME</h2>
+        <div class="arcade-form-fields">
+          {{ user_form.as_p }}
+        </div>
 
-        <hr>
+        <h2 class="arcade-section-title mt-4">COMPANY</h2>
+        <div class="arcade-form-fields">
+          {{ profile_form.as_p }}
+        </div>
 
-        <h5 class="mb-3">Company</h5>
-        {{ profile_form.as_p }}
-
-        <button class="btn btn-dark" type="submit">Save</button>
-        <a class="btn btn-outline-secondary" href="{% url 'users:recruiter_profile' %}">Cancel</a>
+        <div class="arcade-actions mt-4">
+          <button class="btn arcade-btn arcade-btn-blue" type="submit">Save</button>
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'users:recruiter_profile' %}">Cancel</a>
+        </div>
       </form>
     </div>
   </div>
+
 </div>
 {% endblock %}

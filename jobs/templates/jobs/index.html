@@ -2,67 +2,497 @@
 {% load static %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3">
-  <div class="container-fluid py-5">
-    <h1 class="display-5 fw-bold">Find Your Next Chapter</h1>
-    <p class="col-md-8 fs-4">Connecting Georgia Tech's top talent with the world's best recruiters.</p>
-    {% if not user.is_authenticated %}
-        <a class="btn btn-primary btn-lg" href="{% url 'users:signup' %}" role="button">Get Started</a>
-        <a class="btn btn-outline-secondary btn-lg" href="{% url 'users:login' %}" role="button">Login</a>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  .hy-page {
+    font-family: 'VT323', monospace;
+    color: #2b2b2b;
+  }
+
+  .hy-frame {
+    background-color: #795548;
+    border: 8px solid #3e2723;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+
+  .hy-hero {
+    background: linear-gradient(180deg, #aad751 0%, #8bc34a 100%);
+    border: 6px solid #8cbf3f;
+    box-shadow: 0px 8px 0px #3e2723;
+    padding: 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hy-hero::after {
+    content: "";
+    position: absolute;
+    right: 18px;
+    bottom: 10px;
+    width: 90px;
+    height: 90px;
+    opacity: 0.12;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='6' width='2' height='2' fill='white'/><rect x='5' y='1' width='4' height='2' fill='white'/><rect x='7' y='3' width='2' height='1' fill='white'/><rect x='3' y='3' width='8' height='10' fill='white'/><rect x='4' y='4' width='2' height='2' fill='black'/><rect x='5' y='8' width='4' height='3' fill='%23dddddd'/><rect x='4' y='13' width='2' height='2' fill='white'/><rect x='8' y='13' width='2' height='2' fill='white'/><rect x='11' y='4' width='2' height='9' fill='%23cccccc'/><rect x='3' y='13' width='8' height='1' fill='%23cccccc'/></svg>");
+    pointer-events: none;
+  }
+  .hy-btn:hover {
+    transform: translateY(-4px) scale(1.03);
+  }
+  .hy-title {
+    color: white;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 4rem;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .hy-subtitle {
+    font-size: 1.6rem;
+    color: #f5f5f5;
+    max-width: 800px;
+    margin-bottom: 20px;
+  }
+
+  .hy-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000;
+    border-bottom: 8px solid #000;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-bottom-width 0.12s ease, filter 0.12s ease;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hy-btn:hover {
+    text-decoration: none !important;
+    transform: translateY(-2px);
+    filter: brightness(1.03);
+  }
+
+  .hy-btn:active {
+    transform: translateY(4px);
+    border-bottom: 4px solid #000;
+  }
+
+  .hy-btn-primary {
+    background-color: #00a8f3;
+    color: white;
+  }
+
+  .hy-btn-secondary {
+    background-color: #ffcc00;
+    color: black;
+  }
+
+  .hy-btn-dark {
+    background-color: #424242;
+    color: white;
+  }
+
+  .hy-section-card {
+    background: #f5f1e6;
+    border: 8px solid #3e2723;
+    padding: 22px;
+    height: 100%;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .hy-section-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #3e2723;
+  }
+
+  .hy-section-title {
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .hy-section-text {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    margin-bottom: 18px;
+  }
+
+  .hy-list-header {
+    background-color: #00a8f3;
+    color: white;
+    text-shadow: 2px 2px 0px #333;
+    border: 6px solid #005f8a;
+    padding: 14px 18px;
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    margin-top: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0px 8px 0px #3e2723;
+  }
+
+  .hy-job-card {
+    border: 8px solid #333;
+    margin-bottom: 16px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  .hy-job-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 0 rgba(62, 39, 35, 0.9);
+  }
+
+  .lane-road {
+    background-color: #424242;
+    color: #fff;
+
+    background-image: repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent 40px,
+      #fff 40px,
+      #fff 80px
+    );
+
+    background-size: 160px 6px;
+    background-position: 0 calc(100% - 8px);
+    background-repeat: repeat-x;
+
+    animation: roadMove 6s linear infinite;
+  }
+
+  .lane-grass {
+    background-color: #aad751;
+    color: #000;
+    border-bottom: 6px solid #8cbf3f;
+    background-image:
+      radial-gradient(circle at 12px 12px, rgba(255,255,255,0.18) 0 3px, transparent 3px),
+      radial-gradient(circle at 42px 20px, rgba(255,255,255,0.12) 0 2px, transparent 2px);
+    background-size: 70px 40px;
+  }
+
+  .lane-river {
+    background-color: #00a8f3;
+    color: #fff;
+    border-bottom: 6px solid #005f8a;
+
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.15) 0px,
+      rgba(255,255,255,0.15) 18px,
+      transparent 18px,
+      transparent 42px
+    );
+
+    animation: riverFlow 8s linear infinite;
+  }
+
+  .hy-job-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 0 rgba(62, 39, 35, 0.9);
+  }
+
+  .hy-job-card::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    opacity: 0.18;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='6' width='2' height='2' fill='white'/><rect x='5' y='1' width='4' height='2' fill='white'/><rect x='7' y='3' width='2' height='1' fill='white'/><rect x='3' y='3' width='8' height='10' fill='white'/><rect x='4' y='4' width='2' height='2' fill='black'/><rect x='5' y='8' width='4' height='3' fill='%23dddddd'/><rect x='4' y='13' width='2' height='2' fill='white'/><rect x='8' y='13' width='2' height='2' fill='white'/><rect x='11' y='4' width='2' height='9' fill='%23cccccc'/><rect x='3' y='13' width='8' height='1' fill='%23cccccc'/></svg>");
+    pointer-events: none;
+  }
+
+  .hy-job-title {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .hy-job-btn {
+    display: inline-block;
+    padding: 6px 16px;
+    font-family: 'VT323', monospace;
+    font-size: 1.7rem;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: #3e2723 !important;
+    background-color: #f5deb3;
+    border: 4px solid #000;
+    border-bottom: 8px solid #000;
+    transition: transform 0.12s ease, border-bottom-width 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+
+  .hy-job-btn:hover,
+  .hy-job-btn:focus {
+    text-decoration: none !important;
+    color: #3e2723 !important;
+    background-color: #ffe6a7;
+    transform: translateY(-2px) translateX(2px);
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.18);
+  }
+
+  .hy-job-btn:active {
+    transform: translateY(4px);
+    border-bottom: 4px solid #000;
+    box-shadow: none;
+  }
+
+  .hy-job-meta {
+    font-size: 1.3rem;
+    opacity: 0.95;
+    margin-bottom: 10px;
+  }
+
+  .hy-job-text {
+    font-size: 1.25rem;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+
+  .hy-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 4px solid #000;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    margin-right: 8px;
+    margin-top: 8px;
+    background: #ffcc00;
+    color: #000;
+  }
+
+  .hy-empty {
+    background: #f5f1e6;
+    border: 8px solid #3e2723;
+    padding: 30px;
+    text-align: center;
+    font-size: 1.6rem;
+  }
+  .press-start {
+    animation: pressBlink 1.2s infinite;
+  }
+  .lane-chicken {
+    position: absolute;
+    right: 20px;
+    bottom: 12px;
+    transition: transform 0.2s ease;
+  }
+  .hy-job-card:hover .lane-chicken {
+    animation: chickenHop 0.35s ease;
+}
+
+@keyframes chickenHop {
+  0%   { transform: translateY(0); }
+  40%  { transform: translateY(-12px); }
+  70%  { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+
+@keyframes pressBlink {
+  0% { opacity: 1 }
+  50% { opacity: 0.35 }
+  100% { opacity: 1 }
+}
+
+  @keyframes roadMove {
+    from {
+      background-position: 0 calc(100% - 8px);
+    }
+    to {
+      background-position: 160px calc(100% - 8px);
+    }
+  }
+
+  @keyframes riverFlow {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 120px 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hy-title {
+      font-size: 2.5rem;
+    }
+
+    .hy-subtitle {
+      font-size: 1.3rem;
+    }
+
+    .hy-job-btn {
+      font-size: 1.45rem;
+    }
+  }
+
+@keyframes roadMove {
+  from {
+    background-position: 0 calc(100% - 8px);
+  }
+  to {
+    background-position: 160px calc(100% - 8px);
+  }
+}
+
+@keyframes riverFlow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 120px 0;
+  }
+}
+</style>
+
+<div class="container hy-page">
+  <div class="hy-frame">
+
+    <div class="hy-hero">
+      <h1 class="hy-title">
+        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+        </svg>
+        Find Your Next Chapter
+      </h1>
+
+      <p class="hy-subtitle">
+        Connecting Georgia Tech’s top talent with the world’s best recruiters.
+      </p>
+
+      {% if not user.is_authenticated %}
+        <div class="press-start">
+          <a class="hy-btn hy-btn-primary" href="{% url 'users:signup' %}">
+            PRESS START
+          </a>
+      </div>
+
+      <div style="margin-top:10px;">
+          <a class="hy-btn hy-btn-secondary" href="{% url 'users:login' %}">
+            CONTINUE
+          </a>
+      </div>
     {% endif %}
-  </div>
-</div>
-
-<div class="row align-items-md-stretch mb-5">
-  <div class="col-md-6">
-    <div class="h-100 p-5 text-white bg-dark rounded-3">
-      <h2>For Job Seekers</h2>
-      <p>Create a profile, filter jobs by location and skills, and track your applications in real-time.</p>
-      <a href="{% url 'jobs:search' %}" class="btn btn-outline-light">Browse Jobs</a>
     </div>
-  </div>
-  <div class="col-md-6">
-    <div class="h-100 p-5 bg-light border rounded-3">
-      <h2>For Recruiters</h2>
-      <p>Post jobs, visualize applicant locations on a map, and manage your hiring pipeline efficiently.</p>
-      {% if user.is_recruiter %}
-         <a href="{% url 'jobs:create_job' %}" class="btn btn-primary">Post a Job</a>
-         <a href="{% url 'jobs:candidate_search' %}" class="btn btn-outline-dark">Candidate Search</a>
-      {% else %}
-         <a href="{% url 'users:login' %}" class="btn btn-outline-secondary">Recruiter Login</a>
-      {% endif %}
-    </div>
-  </div>
-</div>
 
-<div class="container">
-    <h3 class="mb-3">Recent Job Postings</h3>
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <div class="hy-section-card">
+          <div class="hy-section-title">For Job Seekers</div>
+          <div class="hy-section-text">
+            Create a profile, filter jobs by location and skills, and track your applications in real time.
+          </div>
+          <a href="{% url 'jobs:search' %}" class="hy-btn hy-btn-primary">Browse Jobs</a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="hy-section-card">
+          <div class="hy-section-title">For Recruiters</div>
+          <div class="hy-section-text">
+            Post jobs, visualize applicant locations on a map, and manage your hiring pipeline efficiently.
+          </div>
+
+          {% if user.is_recruiter %}
+            <a href="{% url 'jobs:create_job' %}" class="hy-btn hy-btn-primary">Post a Job</a>
+            <a href="{% url 'jobs:candidate_search' %}" class="hy-btn hy-btn-dark">Candidate Search</a>
+          {% else %}
+            <a href="{% url 'users:login' %}" class="hy-btn hy-btn-secondary">Recruiter Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="hy-list-header">Recent Job Postings</div>
+
     {% for job in jobs %}
-      <div class="card mb-3 shadow-sm">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start">
-              <div>
-                  <h5 class="card-title"><a class="text-primary text-decoration-none"href="{% url 'jobs:job_detail' job.id %}">{{ job.title }}</a></h5>
-                  <h6 class="card-subtitle mb-2 text-muted">{{ job.company_name|default:"Tech Company" }} • {{ job.location }}</h6>
-                  <p class="card-text">{{ job.description|truncatewords:30 }}</p>
-                  <p class="card-text"><small class="text-muted">Posted by {{ job.recruiter.username }}</small></p>
-              </div>
-              
-              {% if user == job.recruiter %}
-                 <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-warning btn-sm">Edit</a>
-              {% endif %}
-          </div>
-          
-          <div class="mt-3">
-              <span class="badge bg-secondary">{{ job.salary_range }}</span>
+      <div class="hy-job-card {% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
+        <div class="lane-chicken">
+        <svg width="32" height="32" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+          </svg>
+        </div>
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+          <div>
+            <div class="hy-job-title">
+              <a class="hy-job-btn" href="{% url 'jobs:job_detail' job.id %}">
+                {{ job.title }}
+              </a>
+            </div>
+
+            <div class="hy-job-meta">
+              {{ job.company_name|default:"Tech Company" }} • {{ job.location }}
+            </div>
+
+            <div class="hy-job-text">
+              {{ job.description|truncatewords:30 }}
+            </div>
+
+            <div class="hy-job-meta">
+              Posted by {{ job.recruiter.username }}
+            </div>
+
+            <div>
+              <span class="hy-badge">{{ job.salary_range }}</span>
               {% if job.is_remote %}
-                  <span class="badge bg-success">Remote</span>
+                <span class="hy-badge">Remote</span>
               {% endif %}
+            </div>
           </div>
+
+          {% if user == job.recruiter %}
+            <a href="{% url 'jobs:edit_job' job.id %}" class="hy-btn hy-btn-secondary">Edit</a>
+          {% endif %}
         </div>
       </div>
     {% empty %}
-      <div class="alert alert-info">No jobs posted yet. Be the first!</div>
+      <div class="hy-empty">
+        No jobs posted yet. Be the first!
+      </div>
     {% endfor %}
+
+  </div>
 </div>
 {% endblock %}

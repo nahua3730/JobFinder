@@ -2,30 +2,182 @@
 {% block title %}{{ job.title }}{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-  <div class="d-flex justify-content-between align-items-start">
+<style>
+  .cr-theme {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #333;
+    background-color: #795548;
+    padding: 20px;
+    border: 8px solid #3e2723;
+    border-radius: 8px;
+  }
+
+  .cr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    background-color: #aad751;
+    border: 6px solid #8cbf3f;
+    padding: 15px;
+    box-shadow: 0px 8px 0px #3e2723;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .cr-title {
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 3rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .cr-subtitle {
+    color: #f5f5f5;
+    font-size: 1.5rem;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  .cr-panel {
+    background: #f5f1e6;
+    border: 8px solid #3e2723;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .cr-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000;
+    background-color: #fff;
+    border: 4px solid #000;
+    border-bottom: 8px solid #000;
+    cursor: pointer;
+    transition: transform 0.1s, border-bottom-width 0.1s;
+  }
+
+  .cr-btn:active {
+    transform: translateY(4px);
+    border-bottom: 4px solid #000;
+  }
+
+  .cr-btn-primary {
+    background-color: #00a8f3;
+    color: white;
+  }
+
+  .cr-section-title {
+    text-transform: uppercase;
+    font-size: 2rem;
+    margin-bottom: 14px;
+  }
+
+  .cr-detail-row {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+
+  .cr-detail-label {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .cr-description {
+    white-space: pre-line;
+    line-height: 1.4;
+  }
+
+  .cr-chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 4px solid #000;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    background-color: #ffcc00;
+    color: #000;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .cr-title {
+      font-size: 2.2rem;
+    }
+
+    .cr-subtitle {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<div class="container mt-4 cr-theme">
+
+  <div class="cr-header">
     <div>
-      <h1 class="h3 mb-1">{{ job.title }}</h1>
-      <div class="text-muted">
+      <h1 class="cr-title">
+        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+        </svg>
+        {{ job.title }}
+      </h1>
+
+      <div class="cr-subtitle">
         {{ job.company_name|default:"Tech Company" }} • {{ job.location }}
-        {% if job.is_remote %}• Remote{% endif %}
+        {% if job.is_remote %}
+          <span class="cr-chip">Remote</span>
+        {% endif %}
       </div>
     </div>
 
     {% if user.is_authenticated and user.is_job_seeker %}
-      <a class="btn btn-dark" href="{% url 'applications:apply_to_job' job.id %}">Apply</a>
+      <a class="cr-btn cr-btn-primary" href="{% url 'applications:apply_to_job' job.id %}">
+        Apply
+      </a>
     {% endif %}
   </div>
 
-  <hr>
+  <div class="cr-panel">
+    <h2 class="cr-section-title">Job Description</h2>
+    <div class="cr-description">{{ job.description }}</div>
+  </div>
 
-  <p>{{ job.description }}</p>
+  <div class="cr-panel">
+    <h2 class="cr-section-title">Job Details</h2>
 
-  <div class="mt-3">
-    <p class="mb-1"><b>Skills:</b> {{ job.skills }}</p>
-    <p class="mb-1"><b>Visa Sponsorship:</b> {% if job.visa_sponsorship %}Yes{% else %}No{% endif %}</p>
-    <p class="mb-0"><b>Salary:</b> {{ job.salary_range }}</p>
+    <div class="cr-detail-row">
+      <span class="cr-detail-label">Skills:</span>
+      {{ job.skills|default:"—" }}
+    </div>
+
+    <div class="cr-detail-row">
+      <span class="cr-detail-label">Visa Sponsorship:</span>
+      {% if job.visa_sponsorship %}Yes{% else %}No{% endif %}
+    </div>
+
+    <div class="cr-detail-row">
+      <span class="cr-detail-label">Salary:</span>
+      {{ job.salary_range|default:"—" }}
+    </div>
   </div>
 
 </div>

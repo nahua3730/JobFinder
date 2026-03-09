@@ -2,34 +2,55 @@
 {% block title %}Recruiter Profile{% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="arcade-page">
 
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <h1 class="h3 mb-0">Recruiter Profile</h1>
-    <a class="btn btn-dark btn-sm"
-       href="{% url 'users:recruiter_profile_edit' %}">
-       Edit Profile
-    </a>
-  </div>
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1 class="arcade-title">RECRUITER PROFILE</h1>
+        <p class="arcade-subtitle">View your recruiter details and account info</p>
+      </div>
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <p class="mb-2">
-        <b>Name:</b><br>
-        {{ request.user.get_full_name|default:request.user.username }}
-      </p>
-      <hr>
-
-      <p class="mb-2">
-        <b>Title:</b><br>
-        {{ profile.title|default:"—" }}
-      </p>
-      <hr>
-
-      <p class="mb-0">
-        <b>Company:</b><br>
-        {{ profile.company_name|default:"—" }}
-      </p>
+      <a class="btn arcade-btn arcade-btn-gray"
+         href="{% url 'users:recruiter_profile_edit' %}">
+         Edit Profile
+      </a>
     </div>
+
+    <div class="arcade-panel">
+      <h2 class="arcade-section-title">PROFILE DETAILS</h2>
+
+      <div class="arcade-grid">
+        <div class="arcade-col-12">
+          <div class="arcade-field-block">
+            <label class="arcade-label">Name</label>
+            <div class="arcade-static-value">
+              {{ request.user.get_full_name|default:request.user.username }}
+            </div>
+          </div>
+        </div>
+
+        <div class="arcade-col-6">
+          <div class="arcade-field-block">
+            <label class="arcade-label">Title</label>
+            <div class="arcade-static-value">
+              {{ profile.title|default:"—" }}
+            </div>
+          </div>
+        </div>
+
+        <div class="arcade-col-6">
+          <div class="arcade-field-block">
+            <label class="arcade-label">Company</label>
+            <div class="arcade-static-value">
+              {{ profile.company_name|default:"—" }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+</div>
 {% endblock %}

@@ -1,25 +1,108 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ search.name|default:"Saved Search" }}</h1>
-<p>Filters: {{ search.filters }}</p>
 
-<hr>
+<div class="arcade-page">
+  <div class="arcade-frame">
 
-{% if candidates %}
-  <ul>
-    {% for c in candidates %}
-      <li style="margin-bottom: 12px;">
-        <strong>{{ c.user.first_name }} {{ c.user.last_name }}</strong>
-        <br>
-        Skills: {{ c.skills }}
-        <br>
-        Location: {{ c.location }}
-        <br>
-        {% if c.projects %}Projects: {{ c.projects }}{% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No candidates match this search.</p>
-{% endif %}
+    <div class="arcade-banner">
+      <h1 class="arcade-title">{{ search.name|default:"SAVED SEARCH RESULTS" }}</h1>
+      <p class="arcade-subtitle">Candidate matches for this saved recruiter search</p>
+    </div>
+
+    <div class="arcade-panel">
+      <h2 class="arcade-section-title">ACTIVE FILTERS</h2>
+
+      <div class="arcade-grid">
+        <div class="arcade-col-12">
+          {% if search.filters.query or search.filters.location or search.filters.has_projects %}
+            <div class="arcade-actions flex-wrap">
+              {% if search.filters.query %}
+                <span class="arcade-chip arcade-chip-blue">Query: {{ search.filters.query }}</span>
+              {% endif %}
+              {% if search.filters.location %}
+                <span class="arcade-chip arcade-chip-green">Location: {{ search.filters.location }}</span>
+              {% endif %}
+              {% if search.filters.has_projects %}
+                <span class="arcade-chip arcade-chip-purple">Has Projects</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="arcade-empty-text mb-0">No filters applied.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% if candidates %}
+      <div class="arcade-panel">
+        <h2 class="arcade-section-title">MATCHING CANDIDATES</h2>
+
+        <div class="arcade-table-wrap">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Skills</th>
+                <th>Location</th>
+                <th>Projects</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in candidates %}
+                <tr>
+                  <td>
+                    {% if c.user.first_name or c.user.last_name %}
+                      {{ c.user.first_name }} {{ c.user.last_name }}
+                    {% else %}
+                      {{ c.user.username }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if c.skills %}
+                      {{ c.skills }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if c.location %}
+                      {{ c.location }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if c.projects %}
+                      {{ c.projects|truncatewords:12 }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% else %}
+      <div class="arcade-road-panel">
+        <div class="arcade-empty">
+          <div class="arcade-empty-title">NO CANDIDATES FOUND</div>
+          <p class="arcade-empty-text">No candidates match this saved search right now.</p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="arcade-actions mt-4">
+      <a href="{% url 'applications:saved_searches' %}" class="btn arcade-btn arcade-btn-gray">
+        Back to Saved Searches
+      </a>
+      <a href="{% url 'jobs:candidate_search' %}" class="btn arcade-btn arcade-btn-blue">
+        Open Candidate Search
+      </a>
+    </div>
+
+  </div>
+</div>
+
 {% endblock %}
