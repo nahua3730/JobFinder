@@ -1,48 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form method="get" class="card shadow-sm mb-4">
-  <div class="card-body">
-    <h5 class="mb-3">Search & Filters</h5>
+<div class="arcade-page">
 
-    <div class="row g-3">
-      <div class="col-md-4">
-        <label class="form-label">Title</label>
-        {{ form.title }}
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label">Skills</label>
-        {{ form.skills }}
-        <div class="form-text">Comma-separated (e.g., Python, SQL)</div>
-      </div>
-
-      <div class="col-md-4">
-        <label class="form-label">Location</label>
-        {{ form.location }}
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label">Min Salary</label>
-        {{ form.salary_min }}
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label">Max Salary</label>
-        {{ form.salary_max }}
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label">Remote/On-site</label>
-        {{ form.is_remote }}
-      </div>
-
-      <div class="col-md-3">
-        <label class="form-label">Visa Sponsorship</label>
-        {{ form.visa_sponsorship }}
-      </div>
+  <div class="arcade-frame">
+    <div class="arcade-banner">
+      <h1 class="arcade-title">JOB SEARCH</h1>
+      <p class="arcade-subtitle">Filter jobs and find the best match for your next move</p>
     </div>
 
+<<<<<<< HEAD
     <div class="d-flex gap-2 justify-content-end mt-3">
       <a class="btn btn-outline-secondary" href="{% url 'jobs:search' %}">Clear</a>
       <a class="btn btn-outline-primary"
@@ -62,25 +29,121 @@
           {% if user == job.recruiter %}
               <a href="{% url 'jobs:edit_job' job.id %}" class="btn btn-warning btn-sm" style="height: fit-content;">Edit</a>
           {% endif %}
+=======
+    <div class="arcade-panel">
+      <form method="get" class="arcade-form">
+        <h2 class="arcade-section-title">SEARCH & FILTERS</h2>
+
+        <div class="arcade-grid">
+          <div class="arcade-col-4">
+            <label class="arcade-label">Title</label>
+            {{ form.title }}
+>>>>>>> origin/userstory15n16
           </div>
 
-      <p class="mb-1"><b>Location:</b> {{ job.location }}</p>
+          <div class="arcade-col-4">
+            <label class="arcade-label">Skills</label>
+            {{ form.skills }}
+            <div class="arcade-help">Comma-separated (e.g. Python, SQL)</div>
+          </div>
 
-      <p class="mb-1"><b>Remote:</b> {% if job.is_remote %}Yes{% else %}No{% endif %}</p>
-      <p class="mb-1"><b>Visa Sponsorship:</b> {% if job.visa_sponsorship %}Yes{% else %}No{% endif %}</p>
+          <div class="arcade-col-4">
+            <label class="arcade-label">Location</label>
+            {{ form.location }}
+          </div>
 
-      <p class="mb-0">
-        <b>Salary:</b>
-        {% if job.min_salary or job.max_salary %}
-          {{ job.min_salary }} - {{ job.max_salary }}
-        {% else %}
-          {{ job.salary_range }}
-        {% endif %}
-      </p>
+          <div class="arcade-col-3">
+            <label class="arcade-label">Min Salary</label>
+            {{ form.salary_min }}
+          </div>
+
+          <div class="arcade-col-3">
+            <label class="arcade-label">Max Salary</label>
+            {{ form.salary_max }}
+          </div>
+
+          <div class="arcade-col-3">
+            <label class="arcade-label">Remote / On-site</label>
+            {{ form.is_remote }}
+          </div>
+
+          <div class="arcade-col-3">
+            <label class="arcade-label">Visa Sponsorship</label>
+            {{ form.visa_sponsorship }}
+          </div>
+        </div>
+
+        <div class="arcade-actions mt-4 justify-content-end">
+          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'jobs:search' %}">Clear</a>
+          <button class="btn arcade-btn arcade-btn-blue" type="submit">Search</button>
+        </div>
+      </form>
     </div>
+
+    {% for job in jobs %}
+      <div class="arcade-job-card">
+        <div class="arcade-job-header d-flex justify-content-between align-items-start gap-3">
+          <h2 class="arcade-job-title">{{ job.title }}</h2>
+
+          {% if user == job.recruiter %}
+            <a href="{% url 'jobs:edit_job' job.id %}" class="btn arcade-btn arcade-btn-yellow arcade-btn-sm">
+              Edit
+            </a>
+          {% endif %}
+        </div>
+
+        <div class="arcade-job-body">
+          <div class="arcade-grid">
+            <div class="arcade-col-4">
+              <div class="arcade-label">Location</div>
+              <div class="arcade-value">{{ job.location|default:"—" }}</div>
+            </div>
+
+            <div class="arcade-col-4">
+              <div class="arcade-label">Remote</div>
+              <div class="arcade-value">
+                {% if job.is_remote %}
+                  <span class="arcade-chip arcade-chip-blue">Remote OK</span>
+                {% else %}
+                  <span class="arcade-chip arcade-chip-gray">On Site</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="arcade-col-4">
+              <div class="arcade-label">Visa Sponsorship</div>
+              <div class="arcade-value">
+                {% if job.visa_sponsorship %}
+                  <span class="arcade-chip arcade-chip-green">Sponsored</span>
+                {% else %}
+                  <span class="arcade-chip arcade-chip-red">No Sponsorship</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="arcade-col-12">
+              <div class="arcade-label">Salary</div>
+              <div class="arcade-value">
+                {% if job.min_salary or job.max_salary %}
+                  {{ job.min_salary }} - {{ job.max_salary }}
+                {% else %}
+                  {{ job.salary_range|default:"—" }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="arcade-road-panel">
+        <div class="arcade-empty">
+          <div class="arcade-empty-title">NO JOBS ON THE ROAD</div>
+          <p class="arcade-empty-text">No jobs match your current filters.</p>
+        </div>
+      </div>
+    {% endfor %}
   </div>
-{% empty %}
-  <p>No jobs match your filters.</p>
-{% endfor %}
+
 </div>
+
 {% endblock %}

@@ -6,13 +6,11 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
@@ -85,7 +83,6 @@
       border: 4px solid #333;
       box-shadow: 0px 4px 0px #b8a98e;
     }
-
   </style>
 </head>
 
@@ -105,7 +102,6 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-
         <div class="navbar-nav ms-auto">
 
           {% if not user.is_authenticated or user.is_job_seeker %}
@@ -121,37 +117,42 @@
 
           {% if user.is_authenticated %}
 
-              {% if user.is_recruiter %}
-                <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
-                <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
-                <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
-                <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
-              {% else %}
-                <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
-              {% endif %}
+            {% if user.is_recruiter %}
+              <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
+              <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
+              <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
+              <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
 
-              <div class="vr bg-white mx-2 d-none d-lg-block"></div>
-
-              {% if user.is_job_seeker %}
-                <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
-              {% else %}
-                <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
-              {% endif %}
-
-              <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
-                {% csrf_token %}
-              </form>
-
-              <a class="nav-link"
-                 href="#"
-                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Logout ({{ user.username }})
+              <a class="nav-link" href="{% url 'applications:saved_searches' %}">Saved Searches</a>
+              <a class="nav-link" href="{% url 'applications:notifications' %}">
+                <i class="fa-solid fa-bell"></i> Notifications
               </a>
+            {% else %}
+              <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
+            {% endif %}
+
+            <div class="vr bg-white mx-2 d-none d-lg-block"></div>
+
+            {% if user.is_job_seeker %}
+              <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
+            {% else %}
+              <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
+            {% endif %}
+
+            <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
+              {% csrf_token %}
+            </form>
+
+            <a class="nav-link"
+               href="#"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+              Logout ({{ user.username }})
+            </a>
 
           {% else %}
 
-              <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-              <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>
+            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+            <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>
 
           {% endif %}
 
@@ -177,9 +178,7 @@
 
   <section class="pixel-footer d-none d-md-block">
     <div class="container">
-
       <div class="row text-white">
-
         <div class="col-md-6 mx-auto mb-4">
           <b>GT JOB SEARCH</b>
           <hr />
@@ -193,9 +192,7 @@
           <hr />
           <p><i class="fas fa-envelope me-2"></i> help@gtjobsearch.com</p>
         </div>
-
       </div>
-
     </div>
   </section>
 

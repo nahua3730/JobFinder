@@ -288,27 +288,27 @@ def recommended_jobs(request):
         score = round(len(matched_skills) / len(job_skills) * 100)
         recommended.append((job, score, matched_skills, missing_skills))
 
-        if min_match:
-            try:
-                min_match_value = int(min_match)
-                recommended = [item for item in recommended if item[1] >= min_match_value]
-            except ValueError:
-                min_match = ""
+    if min_match:
+        try:
+            min_match_value = int(min_match)
+            recommended = [item for item in recommended if item[1] >= min_match_value]
+        except ValueError:
+            min_match = ""
 
-        if remote_only:
-            recommended = [item for item in recommended if item[0].is_remote]
+    if remote_only:
+        recommended = [item for item in recommended if item[0].is_remote]
 
-        if visa_only:
-            recommended = [item for item in recommended if item[0].visa_sponsorship]
+    if visa_only:
+        recommended = [item for item in recommended if item[0].visa_sponsorship]
 
-        if sort == "match_asc":
-            recommended.sort(key=lambda x: x[1])
-        elif sort == "newest":
-            recommended.sort(key=lambda x: x[0].created_at, reverse=True)
-        elif sort == "oldest":
-            recommended.sort(key=lambda x: x[0].created_at)
-        else:
-            recommended.sort(key=lambda x: x[1], reverse=True)
+    if sort == "match_asc":
+        recommended.sort(key=lambda x: x[1])
+    elif sort == "newest":
+        recommended.sort(key=lambda x: x[0].created_at, reverse=True)
+    elif sort == "oldest":
+        recommended.sort(key=lambda x: x[0].created_at)
+    else:
+        recommended.sort(key=lambda x: x[1], reverse=True)
     return render(request, "jobs/recommended_jobs.html", {
         "recommended": recommended,
         "user_skills": sorted(user_skills),
@@ -346,3 +346,57 @@ def job_applications(request, job_id):
         'status_choices': Application.Status.choices
     }
     return render(request, 'jobs/job_applications.html', context)
+def _split_skills(text):
+    if not text:
+        return set()
+    return {s.strip().lower() for s in text.split(",") if s.strip()}
+
+@login_required
+def job_recommendations(request, job_id):
+    if not request.user.is_recruiter:
+        return redirect("jobs:home")
+
+    job = get_object_or_404(JobPosting, id=job_id, recruiter=request.user)
+
+    job_skills = _split_skills(job.skills)
+
+    candidates = JobSeekerProfile.objects.filter(
+        user__is_job_seeker=True,
+        privacy_enabled=False
+    ).select_related("user")
+
+    scored = []
+    for c in candidates:
+        cand_skills = _split_skills(c.skills)
+
+        matched = sorted(job_skills.intersection(cand_skills))
+        score = 0
+        reasons = []
+
+        if matched:
+            score += min(len(matched) * 5, 30) 
+            reasons.append(f"Matched skills: {', '.join(matched[:8])}")
+
+        if job.location and c.location and job.location.lower() in c.location.lower():
+            score += 8
+            reasons.append("Location match")
+
+        if job.is_remote:
+            score += 3
+            reasons.append("Remote-friendly role")
+
+        if c.projects and matched:
+            score += 2
+            reasons.append("Has projects")
+
+        if score > 0:
+            scored.append({
+                "profile": c,
+                "score": score,
+                "reasons": reasons,
+            })
+
+    scored.sort(key=lambda x: x["score"], reverse=True)
+    top = scored[:25]
+
+    return render(request, "jobs/recommendations.html", {"job": job, "recommendations": top})

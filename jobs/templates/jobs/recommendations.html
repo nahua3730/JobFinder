@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="arcade-page">
+
+  <div class="arcade-frame">
+    <div class="arcade-banner">
+      <h1 class="arcade-title">RECOMMENDED CANDIDATES</h1>
+      <p class="arcade-subtitle">Best player matches for this job posting</p>
+    </div>
+
+    <div class="arcade-panel">
+      <div class="arcade-grid">
+        <div class="arcade-col-12">
+          <div class="arcade-label">Job Title</div>
+          <div class="arcade-value">{{ job.title }}</div>
+        </div>
+
+        <div class="arcade-col-6">
+          <div class="arcade-label">Skills</div>
+          <div class="arcade-value">{{ job.skills|default:"—" }}</div>
+        </div>
+
+        <div class="arcade-col-6">
+          <div class="arcade-label">Location</div>
+          <div class="arcade-value">
+            {{ job.location }}
+            {% if job.is_remote %}
+              <span class="arcade-chip arcade-chip-blue ms-2">Remote OK</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if recommendations %}
+      <div class="arcade-panel">
+        <h2 class="arcade-section-title">MATCHED CANDIDATES</h2>
+
+        <div class="arcade-table-wrap">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Score</th>
+                <th>Skills</th>
+                <th>Location</th>
+                <th>Match Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in recommendations %}
+                <tr>
+                  <td>
+                    {{ r.profile.user.first_name }} {{ r.profile.user.last_name }}
+                  </td>
+                  <td>
+                    <span class="arcade-chip arcade-chip-green">{{ r.score }}</span>
+                  </td>
+                  <td>{{ r.profile.skills|default:"—" }}</td>
+                  <td>{{ r.profile.location|default:"—" }}</td>
+                  <td>
+                    {% if r.reasons %}
+                      {{ r.reasons|join:" • " }}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% else %}
+      <div class="arcade-road-panel">
+        <div class="arcade-empty">
+          <div class="arcade-empty-title">NO PLAYERS ON THE BOARD</div>
+          <p class="arcade-empty-text">No recommended candidates yet. Try adding job skills first.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

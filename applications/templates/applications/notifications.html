@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="arcade-page">
+
+  <div class="arcade-frame">
+    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
+      <div>
+        <h1 class="arcade-title">NOTIFICATIONS</h1>
+        <p class="arcade-subtitle">See new saved-search matches and recruiter updates</p>
+      </div>
+
+      <form method="post" class="m-0">
+        {% csrf_token %}
+        <button type="submit" class="btn arcade-btn arcade-btn-gray">Mark All as Read</button>
+      </form>
+    </div>
+
+    {% if notifications %}
+      <div class="arcade-panel">
+        <div class="arcade-table-wrap">
+          <table class="arcade-table">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Time</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for n in notifications %}
+                <tr>
+                  <td>
+                    {% if not n.is_read %}
+                      <span class="arcade-chip arcade-chip-purple">New</span>
+                    {% else %}
+                      <span class="arcade-chip arcade-chip-gray">Read</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ n.title }}</td>
+                  <td>{{ n.body }}</td>
+                  <td>{{ n.created_at }}</td>
+                  <td>
+                    {% if n.url %}
+                      <a class="arcade-link" href="{{ n.url }}">View Matches</a>
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% else %}
+      <div class="arcade-road-panel">
+        <div class="arcade-empty">
+          <div class="arcade-empty-title">NO NOTIFICATIONS ON THE ROAD</div>
+          <p class="arcade-empty-text">You do not have any notifications right now.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}

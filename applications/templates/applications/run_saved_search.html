@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ search.name|default:"Saved Search" }}</h1>
+<p>Filters: {{ search.filters }}</p>
+
+<hr>
+
+{% if candidates %}
+  <ul>
+    {% for c in candidates %}
+      <li style="margin-bottom: 12px;">
+        <strong>{{ c.user.first_name }} {{ c.user.last_name }}</strong>
+        <br>
+        Skills: {{ c.skills }}
+        <br>
+        Location: {{ c.location }}
+        <br>
+        {% if c.projects %}Projects: {{ c.projects }}{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No candidates match this search.</p>
+{% endif %}
+{% endblock %}
