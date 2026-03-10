@@ -5,68 +5,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 <style>
-    .cr-theme {
-        font-family: 'VT323', monospace;
-        font-size: 1.5rem;
-        color: #333;
-        background-color: #795548;
-        padding: 20px;
-        border: 8px solid #3e2723;
-        border-radius: 8px;
-    }
-
-    .cr-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        background-color: #aad751;
-        border: 6px solid #8cbf3f;
-        padding: 15px;
-        box-shadow: 0px 8px 0px #3e2723;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .cr-title {
-        text-transform: uppercase;
-        color: #fff;
-        text-shadow: 3px 3px 0px #333;
-        font-size: 3rem;
-        margin: 0;
-        display: flex;
-        align-items: center;
-    }
-
-    .cr-btn {
-        display: inline-block;
-        padding: 8px 20px;
-        font-family: 'VT323', monospace;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        text-decoration: none;
-        color: #000;
-        background-color: #fff;
-        border: 4px solid #000;
-        border-bottom: 8px solid #000;
-        cursor: pointer;
-        transition: transform 0.1s, border-bottom-width 0.1s;
-    }
-
-    .cr-btn:active {
-        transform: translateY(4px);
-        border-bottom: 4px solid #000;
-    }
-
-    .cr-btn-primary {
-        background-color: #00a8f3;
-        color: white;
-    }
-
-    .cr-btn-secondary {
-        background-color: #9e9e9e;
-        color: white;
-    }
 
     .cr-layout {
         display: grid;
@@ -75,41 +13,17 @@
         align-items: start;
     }
 
-    .cr-panel {
+    .cr-job-shell {
         background-color: #aad751;
         border: 8px solid #8cbf3f;
         padding: 20px;
     }
 
-    .cr-form-box,
     .cr-map-box {
         background-color: #fff;
         border: 8px solid #333;
         padding: 24px;
     }
-
-    .cr-section-title {
-        font-size: 2rem;
-        text-transform: uppercase;
-        color: #333;
-        margin-bottom: 16px;
-    }
-
-    .cr-subsection-title {
-        font-size: 1.7rem;
-        text-transform: uppercase;
-        color: #333;
-        margin: 20px 0 12px;
-    }
-
-    .cr-divider {
-        border: 0;
-        border-top: 6px solid #333;
-        margin: 20px 0;
-        opacity: 1;
-    }
-
-    .cr-form-box label,
     .map-header h4 {
         font-size: 1.8rem;
         font-weight: bold;
@@ -118,14 +32,10 @@
         display: block;
         margin-bottom: 8px;
     }
-
-    .cr-form-box input[type="text"],
-    .cr-form-box input[type="number"],
-    .cr-form-box input[type="email"],
-    .cr-form-box select,
-    .cr-form-box textarea,
     .map-search-input {
         width: 100%;
+        flex: 1;
+        min-width: 220px;
         font-family: 'VT323', monospace;
         font-size: 1.6rem;
         padding: 12px;
@@ -133,44 +43,12 @@
         background-color: #f5f5f5;
         box-sizing: border-box;
         outline: none;
-    }
+    }  
 
-    .cr-form-box input[type="text"]:focus,
-    .cr-form-box input[type="number"]:focus,
-    .cr-form-box select:focus,
-    .cr-form-box textarea:focus,
+    
     .map-search-input:focus {
         background-color: #fffde7;
         border-color: #00a8f3;
-    }
-
-    .cr-form-box input[type="checkbox"] {
-        width: 24px;
-        height: 24px;
-        border: 4px solid #333;
-        cursor: pointer;
-        vertical-align: middle;
-        margin-right: 10px;
-        margin-top: -2px;
-    }
-
-    .help-text,
-    .map-subtitle,
-    .status-text {
-        font-size: 1.2rem;
-        color: #666;
-        display: block;
-        margin-top: 4px;
-    }
-
-    .cr-error {
-        color: #e53935;
-        font-size: 1.4rem;
-        font-weight: bold;
-        background-color: #ffebee;
-        padding: 8px;
-        border: 4px dashed #e53935;
-        margin-top: 5px;
     }
 
     .search-bar-row {
@@ -178,11 +56,6 @@
         gap: 10px;
         margin-bottom: 14px;
         flex-wrap: wrap;
-    }
-
-    .map-search-input {
-        flex: 1;
-        min-width: 220px;
     }
 
     #recruiter-job-map {
@@ -271,7 +144,7 @@
         {% csrf_token %}
 
         <div class="cr-layout">
-            <div class="cr-panel">
+            <div class="cr-job-shell">
                 <div class="cr-form-box">
                     {% if form.non_field_errors %}
                         <div class="cr-error mb-3">

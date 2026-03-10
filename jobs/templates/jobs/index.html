@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
   .hy-page {
@@ -44,9 +43,6 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='6' width='2' height='2' fill='white'/><rect x='5' y='1' width='4' height='2' fill='white'/><rect x='7' y='3' width='2' height='1' fill='white'/><rect x='3' y='3' width='8' height='10' fill='white'/><rect x='4' y='4' width='2' height='2' fill='black'/><rect x='5' y='8' width='4' height='3' fill='%23dddddd'/><rect x='4' y='13' width='2' height='2' fill='white'/><rect x='8' y='13' width='2' height='2' fill='white'/><rect x='11' y='4' width='2' height='9' fill='%23cccccc'/><rect x='3' y='13' width='8' height='1' fill='%23cccccc'/></svg>");
     pointer-events: none;
   }
-  .hy-btn:hover {
-    transform: translateY(-4px) scale(1.03);
-  }
   .hy-title {
     color: white;
     text-shadow: 3px 3px 0px #333;
@@ -85,7 +81,7 @@
 
   .hy-btn:hover {
     text-decoration: none !important;
-    transform: translateY(-2px);
+    transform: translateY(-4px) scale(1.03);
     filter: brightness(1.03);
   }
 
@@ -161,56 +157,7 @@
     box-shadow: 0 10px 0 rgba(62, 39, 35, 0.9);
   }
 
-  .lane-road {
-    background-color: #424242;
-    color: #fff;
-
-    background-image: repeating-linear-gradient(
-      to right,
-      transparent,
-      transparent 40px,
-      #fff 40px,
-      #fff 80px
-    );
-
-    background-size: 160px 6px;
-    background-position: 0 calc(100% - 8px);
-    background-repeat: repeat-x;
-
-    animation: roadMove 6s linear infinite;
-  }
-
-  .lane-grass {
-    background-color: #aad751;
-    color: #000;
-    border-bottom: 6px solid #8cbf3f;
-    background-image:
-      radial-gradient(circle at 12px 12px, rgba(255,255,255,0.18) 0 3px, transparent 3px),
-      radial-gradient(circle at 42px 20px, rgba(255,255,255,0.12) 0 2px, transparent 2px);
-    background-size: 70px 40px;
-  }
-
-  .lane-river {
-    background-color: #00a8f3;
-    color: #fff;
-    border-bottom: 6px solid #005f8a;
-
-    background-image: repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,0.15) 0px,
-      rgba(255,255,255,0.15) 18px,
-      transparent 18px,
-      transparent 42px
-    );
-
-    animation: riverFlow 8s linear infinite;
-  }
-
-  .hy-job-card:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 10px 0 rgba(62, 39, 35, 0.9);
-  }
-
+  
   .hy-job-card::before {
     content: "";
     position: absolute;
@@ -291,50 +238,6 @@
     text-align: center;
     font-size: 1.6rem;
   }
-  .press-start {
-    animation: pressBlink 1.2s infinite;
-  }
-  .lane-chicken {
-    position: absolute;
-    right: 20px;
-    bottom: 12px;
-    transition: transform 0.2s ease;
-  }
-  .hy-job-card:hover .lane-chicken {
-    animation: chickenHop 0.35s ease;
-}
-
-@keyframes chickenHop {
-  0%   { transform: translateY(0); }
-  40%  { transform: translateY(-12px); }
-  70%  { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-
-@keyframes pressBlink {
-  0% { opacity: 1 }
-  50% { opacity: 0.35 }
-  100% { opacity: 1 }
-}
-
-  @keyframes roadMove {
-    from {
-      background-position: 0 calc(100% - 8px);
-    }
-    to {
-      background-position: 160px calc(100% - 8px);
-    }
-  }
-
-  @keyframes riverFlow {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 120px 0;
-    }
-  }
 
   @media (max-width: 768px) {
     .hy-title {
@@ -349,24 +252,6 @@
       font-size: 1.45rem;
     }
   }
-
-@keyframes roadMove {
-  from {
-    background-position: 0 calc(100% - 8px);
-  }
-  to {
-    background-position: 160px calc(100% - 8px);
-  }
-}
-
-@keyframes riverFlow {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 120px 0;
-  }
-}
 </style>
 
 <div class="container hy-page">
@@ -394,7 +279,7 @@
       </p>
 
       {% if not user.is_authenticated %}
-        <div class="press-start">
+        <div class="pixel-blink">
           <a class="hy-btn hy-btn-primary" href="{% url 'users:signup' %}">
             PRESS START
           </a>
@@ -440,20 +325,6 @@
 
     {% for job in jobs %}
       <div class="hy-job-card {% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
-        <div class="lane-chicken">
-        <svg width="32" height="32" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-          </svg>
-        </div>
         <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
           <div>
             <div class="hy-job-title">

@@ -2,20 +2,117 @@
 {% block title %}Update Candidate Stage{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-  <h1 class="h4 mb-3">Update Stage</h1>
-
-  <div class="mb-3">
-    <div><b>Applicant:</b> {{ application.applicant.username }}</div>
-    <div><b>Job:</b> {{ application.job.title }}</div>
-    <div class="text-muted small">Applied {{ application.created_at|timesince }} ago</div>
+<div class="container mt-4 cr-theme">
+  <div class="cr-header cr-header-start">
+    <div>
+      <h1 class="cr-title">Update Stage</h1>
+      <div class="cr-subtitle">
+        {{ application.job.title }}
+      </div>
+    </div>
   </div>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-dark" type="submit">Save</button>
-    <a class="btn btn-outline-secondary" href="{% url 'applications:recruiter_pipeline' %}">Back</a>
-  </form>
+  <div class="cr-panel">
+    <div class="mb-3">
+      <div><strong>Applicant:</strong> {{ application.applicant.username }}</div>
+      <div><strong>Job:</strong> {{ application.job.title }}</div>
+      <div>Applied {{ application.created_at|timesince }} ago</div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <label class="cr-label" for="statusInput">Status</label>
+
+      <div class="pixel-dropdown" data-dropdown>
+        <input
+          type="hidden"
+          name="{{ form.status.html_name }}"
+          id="statusInput"
+          value="{{ form.status.value|default:application.status }}"
+        >
+
+        <button
+          type="button"
+          class="pixel-dropdown-toggle"
+          data-dropdown-toggle
+          aria-expanded="false"
+        >
+          <span data-dropdown-label>
+            {% if form.status.value == "review" %}
+              Review
+            {% elif form.status.value == "interview" %}
+              Interview
+            {% elif form.status.value == "offer" %}
+              Offer
+            {% elif form.status.value == "closed" %}
+              Closed
+            {% else %}
+              Applied
+            {% endif %}
+          </span>
+          <span class="pixel-caret">▼</span>
+        </button>
+
+        <div class="pixel-dropdown-menu" data-dropdown-menu>
+          <button
+            type="button"
+            class="pixel-dropdown-item {% if form.status.value == 'applied' or not form.status.value %}active{% endif %}"
+            data-value="applied"
+            data-label="Applied"
+          >
+            Applied
+          </button>
+
+          <button
+            type="button"
+            class="pixel-dropdown-item {% if form.status.value == 'review' %}active{% endif %}"
+            data-value="review"
+            data-label="Review"
+          >
+            Review
+          </button>
+
+          <button
+            type="button"
+            class="pixel-dropdown-item {% if form.status.value == 'interview' %}active{% endif %}"
+            data-value="interview"
+            data-label="Interview"
+          >
+            Interview
+          </button>
+
+          <button
+            type="button"
+            class="pixel-dropdown-item {% if form.status.value == 'offer' %}active{% endif %}"
+            data-value="offer"
+            data-label="Offer"
+          >
+            Offer
+          </button>
+
+          <button
+            type="button"
+            class="pixel-dropdown-item {% if form.status.value == 'closed' %}active{% endif %}"
+            data-value="closed"
+            data-label="Closed"
+          >
+            Closed
+          </button>
+        </div>
+      </div>
+
+      {% if form.status.errors %}
+        <div class="text-danger mt-2">
+          {{ form.status.errors }}
+        </div>
+      {% endif %}
+
+      <div class="d-flex gap-2 flex-wrap mt-4">
+        <button class="cr-btn cr-btn-primary" type="submit">Save</button>
+        <a class="cr-btn cr-btn-yellow" href="{% url 'applications:recruiter_pipeline' %}">Back</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

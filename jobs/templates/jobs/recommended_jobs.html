@@ -2,87 +2,8 @@
 {% block title %}Recommended Jobs Based on Skills{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
-  .cr-theme {
-    font-family: 'VT323', monospace;
-    font-size: 1.4rem;
-    color: #333;
-    background-color: #795548;
-    padding: 20px;
-    border: 8px solid #3e2723;
-    border-radius: 0;
-  }
-
-  .cr-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background-color: #aad751;
-    border: 6px solid #8cbf3f;
-    padding: 15px;
-    box-shadow: 0px 8px 0px #3e2723;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .cr-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .cr-title {
-    text-transform: uppercase;
-    color: #fff;
-    text-shadow: 3px 3px 0px #333;
-    font-size: 2.6rem;
-    margin: 0;
-    line-height: 1;
-  }
-
-  .cr-subtitle {
-    color: #f4ffe0;
-    font-size: 1.4rem;
-    margin: 4px 0 0 0;
-    text-shadow: 2px 2px 0px #5f7f2e;
-  }
-
-  .cr-btn,
-  .job-modal-box .btn,
-  .filters-card .btn {
-    display: inline-block;
-    padding: 8px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #000;
-    background-color: #fff;
-    border: 4px solid #000 !important;
-    border-bottom: 8px solid #000 !important;
-    border-radius: 0 !important;
-    cursor: pointer;
-    transition: transform 0.1s, border-bottom-width 0.1s, box-shadow 0.1s;
-    box-shadow: none !important;
-  }
-
-  .cr-btn:hover,
-  .job-modal-box .btn:hover,
-  .filters-card .btn:hover {
-    color: #000;
-    transform: translateY(-2px);
-  }
-
-  .cr-btn:active,
-  .job-modal-box .btn:active,
-  .filters-card .btn:active {
-    transform: translateY(4px);
-    border-bottom-width: 4px !important;
-  }
-
   .filters-card {
     background: #fff8dc;
     border: 6px solid #333;
@@ -443,95 +364,9 @@
   margin-bottom: 0;
   line-height: 1.05;
 }
-  .pixel-dropdown {
-  position: relative;
-  width: 100%;
-}
-
-.pixel-dropdown-toggle {
-  width: 100%;
-  min-height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 14px;
-  background: #f5f5f5;
-  border: 4px solid #333;
-  border-radius: 0;
-  font-family: 'VT323', monospace;
-  font-size: 1.3rem;
-  color: #222;
-  text-align: left;
-  box-shadow: none;
-  cursor: pointer;
-}
-
-.pixel-dropdown-toggle:focus {
-  outline: none;
-  border-color: #00a8f3;
-  background: #fffef2;
-}
-
-.pixel-dropdown.open .pixel-dropdown-toggle {
-  border-color: #00a8f3;
-  background: #fffef2;
-}
-
-.pixel-caret {
-  flex-shrink: 0;
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.pixel-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 2000;
-  display: none;
-  background: #fff8dc;
-  border: 4px solid #333;
-  box-shadow: 0px 6px 0px #3e2723;
-  padding: 6px;
-}
-
-.pixel-dropdown.open .pixel-dropdown-menu {
-  display: block;
-}
-
-.pixel-dropdown-item {
-  width: 100%;
-  display: block;
-  padding: 10px 12px;
-  background: #fff;
-  border: 3px solid #333;
-  border-radius: 0;
-  font-family: 'VT323', monospace;
-  font-size: 1.25rem;
-  color: #222;
-  text-align: left;
-  cursor: pointer;
-  margin-bottom: 6px;
-}
-
-.pixel-dropdown-item:last-child {
-  margin-bottom: 0;
-}
-
-.pixel-dropdown-item:hover {
-  background: #e8f5b7;
-}
-
-.pixel-dropdown-item.active {
-  background: #aad751;
-  color: #fff;
-  text-shadow: 2px 2px 0px #5f7f2e;
-}
 </style>
 
-<div class="container py-4 cr-theme">
+<div class="cr-theme">
   <div class="cr-header">
     <div class="cr-title-wrap">
       <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -553,7 +388,7 @@
       </div>
     </div>
 
-    <a class="cr-btn" href="{% url 'jobs:home' %}">Back to All Jobs</a>
+    <a class="cr-btn cr-btn-secondary" href="{% url 'jobs:home' %}">Back to All Jobs</a>
   </div>
 
   {% if not user_skills %}
@@ -692,10 +527,10 @@
         </div>
 
         <div class="col-12 col-md-2 d-flex gap-2 mt-md-4 pt-md-2">
-          <button type="submit" class="btn">
+          <button type="submit" class="cr-btn cr-btn-primary">
             Apply
           </button>
-          <a href="{% url 'jobs:recommended_jobs' %}" class="btn">
+          <a href="{% url 'jobs:recommended_jobs' %}" class="cr-btn">
             Reset
           </a>
         </div>

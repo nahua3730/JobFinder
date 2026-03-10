@@ -2,16 +2,460 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-<div class="container mt-5 cr-theme">
+<style>
+  .signup-shell {
+    max-width: 860px;
+    margin: 20px auto 30px;
+    position: relative;
+  }
 
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
+  .signup-banner {
+    background: #1f1f1f;
+    color: #ffcc00;
+    border: 6px solid #000;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0px #000;
+  }
 
-      <div class="cr-header text-center">
-        <h2 class="cr-title">
-          <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-2">
+  .signup-banner .label {
+    color: #fff;
+    margin-right: 10px;
+  }
+
+  .signup-header-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+
+  .signup-corner-decor {
+    position: absolute;
+    right: 18px;
+    top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .signup-coin {
+    width: 36px;
+    height: 36px;
+    background: #ffcc00;
+    border: 4px solid #000;
+    box-shadow: 0px 4px 0px #3e2723;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #000;
+    animation: coinBob 1.4s infinite ease-in-out;
+  }
+
+  .signup-mini-chicken {
+    width: 32px;
+    height: 32px;
+    animation: chickenBob 1.6s infinite ease-in-out;
+    transform-origin: center bottom;
+  }
+
+  .signup-subtitle {
+    color: #f4ffe0;
+    font-size: 1.1rem;
+    text-shadow: 2px 2px 0px #5f7f2e;
+    text-transform: uppercase;
+    margin: 8px 0 0;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  .signup-subtitle-2 {
+    font-size: 0.95rem;
+    color: #eff8d2;
+    text-transform: uppercase;
+    margin-top: 4px;
+    opacity: 0.95;
+    text-align: center;
+  }
+
+  .signup-role-select {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .signup-role-title {
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .signup-role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .signup-role-card {
+    position: relative;
+    background: #f5f5f5;
+    border: 4px solid #333;
+    box-shadow: 0px 4px 0px #b8a98e;
+    padding: 10px;
+    text-transform: uppercase;
+    min-height: 74px;
+    text-align: left;
+    width: 100%;
+    font-family: 'VT323', monospace;
+    cursor: pointer;
+  }
+
+  .signup-role-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .signup-role-card.active {
+    background: #e8f5b7;
+    border-color: #00a8f3;
+  }
+
+  .signup-role-arrow {
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    font-size: 1.2rem;
+  }
+
+  .signup-role-name {
+    font-size: 1.2rem;
+    padding-left: 22px;
+  }
+
+  .signup-role-desc {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    padding-left: 22px;
+    margin-top: 4px;
+  }
+
+  .signup-card {
+    position: relative;
+    overflow: hidden;
+    padding-top: 20px;
+  }
+
+  .signup-card::before {
+    content: "NEW GAME";
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    font-size: 1rem;
+    opacity: 0.28;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .signup-card::after {
+    content: "CREATE PLAYER";
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    font-size: 1rem;
+    opacity: 0.28;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .signup-form p {
+    margin-bottom: 12px;
+  }
+
+  .signup-form label {
+    display: block;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+  }
+
+  .signup-form input[type="text"],
+  .signup-form input[type="password"],
+  .signup-form input[type="email"],
+  .signup-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 5px solid #333;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    background: #f5f5f5;
+    box-sizing: border-box;
+  }
+
+  .signup-form input:focus,
+  .signup-form select:focus {
+    outline: none;
+    border-color: #00a8f3;
+    background: #fffef2;
+    box-shadow: 0 0 0 4px rgba(0, 168, 243, 0.12);
+  }
+
+  .signup-fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 14px;
+  }
+
+  .signup-field-full {
+    grid-column: 1 / -1;
+  }
+
+  .signup-actions {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .signup-actions .cr-btn {
+    text-align: center;
+    min-height: 58px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.45rem;
+    letter-spacing: 1px;
+  }
+
+  .signup-primary {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .signup-primary::after {
+    content: "★";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .signup-help {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 1rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+  }
+
+  .signup-footer-hint {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .signup-chip {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #fff8dc;
+    border: 4px solid #333;
+    box-shadow: 0px 4px 0px #3e2723;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+  }
+
+  .cr-error-box {
+    color: #c62828;
+    font-size: 1.05rem;
+    font-weight: bold;
+    background: #ffebee;
+    padding: 10px 12px;
+    border: 4px dashed #c62828;
+    margin-bottom: 14px;
+  }
+
+  .cr-error-inline {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: #c62828;
+  }
+
+  .field-error input,
+  .field-error select,
+  .field-error textarea {
+    border-color: #c62828 !important;
+    background: #fff5f5 !important;
+  }
+
+  .password-checklist-block {
+    width: 100%;
+    max-width: 520px;
+    margin: 14px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .password-title {
+    margin: 0 0 10px;
+    text-align: center;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    color: #444;
+    letter-spacing: 1px;
+  }
+
+  .password-rules {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .password-rule {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 14px;
+    border: 5px solid #333;
+    background: #e6e6e6;
+    text-align: left;
+    text-transform: uppercase;
+    box-shadow: 0px 6px 0px #3e2723;
+    letter-spacing: 0.6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.15s ease;
+  }
+
+  .password-rule::before {
+    content: "○";
+    font-size: 1.1rem;
+    opacity: 0.5;
+  }
+
+  .password-rule.ok {
+    background: #b9e0b9;
+    color: #0f4f1f;
+    border-color: #2e7d32;
+    transform: translateY(-2px);
+  }
+
+  .password-rule.ok::before {
+    content: "✔";
+  }
+
+  .password-rule.bad {
+    background: #ffd7d7;
+    color: #7a1e1e;
+    border-color: #c62828;
+  }
+
+  .password-rule.bad::before {
+    content: "✖";
+  }
+
+  .level-clear-banner {
+    margin: 14px auto 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px 12px;
+    background: #ffcc00;
+    color: #000;
+    border: 5px solid #000;
+    box-shadow: 0px 6px 0px #3e2723;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    display: none;
+  }
+
+  .level-clear-banner.show {
+    display: block;
+    animation: levelClearPop 0.4s ease;
+  }
+
+  @keyframes levelClearPop {
+    0% { transform: scale(0.85); opacity: 0; }
+    60% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes coinBob {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+
+  @keyframes chickenBob {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(-4deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  @media (max-width: 768px) {
+    .signup-shell {
+      margin: 16px auto 28px;
+    }
+
+    .signup-role-grid,
+    .signup-fields-grid,
+    .signup-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .signup-field-full {
+      grid-column: auto;
+    }
+
+    .signup-actions .cr-btn {
+      min-height: 56px;
+      font-size: 1.35rem;
+    }
+
+    .signup-subtitle {
+      font-size: 1.05rem;
+    }
+
+    .signup-subtitle-2 {
+      font-size: 0.95rem;
+    }
+
+    .signup-corner-decor {
+      position: static;
+      justify-content: center;
+      margin-top: 10px;
+    }
+  }
+</style>
+
+<div class="cr-theme signup-shell">
+
+  <div class="signup-banner">
+    <span class="label">New Player</span>
+    <span>Create Your Profile</span>
+  </div>
+
+  <div class="signup-header-wrap">
+    <div class="cr-header cr-header-start">
+      <div class="cr-title-wrap w-100">
+        <div class="cr-title">
+          <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
             <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
             <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
@@ -23,30 +467,262 @@
             <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
             <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
           </svg>
-          CREATE ACCOUNT
-        </h2>
+          Create Player
+        </div>
+
+        <p class="signup-subtitle">Choose your path and begin the journey</p>
+        <p class="signup-subtitle-2">Build your profile and unlock the board</p>
       </div>
+    </div>
 
-      <div class="cr-panel">
-        <form method="post">
-          {% csrf_token %}
-
-          <div class="row g-3">
-            {{ form.as_p }}
-          </div>
-
-          <div class="mt-4 text-center">
-            <button type="submit" class="cr-btn cr-btn-primary w-100">
-              Sign Up
-            </button>
-          </div>
-
-        </form>
-      </div>
-
+    <div class="signup-corner-decor" aria-hidden="true">
+      <div class="signup-coin">1UP</div>
+      <svg class="signup-mini-chicken" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
     </div>
   </div>
 
+  <div class="signup-role-select">
+    <div class="signup-role-title">Choose Your Class</div>
+    <div class="signup-role-grid">
+      <button type="button" class="signup-role-card active" data-role="jobseeker">
+        <div class="signup-role-arrow">▶</div>
+        <div class="signup-role-name">Job Seeker</div>
+        <div class="signup-role-desc">Search jobs and level up your career</div>
+      </button>
+
+      <button type="button" class="signup-role-card" data-role="recruiter">
+        <div class="signup-role-arrow">○</div>
+        <div class="signup-role-name">Recruiter</div>
+        <div class="signup-role-desc">Post jobs and manage the player queue</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="cr-panel signup-card">
+    <form method="post" class="signup-form" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="role" id="signupRole" value="jobseeker">
+
+      {% if form.errors %}
+        <div class="cr-error-box">
+          {{ form.non_field_errors }}
+          {% for field in form %}
+            {% for error in field.errors %}
+              <div>{{ field.label }}: {{ error }}</div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="signup-fields-grid">
+        <p class="{% if form.first_name.errors %}field-error{% endif %}">
+          <label for="{{ form.first_name.id_for_label }}">First Name</label>
+          {{ form.first_name }}
+          {% for error in form.first_name.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <p class="{% if form.last_name.errors %}field-error{% endif %}">
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+          {{ form.last_name }}
+          {% for error in form.last_name.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <p class="{% if form.username.errors %}field-error{% endif %}">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {% for error in form.username.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <p class="{% if form.email.errors %}field-error{% endif %}">
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+          {% for error in form.email.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <p class="{% if form.password1.errors %}field-error{% endif %} signup-field-full">
+          <label for="{{ form.password1.id_for_label }}">Password</label>
+          {{ form.password1 }}
+          {% for error in form.password1.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <p class="{% if form.password2.errors %}field-error{% endif %} signup-field-full">
+          <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+          {{ form.password2 }}
+          {% for error in form.password2.errors %}
+            <div class="cr-error-inline">{{ error }}</div>
+          {% endfor %}
+        </p>
+
+        <div class="signup-field-full">
+          <div class="password-checklist-block">
+            <div class="password-title">Mission Objectives</div>
+
+            <div class="password-rules" id="passwordRules">
+              <div class="password-rule" data-rule="length">At least 8 characters</div>
+              <div class="password-rule" data-rule="notnumeric">Cannot be entirely numeric</div>
+              <div class="password-rule" data-rule="common">Should not be a very common password</div>
+              <div class="password-rule" data-rule="match">Passwords must match</div>
+            </div>
+
+            <div id="levelClearBanner" class="level-clear-banner">Level Clear!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="signup-actions">
+        <button type="submit" class="cr-btn cr-btn-primary press-start signup-primary">
+          Start Game
+        </button>
+
+        <a href="{% url 'users:login' %}" class="cr-btn cr-btn-secondary">
+          Returning Player
+        </a>
+      </div>
+    </form>
+
+    <div class="signup-help" id="signupHelpText">
+      Create a job seeker profile and begin your journey
+    </div>
+
+    <div class="signup-footer-hint">
+      <span class="signup-chip">Class Select</span>
+      <span class="signup-chip">Profile Save</span>
+      <span class="signup-chip">Next Level: Login</span>
+    </div>
+  </div>
 </div>
+
+<script>
+  const roleCards = document.querySelectorAll(".signup-role-card");
+  const signupRoleInput = document.getElementById("signupRole");
+  const signupHelpText = document.getElementById("signupHelpText");
+  const levelClearBanner = document.getElementById("levelClearBanner");
+
+  function setSignupRole(role) {
+    roleCards.forEach(card => {
+      const active = card.dataset.role === role;
+      card.classList.toggle("active", active);
+
+      const arrow = card.querySelector(".signup-role-arrow");
+      if (arrow) {
+        arrow.textContent = active ? "▶" : "○";
+      }
+    });
+
+    signupRoleInput.value = role;
+
+    if (role === "recruiter") {
+      signupHelpText.textContent = "Create a recruiter profile and manage your hiring pipeline";
+    } else {
+      signupHelpText.textContent = "Create a job seeker profile and begin your journey";
+    }
+  }
+
+  const password1 = document.getElementById("id_password1");
+  const password2 = document.getElementById("id_password2");
+
+  const rules = {
+    length: document.querySelector('[data-rule="length"]'),
+    notnumeric: document.querySelector('[data-rule="notnumeric"]'),
+    common: document.querySelector('[data-rule="common"]'),
+    match: document.querySelector('[data-rule="match"]')
+  };
+
+  const commonPasswords = new Set([
+    "password", "12345678", "123456789", "qwerty", "abc123",
+    "password123", "11111111", "123123123", "letmein"
+  ]);
+
+  function setRule(el, ok, neutral = false) {
+    if (!el) return;
+    el.classList.remove("ok", "bad");
+    if (!neutral) {
+      el.classList.add(ok ? "ok" : "bad");
+    }
+  }
+
+  function updatePasswordRules() {
+    const p1 = password1 ? password1.value : "";
+    const p2 = password2 ? password2.value : "";
+
+    let lengthOk = false;
+    let notNumericOk = false;
+    let commonOk = false;
+    let matchOk = false;
+
+    if (!p1) {
+      setRule(rules.length, false, true);
+      setRule(rules.notnumeric, false, true);
+      setRule(rules.common, false, true);
+    } else {
+      lengthOk = p1.length >= 8;
+      notNumericOk = !/^\d+$/.test(p1);
+      commonOk = !commonPasswords.has(p1.toLowerCase());
+
+      setRule(rules.length, lengthOk);
+      setRule(rules.notnumeric, notNumericOk);
+      setRule(rules.common, commonOk);
+    }
+
+    if (!p2) {
+      setRule(rules.match, false, true);
+    } else {
+      matchOk = p1 === p2;
+      setRule(rules.match, matchOk);
+    }
+
+    const allGood = p1 && p2 && lengthOk && notNumericOk && commonOk && matchOk;
+
+    if (levelClearBanner) {
+      levelClearBanner.classList.toggle("show", !!allGood);
+    }
+  }
+
+  roleCards.forEach(card => {
+    card.addEventListener("click", () => {
+      setSignupRole(card.dataset.role);
+    });
+  });
+
+  if (password1) password1.addEventListener("input", updatePasswordRules);
+  if (password2) password2.addEventListener("input", updatePasswordRules);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    setSignupRole("jobseeker");
+    updatePasswordRules();
+
+    const errorField = document.querySelector(".field-error input, .field-error select, .field-error textarea");
+    if (errorField) {
+      errorField.focus();
+      return;
+    }
+
+    const firstInput = document.querySelector(".signup-form input:not([type='hidden'])");
+    if (firstInput) {
+      firstInput.focus();
+    }
+  });
+</script>
 
 {% endblock %}

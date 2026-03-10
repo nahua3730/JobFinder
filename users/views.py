@@ -61,9 +61,9 @@ def signup(request):
         if form.is_valid():
             user = form.save(commit=False)
 
-            is_recruiter = form.cleaned_data.get("is_recruiter")
-            user.is_recruiter = bool(is_recruiter)
-            user.is_job_seeker = not user.is_recruiter
+            role = request.POST.get("role")
+            user.is_recruiter = role == "recruiter"
+            user.is_job_seeker = role != "recruiter"
             user.save()
 
             if user.is_recruiter:

@@ -5,63 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
-  .cr-theme {
-    font-family: 'VT323', monospace;
-    font-size: 1.4rem;
-    color: #333;
-    background-color: #795548;
-    padding: 20px;
-    border: 8px solid #3e2723;
-    border-radius: 0;
-  }
-
-  .cr-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-    background-color: #aad751;
-    border: 6px solid #8cbf3f;
-    padding: 15px;
-    box-shadow: 0px 8px 0px #3e2723;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .cr-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .cr-title {
-    text-transform: uppercase;
-    color: #fff;
-    text-shadow: 3px 3px 0px #333;
-    font-size: 2.6rem;
-    margin: 0;
-    line-height: 1;
-  }
-
-  .cr-subtitle {
-    color: #f4ffe0;
-    font-size: 1.4rem;
-    margin: 4px 0 0 0;
-    text-shadow: 2px 2px 0px #5f7f2e;
-  }
-
-  .pixel-panel {
-    background: #fff8dc;
-    border: 6px solid #333;
-    border-radius: 0;
-    box-shadow: 0px 6px 0px #3e2723;
-    height: 100%;
-  }
-
-  .pixel-panel .card-body {
-    padding: 24px;
-  }
-
   .section-title {
     font-size: 2.2rem;
     line-height: 1;
@@ -74,13 +17,6 @@
     font-size: 1.3rem;
     color: #555 !important;
     margin-bottom: 1.25rem;
-  }
-
-  .pixel-divider {
-    border: 0;
-    border-top: 4px solid #333;
-    opacity: 1;
-    margin: 1.1rem 0 1rem;
   }
 
   .settings-section-title {
@@ -120,33 +56,6 @@
     color: #666 !important;
     margin-top: 4px;
     line-height: 1.15;
-  }
-
-  .cr-btn {
-    display: inline-block;
-    padding: 8px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #000;
-    background-color: #fff;
-    border: 4px solid #000 !important;
-    border-bottom: 8px solid #000 !important;
-    border-radius: 0 !important;
-    cursor: pointer;
-    transition: transform 0.1s, border-bottom-width 0.1s;
-    box-shadow: none !important;
-  }
-
-  .cr-btn:hover {
-    color: #000;
-    transform: translateY(-2px);
-  }
-
-  .cr-btn:active {
-    transform: translateY(4px);
-    border-bottom-width: 4px !important;
   }
 
   .preview-profile-header {
@@ -193,95 +102,8 @@
     line-height: 1.2;
   }
 
-  .preview-pill {
-    display: inline-block;
-    padding: 0.28rem 0.55rem;
-    border-radius: 0;
-    background: #f1f1f1;
-    color: #333;
-    font-size: 1.1rem;
-    border: 3px solid #333;
-    line-height: 1;
-  }
-
   .panel-multiline {
     white-space: pre-line;
-  }
-
-  .cr-alert {
-    background: #fff;
-    border: 4px solid #333;
-    border-radius: 0;
-    color: #222;
-    box-shadow: 0px 4px 0px #b8a98e;
-    font-size: 1.3rem;
-    margin: 0;
-  }
-
-  .save-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #aad751;
-    color: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 12px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.35rem;
-    z-index: 2000;
-    text-shadow: 2px 2px 0px #5f7f2e;
-  }
-
-  .pixel-switch {
-    display: inline-flex;
-    align-items: center;
-  }
-
-  .pixel-switch input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 64px;
-    height: 32px;
-    border: 4px solid #333;
-    background: #d7d7d7;
-    position: relative;
-    cursor: pointer;
-    border-radius: 0;
-    margin: 0;
-    box-shadow: none;
-    transition: background 0.12s ease;
-  }
-
-  .pixel-switch input[type="checkbox"]::before {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border: 4px solid #333;
-    transition: transform 0.12s ease;
-  }
-
-  .pixel-switch input[type="checkbox"]:checked {
-    background: #4caf50;
-  }
-
-  .pixel-switch input[type="checkbox"]:checked::before {
-    transform: translateX(28px);
-  }
-
-  .pixel-switch input[type="checkbox"]:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    background: #bdbdbd;
-  }
-
-  .pixel-switch input[type="checkbox"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 168, 243, 0.22);
   }
 
   @media (max-width: 991px) {
@@ -311,9 +133,6 @@
       gap: 12px;
     }
   }
-  .alert {
-  display: none !important;
-}
 </style>
 
 <div class="container py-4 cr-theme">
