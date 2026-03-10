@@ -1,3 +1,4 @@
+from applications.models import Application, Notification
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -40,6 +41,14 @@ def apply_to_job(request, job_id):
             if not app.status:
                 app.status = Application.Status.APPLIED
             app.save()
+
+            if not existing:
+                Notification.objects.create(
+                    recipient=job.recruiter,
+                    message=f"New Applicant! {request.user.username} applied for {job.title}.",
+                    link=f"/{job.id}/applications/"
+                )
+
             messages.success(request, "Application submitted!")
             return redirect("jobs:job_detail", job_id=job.id)
     else:
@@ -301,7 +310,7 @@ def delete_saved_search(request, search_id):
 
 
 @login_required
-def notifications(request):
+def notifications_view(request):
     if not request.user.is_recruiter:
         return redirect("jobs:home")
 
@@ -317,3 +326,18 @@ def notifications(request):
         return redirect("applications:notifications")
 
     return render(request, "applications/notifications.html", {"notifications": notes})
+
+def notifications(request):
+    user_notifications = request.user.notifications.all()
+    
+    context = {
+        'notifications': user_notifications
+    }
+    return render(request, 'applications/notifications.html', context)
+
+@login_required
+def mark_all_read(request):
+    if request.method == "POST":
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+        
+    return redirect('applications:notifications')

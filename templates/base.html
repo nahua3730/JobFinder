@@ -17,76 +17,7 @@
 
   <style>
     body {
-      background: #e7e2cf;
-      font-family: 'VT323', monospace;
-    }
-
-    .pixel-navbar {
-      background: #795548;
-      border-bottom: 8px solid #3e2723;
-      box-shadow: 0px 6px 0px #2b1d1a;
-    }
-
-    .pixel-navbar .navbar-brand {
-      font-size: 2rem;
-      text-transform: uppercase;
-      color: #fff !important;
-      text-shadow: 3px 3px 0px #333;
-      letter-spacing: 1px;
-    }
-
-    .pixel-navbar .nav-link {
-      font-size: 1.35rem;
-      color: #fff !important;
-      text-shadow: 2px 2px 0px #333;
-      padding-left: 12px;
-      padding-right: 12px;
-    }
-
-    .pixel-navbar .nav-link:hover {
-      color: #f4ffe0 !important;
-    }
-
-    .pixel-navbar .navbar-toggler {
-      border: 4px solid #000;
-      border-radius: 0;
-      background: #fff;
-    }
-
-    .pixel-footer {
-      margin-top: 60px;
-      background: #795548;
-      border-top: 8px solid #3e2723;
-      box-shadow: inset 0px 6px 0px #5d4037;
-      padding: 30px 0;
-      color: #fff;
-    }
-
-    .pixel-footer b {
-      font-size: 1.4rem;
-      text-shadow: 2px 2px 0px #333;
-    }
-
-    .pixel-footer p {
-      font-size: 1.2rem;
-      margin-bottom: 8px;
-    }
-
-    .pixel-footer hr {
-      border-top: 4px solid #fff;
-      width: 80px;
-      opacity: 1;
-    }
-
-    .alert {
-      font-family: 'VT323', monospace;
-      font-size: 1.3rem;
-      border-radius: 0;
-      border: 4px solid #333;
-      box-shadow: 0px 4px 0px #b8a98e;
-    }
-    body {
-      background: #e7e2cf;
+      background: #e7e2cf; 
       font-family: 'VT323', monospace;
       position: relative;
     }
@@ -97,128 +28,482 @@
       overflow: visible;
     }
 
+    #cr-fullscreen-loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #424242; 
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), opacity 0.8s ease;
+      box-shadow: 0px 20px 50px rgba(0,0,0,0.8); 
+    }
+
+    #cr-fullscreen-loader::before {
+      content: "";
+      position: absolute;
+      top: 50%; left: 0;
+      width: 200%; height: 12px;
+      transform: translateY(-50%);
+      background-image: repeating-linear-gradient(to right, transparent, transparent 60px, #fff 60px, #fff 120px);
+      animation: drive-lane-fast 1s linear infinite;
+    }
+
+    @keyframes drive-lane-fast {
+      from { transform: translateY(-50%) translateX(0); }
+      to { transform: translateY(-50%) translateX(-120px); }
+    }
+
+    #intro-car-wrapper {
+      position: absolute;
+      top: 50%;
+      left: -400px; 
+      transform: translateY(-50%) scale(1.9); 
+      z-index: 100000;
+    }
+
+    .animate-full-car {
+      animation: drive-full-screen 4.5s ease-in-out forwards;
+    }
+
+    @keyframes drive-full-screen {
+      0% { left: -400px; }
+      100% { left: 120vw; } 
+    }
+
+    .loader-slide-up {
+      transform: translateY(-100vh);
+      opacity: 0;
+    }
+
+    #main-content-wrapper {
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    #main-content-wrapper.page-reveal {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .pixel-navbar {
+      background: #aad751;
+      border-bottom: 12px solid #795548; 
+      box-shadow: 0px 8px 0px #3e2723;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      position: relative;
+      z-index: 100;
+    }
+
+    .pixel-navbar::after {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background-image: repeating-linear-gradient(to right, #8cbf3f 0px, #8cbf3f 20px, transparent 20px, transparent 40px);
+      z-index: 1;
+    }
+
+    .brand-signpost {
+      background-color: #8D6E63; 
+      border: 6px solid #4E342E;
+      padding: 6px 16px 4px 16px;
+      color: #fff !important;
+      text-transform: uppercase;
+      font-size: 2.6rem;
+      text-shadow: 2px 2px 0px #3E2723;
+      box-shadow: 0px 6px 0px #3E2723;
+      transform: rotate(-3deg); 
+      display: flex;
+      align-items: center;
+      position: relative;
+      text-decoration: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .brand-signpost::before,
+    .brand-signpost::after {
+      content: "";
+      position: absolute;
+      width: 8px; height: 8px;
+      background: #B0BEC5; border: 2px solid #263238;
+      top: 50%; transform: translateY(-50%);
+    }
+    .brand-signpost::before { left: -16px; }
+    .brand-signpost::after { right: -16px; }
+
+    .brand-signpost:hover {
+      transform: rotate(0deg) scale(1.02);
+      color: #ffcc00 !important;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .nav-chicken {
+      margin-right: 15px;
+      animation: nav-hop 0.4s infinite alternate steps(2);
+    }
+
+    @keyframes nav-hop {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    /* Scattered Buttons */
+    .pixel-navbar .nav-link {
+      font-size: 1.5rem;
+      color: #333 !important;
+      background: #fff;
+      border: 4px solid #333;
+      border-bottom: 6px solid #333;
+      margin: 8px 6px;
+      padding: 6px 16px;
+      text-transform: uppercase;
+      transition: all 0.15s steps(3); 
+      position: relative;
+    }
+
+    @media (min-width: 992px) {
+      .pixel-navbar .nav-link:nth-of-type(odd) { transform: rotate(-4deg) translateY(2px); }
+      .pixel-navbar .nav-link:nth-of-type(even) { transform: rotate(3deg) translateY(-2px); }
+      
+      .pixel-navbar .nav-link:hover {
+        background: #ffcc00; 
+        color: #000 !important;
+        transform: translateY(-10px) rotate(0deg) scale(1.05) !important;
+        box-shadow: 0px 12px 0px rgba(62, 39, 35, 0.4); 
+      }
+    }
+
+    @media (max-width: 991px) {
+      .pixel-navbar .nav-link:hover {
+        background: #ffcc00;
+        transform: translateY(-4px);
+      }
+    }
+
+    .pixel-navbar .nav-link:active {
+      transform: translateY(2px) !important;
+      border-bottom: 2px solid #333;
+      box-shadow: none !important;
+    }
+
+    .nav-link-logout { background: #e53935 !important; color: #fff !important; }
+    .nav-link-logout:hover { background: #c62828 !important; }
+
+    .pixel-navbar .navbar-toggler {
+      border: 4px solid #333; border-bottom: 8px solid #333;
+      border-radius: 0; background: #ffcc00; padding: 10px;
+    }
+    .pixel-navbar .navbar-toggler:active {
+      transform: translateY(4px); border-bottom: 4px solid #333;
+    }
+
+    .cr-notification-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #e53935; 
+      color: white;
+      font-size: 1.1rem;
+      padding: 2px 8px;
+      border: 3px solid #333;
+      box-shadow: 2px 2px 0px #333;
+      animation: pulse-red 1.5s infinite;
+      z-index: 10;
+    }
+
+    @keyframes pulse-red {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15) translateY(-2px); }
+      100% { transform: scale(1); }
+    }
+
     .pixel-footer {
       position: relative;
       z-index: 1;
-      margin-top: 60px;
-      background: #795548;
-      border-top: 8px solid #3e2723;
-      box-shadow: inset 0px 6px 0px #5d4037;
-      padding: 30px 0;
+      margin-top: 80px;
+      background: #424242; 
+      border-top: 8px solid #333;
+      box-shadow: inset 0px 8px 0px #222;
+      padding: 50px 0 30px 0;
       color: #fff;
+      overflow: hidden;
+    }
+
+    .pixel-footer::before {
+      content: "";
+      position: absolute;
+      top: 25px; left: 0;
+      width: 200%; height: 8px;
+      background-image: repeating-linear-gradient(to right, transparent, transparent 40px, #fff 40px, #fff 80px);
+      animation: drive-lane 3s linear infinite;
+    }
+
+    @keyframes drive-lane {
+      from { transform: translateX(0); }
+      to { transform: translateX(-80px); }
+    }
+
+    .footer-car {
+      position: absolute;
+      top: 5px; right: -120px;
+      width: 70px; height: 35px;
+      animation: drive-car 8s linear infinite;
+      z-index: 2;
+    }
+
+    @keyframes drive-car {
+      0% { right: -120px; }
+      100% { right: 100vw; }
+    }
+
+    .pixel-footer b { font-size: 1.8rem; text-shadow: 2px 2px 0px #222; }
+    .pixel-footer p { font-size: 1.3rem; margin-bottom: 8px; color: #ccc; }
+    .pixel-footer hr { border-top: 6px solid #fff; width: 80px; opacity: 1; margin: 10px 0 15px 0; }
+    .alert {
+      font-family: 'VT323', monospace; font-size: 1.4rem; border-radius: 0;
+      border: 4px solid #333; box-shadow: 4px 4px 0px #3e2723; text-transform: uppercase;
     }
   </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const loader = document.getElementById('cr-fullscreen-loader');
+      const carWrapper = document.getElementById('intro-car-wrapper');
+      const mainContent = document.getElementById('main-content-wrapper');
+
+      if (!sessionStorage.getItem('crSiteSplashPlayed')) {
+        
+        document.body.style.overflow = 'hidden';
+
+        carWrapper.classList.add('animate-full-car');
+
+        setTimeout(() => {
+          loader.classList.add('loader-slide-up');
+          mainContent.classList.add('page-reveal');
+          document.body.style.overflow = 'auto'; 
+          sessionStorage.setItem('crSiteSplashPlayed', 'true');
+        }, 3700);
+
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 5000);
+
+      } else {
+        loader.style.display = 'none';
+        mainContent.classList.add('page-reveal');
+        mainContent.style.transition = 'none'; 
+      }
+    });
+  </script>
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg pixel-navbar">
-    <div class="container">
+  <div id="cr-fullscreen-loader">
+    <div id="intro-car-wrapper">
+      
+      <svg style="width: 200px; height: 130px; position: relative;" viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+        
+        <rect x="125" y="10" width="4" height="35" fill="#ccc" stroke="#333" stroke-width="2"/>
+        <polygon points="125,12 105,18 125,24" fill="#d4af37" stroke="#333" stroke-width="2"/>
 
-      <a class="navbar-brand" href="{% url 'jobs:home' %}">
-        GT Job Search
-      </a>
+        <svg x="40" y="5" width="45" height="45" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="6" width="2" height="2" fill="#ff9800"/> 
+            <rect x="5" y="1" width="4" height="2" fill="#e53935"/> 
+            <rect x="7" y="3" width="2" height="1" fill="#e53935"/> 
+            <rect x="3" y="1" width="8" height="11" fill="#ffffff"/>
+            <rect x="4" y="2" width="2" height="2" fill="#000000"/> 
+            <rect x="5" y="6" width="4" height="3" fill="#dddddd"/> 
+        </svg>
 
-      <button class="navbar-toggler" type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNavAltMarkup">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <rect x="30" y="45" width="55" height="25" fill="#d4af37" stroke="#333" stroke-width="5"/>
+        
+        <rect x="85" y="45" width="35" height="25" fill="#d4af37" stroke="#333" stroke-width="5"/>
+        
+        <rect x="120" y="40" width="10" height="30" fill="#f5f5f5" stroke="#333" stroke-width="4"/>
 
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
+        <rect x="80" y="25" width="5" height="20" fill="#d4af37" stroke="#333" stroke-width="3"/>
+        <rect x="85" y="28" width="10" height="14" fill="#424242" opacity="0.6"/> <rect x="10" y="45" width="20" height="25" fill="#d4af37" stroke="#333" stroke-width="5"/>
 
-          {% if not user.is_authenticated or user.is_job_seeker %}
-            <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
-            <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
-          {% endif %}
+        <rect x="95" y="65" width="35" height="10" fill="#fff" stroke="#333" stroke-width="4"/>
+        <rect x="5" y="65" width="35" height="10" fill="#fff" stroke="#333" stroke-width="4"/>
+        <rect x="40" y="70" width="55" height="5" fill="#fff" stroke="#333" stroke-width="3"/>
 
-          {% if user.is_authenticated and user.is_job_seeker %}
-            <a class="nav-link" href="{% url 'applications:my_applications' %}">
-              My Applications
-            </a>
-          {% endif %}
+        <rect x="10" y="70" width="24" height="24" fill="#333"/>
+        <rect x="14" y="74" width="16" height="16" fill="#fff"/>
+        <rect x="18" y="78" width="8" height="8" fill="#d4af37"/>
 
-          {% if user.is_authenticated %}
+        <rect x="100" y="70" width="24" height="24" fill="#333"/>
+        <rect x="104" y="74" width="16" height="16" fill="#fff"/>
+        <rect x="108" y="78" width="8" height="8" fill="#d4af37"/>
 
-            {% if user.is_recruiter %}
-              <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
-              <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
-              <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Candidate Search</a>
-              <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
+        <rect x="115" y="48" width="10" height="10" fill="#fff" stroke="#333" stroke-width="3"/>
 
-              <a class="nav-link" href="{% url 'applications:saved_searches' %}">Saved Searches</a>
-              <a class="nav-link" href="{% url 'applications:notifications' %}">
-                <i class="fa-solid fa-bell"></i> Notifications
-              </a>
-            {% else %}
-              <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
-            {% endif %}
+      </svg>
 
-            <div class="vr bg-white mx-2 d-none d-lg-block"></div>
-
-            {% if user.is_job_seeker %}
-              <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
-            {% else %}
-              <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
-            {% endif %}
-
-            <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
-              {% csrf_token %}
-            </form>
-
-            <a class="nav-link"
-               href="#"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-              Logout ({{ user.username }})
-            </a>
-
-          {% else %}
-
-            <a class="nav-link" href="{% url 'users:login' %}">Login</a>
-            <a class="nav-link" href="{% url 'users:signup' %}">Sign Up</a>
-
-          {% endif %}
-
-        </div>
-      </div>
     </div>
-  </nav>
-
-  <div class="container mt-4">
-
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
-
-    {% block content %}
-    {% endblock content %}
-
   </div>
 
-  <section class="pixel-footer d-none d-md-block">
-    <div class="container">
-      <div class="row text-white">
-        <div class="col-md-6 mx-auto mb-4">
-          <b>GT JOB SEARCH</b>
-          <hr />
-          <p>
-            Bridging the gap between early-career professionals and recruiters.
-          </p>
-        </div>
+  <div id="main-content-wrapper">
 
-        <div class="col-md-3 mx-auto mb-4">
-          <b>CONTACT</b>
-          <hr />
-          <p><i class="fas fa-envelope me-2"></i> help@gtjobsearch.com</p>
+    <nav class="navbar navbar-expand-lg pixel-navbar">
+      <div class="container">
+
+        <a class="brand-signpost" href="{% url 'jobs:home' %}">
+          <svg class="nav-chicken" width="35" height="35" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+            <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+            <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+            <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+            <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+            <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+            <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+          </svg>
+          GT Job Search
+        </a>
+
+        <button class="navbar-toggler" type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto align-items-center">
+
+            {% if not user.is_authenticated or user.is_job_seeker %}
+              <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
+              <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
+            {% endif %}
+
+            {% if user.is_authenticated and user.is_job_seeker %}
+              <a class="nav-link" href="{% url 'applications:my_applications' %}">
+                My Applications
+              </a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+
+              {% if user.is_recruiter %}
+                <a class="nav-link" href="{% url 'jobs:create_job' %}">Post a Job</a>
+                <a class="nav-link" href="{% url 'jobs:my_jobs' %}">My Jobs</a>
+                <a class="nav-link" href="{% url 'jobs:candidate_search' %}">Search</a>
+                <a class="nav-link" href="{% url 'applications:recruiter_pipeline' %}">Pipeline</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'jobs:recommended_jobs' %}">Recommended</a>
+              {% endif %}
+
+              <a class="nav-link" href="{% url 'applications:notifications' %}" style="background: #00a8f3; color: white !important; position: relative;">
+                <i class="fa-solid fa-bell"></i>
+                {% if unread_count and unread_count > 0 %}
+                  <span class="cr-notification-badge">{{ unread_count }}</span>
+                {% endif %}
+              </a>
+
+              {% if user.is_job_seeker %}
+                <a class="nav-link" href="{% url 'users:profile_view' %}">Profile</a>
+              {% else %}
+                <a class="nav-link" href="{% url 'users:recruiter_profile' %}">Profile</a>
+              {% endif %}
+
+              <form id="logout-form" method="post" action="{% url 'users:logout' %}" class="d-none">
+                {% csrf_token %}
+              </form>
+
+              <a class="nav-link nav-link-logout"
+                 href="#"
+                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+              </a>
+
+            {% else %}
+
+              <a class="nav-link" href="{% url 'users:login' %}">Login</a>
+              <a class="nav-link" style="background: #00a8f3; color: white !important;" href="{% url 'users:signup' %}">Sign Up</a>
+
+            {% endif %}
+
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </nav>
 
-</body>
+    <div class="container mt-4">
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}
+      {% endblock content %}
+
+    </div>
+
+    <section class="pixel-footer d-none d-md-block">
+      <svg class="footer-car" viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+        
+        <rect x="20" y="40" width="10" height="30" fill="#f5f5f5" stroke="#333" stroke-width="4"/>
+        <rect x="25" y="10" width="4" height="35" fill="#ccc" stroke="#333" stroke-width="2"/>
+        <polygon points="25,12 45,18 25,24" fill="#d4af37" stroke="#333" stroke-width="2"/>
+
+        <rect x="20" y="48" width="10" height="10" fill="#fff" stroke="#333" stroke-width="3"/>
+        
+        <rect x="30" y="45" width="35" height="25" fill="#d4af37" stroke="#333" stroke-width="5"/>
+        <rect x="65" y="35" width="55" height="35" fill="#d4af37" stroke="#333" stroke-width="5"/>
+        
+        <rect x="70" y="15" width="55" height="20" fill="#fff" stroke="#333" stroke-width="5"/>
+        <rect x="80" y="20" width="20" height="15" fill="#424242"/>
+
+        <rect x="120" y="45" width="20" height="25" fill="#d4af37" stroke="#333" stroke-width="5"/>
+
+        <rect x="20" y="65" width="35" height="10" fill="#fff" stroke="#333" stroke-width="4"/>
+        <rect x="110" y="65" width="35" height="10" fill="#fff" stroke="#333" stroke-width="4"/>
+        <rect x="55" y="70" width="55" height="5" fill="#fff" stroke="#333" stroke-width="3"/>
+
+        <rect x="26" y="70" width="24" height="24" fill="#333"/>
+        <rect x="30" y="74" width="16" height="16" fill="#fff"/>
+        <rect x="34" y="78" width="8" height="8" fill="#d4af37"/>
+
+        <rect x="116" y="70" width="24" height="24" fill="#333"/>
+        <rect x="120" y="74" width="16" height="16" fill="#fff"/>
+        <rect x="124" y="78" width="8" height="8" fill="#d4af37"/>
+
+      </svg>
+
+      <div class="container">
+        <div class="row text-white">
+          <div class="col-md-6 mx-auto mb-4">
+            <b>GT JOB SEARCH</b>
+            <hr />
+            <p>
+              Bridging the gap between early-career professionals and recruiters.
+            </p>
+          </div>
+
+          <div class="col-md-3 mx-auto mb-4">
+            <b>CONTACT</b>
+            <hr />
+            <p><i class="fas fa-envelope me-2"></i> help@gtjobsearch.com</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div> </body>
 </html>

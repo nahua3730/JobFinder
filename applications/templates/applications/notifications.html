@@ -1,70 +1,173 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
+<style>
+  .cr-page {
+    font-family: 'VT323', monospace;
+    color: #2b2b2b;
+  }
 
-<div class="arcade-page">
+  .cr-frame {
+    background-color: #795548;
+    border: 8px solid #3e2723;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 40px;
+  }
 
-  <div class="arcade-frame">
-    <div class="arcade-banner d-flex justify-content-between align-items-start flex-wrap gap-3">
-      <div>
-        <h1 class="arcade-title">NOTIFICATIONS</h1>
-        <p class="arcade-subtitle">See new saved-search matches and recruiter updates</p>
-      </div>
+  .cr-hero {
+    background: linear-gradient(180deg, #aad751 0%, #8bc34a 100%);
+    border: 6px solid #8cbf3f;
+    box-shadow: 0px 8px 0px #3e2723;
+    padding: 28px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
 
-      <form method="post" class="m-0">
-        {% csrf_token %}
-        <button type="submit" class="btn arcade-btn arcade-btn-gray">Mark All as Read</button>
-      </form>
+  .cr-title {
+    color: white;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 3.5rem;
+    margin: 0;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .cr-subtitle {
+    font-size: 1.6rem;
+    color: #f5f5f5;
+    text-shadow: 2px 2px 0px #333;
+    margin-top: 10px;
+  }
+
+  /* Individual Message Cards */
+  .cr-notif-card {
+    background: #f5f1e6;
+    border: 6px solid #3e2723;
+    padding: 18px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none !important;
+    color: #2b2b2b;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+
+  .cr-notif-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 0 #3e2723;
+    background: #fff;
+    color: #000;
+  }
+
+  .cr-notif-unread {
+    background: #fff;
+    border-color: #000;
+    border-left: 16px solid #e53935; 
+  }
+
+  .cr-notif-read {
+    background: #d7d2c4; 
+    border-color: #5d4037;
+    opacity: 0.9;
+  }
+
+  .cr-notif-read:hover {
+    opacity: 1;
+  }
+
+  .cr-badge-new {
+    background: #ffcc00;
+    color: #000;
+    border: 3px solid #000;
+    padding: 2px 8px;
+    font-size: 1.3rem;
+    margin-right: 12px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .cr-notif-msg {
+    font-size: 1.8rem;
+    vertical-align: middle;
+  }
+
+  .cr-notif-time {
+    font-size: 1.4rem;
+    color: #444;
+    text-align: right;
+    min-width: 120px;
+  }
+
+  .cr-empty {
+    background: #f5f1e6;
+    border: 8px solid #3e2723;
+    padding: 40px;
+    text-align: center;
+    font-size: 2.2rem;
+    color: #3e2723;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    .cr-notif-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .cr-notif-time {
+      text-align: left;
+    }
+  }
+</style>
+
+<div class="container cr-page">
+  <div class="cr-frame">
+    
+    <div class="cr-hero">
+      <h1 class="cr-title">
+        <i class="fa-solid fa-envelope-open-text me-3" style="color: #ffcc00; text-shadow: 2px 2px 0px #333;"></i> 
+        Inbox
+      </h1>
+      <p class="cr-subtitle">See new saved-search matches and recruiter updates.</p>
     </div>
 
-    {% if notifications %}
-      <div class="arcade-panel">
-        <div class="arcade-table-wrap">
-          <table class="arcade-table">
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Title</th>
-                <th>Message</th>
-                <th>Time</th>
-                <th>Link</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for n in notifications %}
-                <tr>
-                  <td>
-                    {% if not n.is_read %}
-                      <span class="arcade-chip arcade-chip-purple">New</span>
-                    {% else %}
-                      <span class="arcade-chip arcade-chip-gray">Read</span>
-                    {% endif %}
-                  </td>
-                  <td>{{ n.title }}</td>
-                  <td>{{ n.body }}</td>
-                  <td>{{ n.created_at }}</td>
-                  <td>
-                    {% if n.url %}
-                      <a class="arcade-link" href="{{ n.url }}">View Matches</a>
-                    {% else %}
-                      —
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    {% else %}
-      <div class="arcade-road-panel">
-        <div class="arcade-empty">
-          <div class="arcade-empty-title">NO NOTIFICATIONS ON THE ROAD</div>
-          <p class="arcade-empty-text">You do not have any notifications right now.</p>
-        </div>
-      </div>
-    {% endif %}
+    <div style="text-align: right; margin-bottom: 20px;">
+      <form action="{% url 'applications:mark_all_read' %}" method="POST" style="display: inline-block;">
+          {% csrf_token %}
+          <button type="submit" style="font-family: 'VT323', monospace; font-size: 1.4rem; text-transform: uppercase; background: #f5f1e6; color: #3e2723; padding: 6px 16px; border: 4px solid #3e2723; border-bottom: 6px solid #3e2723; cursor: pointer; transition: transform 0.1s, border-bottom-width 0.1s;">
+              <i class="fa-solid fa-check-double me-2"></i>Mark All As Read
+          </button>
+      </form>
   </div>
+    <div>
+      {% for notif in notifications %}
+        <a href="{{ notif.link|default:'#' }}" class="cr-notif-card {% if not notif.is_read %}cr-notif-unread{% else %}cr-notif-read{% endif %}">
+          
+          <div>
+            {% if not notif.is_read %}
+              <span class="cr-badge-new">NEW</span>
+            {% endif %}
+            <span class="cr-notif-msg">{{ notif.message }}</span>
+          </div>
 
+          <div class="cr-notif-time">
+            <div>{{ notif.created_at|date:"M d, Y" }}</div>
+            <div style="opacity: 0.8;">{{ notif.created_at|time:"h:i A" }}</div>
+          </div>
+          
+        </a>
+      {% empty %}
+        <div class="cr-empty">
+          <i class="fa-solid fa-check-circle me-2" style="color: #4caf50;"></i>
+          No new notifications. You're all caught up!
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
 </div>
-
 {% endblock %}

@@ -16,4 +16,5 @@ urlpatterns = [
     path("saved-searches/<int:search_id>/run/", views.run_saved_search, name="run_saved_search"),
     path("saved-searches/<int:search_id>/delete/", views.delete_saved_search, name="delete_saved_search"),
     path("notifications/", views.notifications, name="notifications"),
+    path('notifications/mark-read/', views.mark_all_read, name='mark_all_read'),
 ]
