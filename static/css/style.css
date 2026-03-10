@@ -734,3 +734,219 @@ mark.pipeline-highlight {
     font-size: 0.55rem;
   }
 }
+/* ===== YOUR PAGE STYLES — paste at bottom of style.css ===== */
+
+.us-page { max-width: 1100px; margin: 0 auto; }
+
+.us-shell {
+  background: #e8e2d0;
+  border: 10px solid #5a3320;
+  box-shadow: inset 0 0 0 5px #8a6050;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.us-banner {
+  background: #8ec63f;
+  border: 4px solid #6fa32e;
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.us-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.us-subtitle {
+  font-family: 'VT323', monospace;
+  font-size: 1.3rem;
+  color: #f0ffd4;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.us-card {
+  background: #f2ede0;
+  border: 4px solid #5a3320;
+  padding: 1.4rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.us-blue-bar {
+  background: #1ab0e8;
+  border: 4px solid #1090c0;
+  padding: 0.9rem 1.4rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin-bottom: 0;
+}
+
+.us-empty-panel {
+  background: #f2ede0;
+  border: 4px solid #5a3320;
+  border-top: none;
+  padding: 2rem 1.5rem;
+  font-family: 'VT323', monospace;
+  font-size: 1.4rem;
+  color: #555;
+  text-align: center;
+}
+
+.us-section-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.85rem;
+  color: #2a1a10;
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+.us-label {
+  display: block;
+  font-family: 'VT323', monospace;
+  font-size: 1.45rem;
+  color: #2a1a10;
+  margin-bottom: 0.25rem;
+}
+
+.us-help {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: #777;
+  margin-top: 0.2rem;
+}
+
+.us-tip {
+  font-family: 'VT323', monospace;
+  font-size: 1.15rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+.us-form input[type="text"],
+.us-form input[type="number"],
+.us-form input[type="url"],
+.us-form input[type="email"],
+.us-form textarea,
+.us-form select,
+.us-form .form-control,
+.us-form .form-select {
+  width: 100%;
+  background: #fffdf5;
+  border: 3px solid #2a1a10;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.75rem 0.9rem;
+  font-family: 'VT323', monospace;
+  font-size: 1.35rem;
+  color: #111;
+}
+
+.us-form textarea { min-height: 110px; }
+
+.us-form input:focus,
+.us-form textarea:focus,
+.us-form select:focus,
+.us-form .form-control:focus,
+.us-form .form-select:focus {
+  outline: none;
+  border-color: #1ab0e8;
+  box-shadow: 0 0 0 3px rgba(26,176,232,0.15) !important;
+}
+
+.us-btn {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.65rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 0.85rem 1.1rem;
+  border: 3px solid #111 !important;
+  border-radius: 0 !important;
+  line-height: 1.4;
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+.us-btn-blue   { background: #1ab0e8 !important; color: #fff !important; }
+.us-btn-yellow { background: #f5c400 !important; color: #111 !important; }
+.us-btn-green  { background: #52c45a !important; color: #fff !important; }
+.us-btn-red    { background: #e8503a !important; color: #fff !important; }
+.us-btn-gray   { background: #e8e4da !important; color: #333 !important; }
+
+.us-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+.us-col-12 { grid-column: span 12; }
+.us-col-6  { grid-column: span 6; }
+.us-col-4  { grid-column: span 4; }
+.us-col-3  { grid-column: span 3; }
+
+.us-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+
+.us-job-card {
+  background: #f2ede0;
+  border: 4px solid #5a3320;
+  border-top: none;
+  overflow: hidden;
+}
+.us-job-card + .us-job-card { border-top: 3px solid #5a3320; }
+
+.us-job-head {
+  background: #ddd8c8;
+  border-bottom: 3px solid #5a3320;
+  padding: 0.9rem 1.2rem;
+}
+
+.us-job-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.78rem;
+  margin: 0;
+  color: #1e1208;
+  line-height: 1.5;
+}
+
+.us-job-body { padding: 1rem 1.2rem; }
+
+.us-field-label {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.us-field-value {
+  font-family: 'VT323', monospace;
+  font-size: 1.35rem;
+  color: #1e1208;
+}
+
+.us-chip {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.48rem;
+  border: 2px solid #111;
+  padding: 0.35rem 0.55rem;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+.us-chip-blue  { background: #1ab0e8; color: #fff; }
+.us-chip-green { background: #52c45a; color: #fff; }
+.us-chip-red   { background: #e8503a; color: #fff; }
+.us-chip-gray  { background: #e0ddd4; color: #444; }
+
+.us-divider {
+  border: 0;
+  border-top: 3px solid #c0b8a8;
+  margin: 1.25rem 0;
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .us-col-4, .us-col-3, .us-col-6 { grid-column: span 12; }
+  .us-title { font-size: 1.05rem; }
+  .us-btn { font-size: 0.55rem; padding: 0.75rem 0.9rem; }
+}

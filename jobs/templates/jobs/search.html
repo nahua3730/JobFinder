@@ -1,135 +1,131 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="arcade-page">
+<div style="max-width:1100px; margin:0 auto;">
+  <!-- OUTER BROWN FRAME -->
+  <div style="background:#e8e2d0; border:10px solid #5a3320; box-shadow:inset 0 0 0 5px #8a6050; padding:1rem; margin-bottom:2rem;">
 
-  <div class="arcade-frame">
-    <div class="arcade-banner">
-      <h1 class="arcade-title">JOB SEARCH</h1>
-      <p class="arcade-subtitle">Filter jobs and find the best match for your next move</p>
+    <!-- GREEN BANNER -->
+    <div style="background:#8ec63f; border:4px solid #6fa32e; padding:1.4rem 1.6rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <h1 style="font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#fff; margin:0; text-shadow:2px 2px 0 rgba(0,0,0,0.2); line-height:1.5;">🐔 JOB SEARCH</h1>
+        <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#f0ffd4; margin:0.5rem 0 0;">Filter jobs and find the best match for your next move.</p>
+      </div>
     </div>
 
-    <div class="arcade-panel">
-      <form method="get" class="arcade-form">
-        <h2 class="arcade-section-title">SEARCH & FILTERS</h2>
+    <!-- CREAM FILTER CARD -->
+    <div style="background:#f2ede0; border:4px solid #5a3320; padding:1.5rem; margin-bottom:0;">
+      <h2 style="font-family:'Press Start 2P',cursive; font-size:0.85rem; color:#2a1a10; margin-bottom:1.2rem; line-height:1.5;">SEARCH &amp; FILTERS</h2>
 
-        <div class="arcade-grid">
-          <div class="arcade-col-4">
-            <label class="arcade-label">Title</label>
+      <form method="get">
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1rem;">
+
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Title</label>
             {{ form.title }}
           </div>
 
-          <div class="arcade-col-4">
-            <label class="arcade-label">Skills</label>
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Skills</label>
             {{ form.skills }}
-            <div class="arcade-help">Comma-separated (e.g. Python, SQL)</div>
+            <div style="font-family:'VT323',monospace; font-size:1.1rem; color:#777; margin-top:0.2rem;">Comma-separated (e.g. Python, SQL)</div>
           </div>
 
-          <div class="arcade-col-4">
-            <label class="arcade-label">Location</label>
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Location</label>
             {{ form.location }}
           </div>
 
-          <div class="arcade-col-3">
-            <label class="arcade-label">Min Salary</label>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem;">
+
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Min Salary</label>
             {{ form.salary_min }}
           </div>
 
-          <div class="arcade-col-3">
-            <label class="arcade-label">Max Salary</label>
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Max Salary</label>
             {{ form.salary_max }}
           </div>
 
-          <div class="arcade-col-3">
-            <label class="arcade-label">Remote / On-site</label>
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Remote / On-site</label>
             {{ form.is_remote }}
           </div>
 
-          <div class="arcade-col-3">
-            <label class="arcade-label">Visa Sponsorship</label>
+          <div>
+            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Visa Sponsorship</label>
             {{ form.visa_sponsorship }}
           </div>
+
         </div>
 
-        <div class="arcade-actions mt-4 justify-content-end">
-          <a class="btn arcade-btn arcade-btn-gray" href="{% url 'jobs:search' %}">Clear</a>
-          <a class="btn arcade-btn arcade-btn-purple"
-             href="{% url 'jobs:job_map' %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}">
-            View on Map
-          </a>
-          <button class="btn arcade-btn arcade-btn-blue" type="submit">Search</button>
+        <div style="display:flex; gap:0.75rem; align-items:center;">
+          <a href="{% url 'jobs:search' %}" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">CLEAR</a>
+          <button type="submit" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#1ab0e8; border:3px solid #111; padding:0.8rem 1rem; color:#fff; text-transform:uppercase; cursor:pointer; line-height:1.4;">SEARCH JOBS</button>
         </div>
       </form>
     </div>
 
-    {% for job in jobs %}
-      <div class="arcade-job-card">
-        <div class="arcade-job-header d-flex justify-content-between align-items-start gap-3">
-          <h2 class="arcade-job-title">
-            <a class="arcade-link" href="{% url 'jobs:job_detail' job.id %}">
-              {{ job.title }}
-            </a>
-          </h2>
+    <!-- BLUE BAR -->
+    <div style="background:#1ab0e8; border:4px solid #1090c0; border-top:none; padding:0.9rem 1.4rem; font-family:'Press Start 2P',cursive; font-size:0.85rem; color:#fff;">
+      JOB RESULTS
+    </div>
 
+    <!-- RESULTS -->
+    {% for job in jobs %}
+      <div style="background:#f2ede0; border:4px solid #5a3320; border-top:none; overflow:hidden;">
+        <div style="background:#ddd8c8; border-bottom:3px solid #5a3320; padding:0.9rem 1.2rem; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+          <h2 style="font-family:'Press Start 2P',cursive; font-size:0.78rem; margin:0; color:#1e1208; line-height:1.5;">{{ job.title }}</h2>
           {% if user == job.recruiter %}
-            <a href="{% url 'jobs:edit_job' job.id %}" class="btn arcade-btn arcade-btn-yellow arcade-btn-sm">
-              Edit
-            </a>
+            <a href="{% url 'jobs:edit_job' job.id %}" style="font-family:'Press Start 2P',cursive; font-size:0.55rem; background:#f5c400; border:3px solid #111; padding:0.65rem 0.9rem; text-decoration:none; color:#111; text-transform:uppercase; white-space:nowrap;">EDIT</a>
           {% endif %}
         </div>
-
-        <div class="arcade-job-body">
-          <div class="arcade-grid">
-            <div class="arcade-col-4">
-              <div class="arcade-label">Location</div>
-              <div class="arcade-value">{{ job.location|default:"—" }}</div>
+        <div style="padding:1rem 1.2rem;">
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:0.75rem;">
+            <div>
+              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Location</div>
+              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">{{ job.location|default:"—" }}</div>
             </div>
-
-            <div class="arcade-col-4">
-              <div class="arcade-label">Remote</div>
-              <div class="arcade-value">
+            <div>
+              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Remote</div>
+              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
                 {% if job.is_remote %}
-                  <span class="arcade-chip arcade-chip-blue">Remote OK</span>
+                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#1ab0e8; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">Remote OK</span>
                 {% else %}
-                  <span class="arcade-chip arcade-chip-gray">On Site</span>
+                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#e0ddd4; border:2px solid #111; padding:0.3rem 0.5rem; color:#444; text-transform:uppercase;">On Site</span>
                 {% endif %}
               </div>
             </div>
-
-            <div class="arcade-col-4">
-              <div class="arcade-label">Visa Sponsorship</div>
-              <div class="arcade-value">
+            <div>
+              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Visa Sponsorship</div>
+              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
                 {% if job.visa_sponsorship %}
-                  <span class="arcade-chip arcade-chip-green">Sponsored</span>
+                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#52c45a; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">Sponsored</span>
                 {% else %}
-                  <span class="arcade-chip arcade-chip-red">No Sponsorship</span>
+                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#e8503a; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">No Sponsorship</span>
                 {% endif %}
               </div>
             </div>
-
-            <div class="arcade-col-12">
-              <div class="arcade-label">Salary</div>
-              <div class="arcade-value">
-                {% if job.min_salary or job.max_salary %}
-                  {{ job.min_salary }} - {{ job.max_salary }}
-                {% else %}
-                  {{ job.salary_range|default:"—" }}
-                {% endif %}
-              </div>
+          </div>
+          <div>
+            <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Salary</div>
+            <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
+              {% if job.min_salary or job.max_salary %}{{ job.min_salary }} – {{ job.max_salary }}
+              {% else %}{{ job.salary_range|default:"—" }}{% endif %}
             </div>
           </div>
         </div>
       </div>
     {% empty %}
-      <div class="arcade-road-panel">
-        <div class="arcade-empty">
-          <div class="arcade-empty-title">NO JOBS ON THE ROAD</div>
-          <p class="arcade-empty-text">No jobs match your current filters.</p>
-        </div>
+      <div style="background:#f2ede0; border:4px solid #5a3320; border-top:none; padding:2rem 1.5rem; font-family:'VT323',monospace; font-size:1.4rem; color:#555; text-align:center;">
+        No jobs match your current filters. Try adjusting your search!
       </div>
     {% endfor %}
-  </div>
 
+  </div>
 </div>
 
 {% endblock %}
