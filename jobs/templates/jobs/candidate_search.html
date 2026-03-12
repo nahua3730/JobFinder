@@ -86,8 +86,28 @@
         margin-bottom: 10px;
     }
 
-    .cr-field {
-        margin-bottom: 8px;
+    .cr-panel input[type="text"] {
+        width: 100%;
+        padding: 8px 12px;
+        border: 4px solid #333;
+        font-family: 'VT323', monospace;
+        font-size: 1.3rem;
+        background: #fff;
+        box-sizing: border-box;
+    }
+
+    .cr-panel input[type="text"]:focus {
+        outline: none;
+        border-color: #00a8f3;
+        background: #fffef2;
+    }
+
+    .cr-label {
+        display: block;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        font-weight: bold;
+        font-size: 1.2rem;
     }
 
     @media (max-width: 768px) {
@@ -124,27 +144,34 @@
     <div class="cr-panel">
         <form method="get">
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="cr-label" for="{{ form.query.id_for_label }}">
-                        {{ form.query.label }}
+                <div class="col-md-3">
+                    <label class="cr-label" for="{{ form.name.id_for_label }}">
+                        {{ form.name.label|default:"Name" }}
                     </label>
-                    {{ form.query }}
+                    {{ form.name }}
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <label class="cr-label" for="{{ form.skills.id_for_label }}">
+                        {{ form.skills.label|default:"Skills" }}
+                    </label>
+                    {{ form.skills }}
+                </div>
+
+                <div class="col-md-3">
                     <label class="cr-label" for="{{ form.location.id_for_label }}">
-                        {{ form.location.label }}
+                        {{ form.location.label|default:"Location" }}
                     </label>
                     {{ form.location }}
                 </div>
 
-                <div class="col-md-4 d-flex align-items-end gap-3">
-                    <label class="cr-checkbox-wrap mb-0">
+                <div class="col-md-3 d-flex align-items-end gap-3">
+                    <label class="cr-checkbox-wrap mb-0" style="margin-top: 0; padding-bottom: 6px;">
                         {{ form.has_projects }}
-                        <span>Must Have Projects</span>
+                        <span style="font-size: 1.1rem;">Must Have Projects</span>
                     </label>
 
-                    <button type="submit" class="cr-btn cr-btn-primary">
+                    <button type="submit" class="cr-btn cr-btn-primary" style="margin-bottom: 2px;">
                         Search
                     </button>
                 </div>

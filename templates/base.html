@@ -265,13 +265,13 @@
       }
 
       .pixel-navbar .navbar-nav {
-        margin-left: 0 !important;
+        margin-left: auto !important; 
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end; 
         gap: clamp(8px, 1vw, 18px);
-        width: 100%;
+        width: auto;
       }
     }
 
@@ -975,7 +975,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav align-items-center">
+          <div class="navbar-nav ms-auto align-items-center">
             {% if not user.is_authenticated or user.is_job_seeker %}
               <a class="nav-link" href="{% url 'jobs:search' %}">Jobs</a>
               <a class="nav-link" href="{% url 'jobs:job_map' %}">Map</a>
