@@ -8,6 +8,10 @@
     gap: 24px;
   }
 
+  .profile-preline {
+    white-space: pre-line;
+  }
+
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -59,6 +63,20 @@
           </div>
         {% endif %}
 
+        {% if is_owner or profile.show_location %}
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Location</span>
+            <div class="profile-value cr-detail-value">{{ profile.location|default:"—" }}</div>
+          </div>
+        {% endif %}
+
+        {% if is_owner or profile.show_commute_radius %}
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Preferred Commute Radius</span>
+            <div class="profile-value cr-detail-value">{{ profile.preferred_commute_radius_miles }} miles</div>
+          </div>
+        {% endif %}
+
         {% if is_owner or profile.show_skills %}
           <div class="profile-row cr-detail-row">
             <span class="profile-label cr-detail-label">Skills</span>
@@ -69,21 +87,28 @@
         {% if is_owner or profile.show_education %}
           <div class="profile-row cr-detail-row">
             <span class="profile-label cr-detail-label">Education</span>
-            <div class="profile-value cr-detail-value">{{ profile.education|default:"—" }}</div>
+            <div class="profile-value cr-detail-value profile-preline">{{ profile.education|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_work_experience %}
           <div class="profile-row cr-detail-row">
             <span class="profile-label cr-detail-label">Work Experience</span>
-            <div class="profile-value cr-detail-value">{{ profile.work_experience|default:"—" }}</div>
+            <div class="profile-value cr-detail-value profile-preline">{{ profile.work_experience|default:"—" }}</div>
+          </div>
+        {% endif %}
+
+        {% if is_owner or profile.show_projects %}
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Projects</span>
+            <div class="profile-value cr-detail-value profile-preline">{{ profile.projects|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_links %}
           <div class="profile-row cr-detail-row">
             <span class="profile-label cr-detail-label">Links</span>
-            <div class="profile-value cr-detail-value">{{ profile.links|default:"—" }}</div>
+            <div class="profile-value cr-detail-value profile-preline">{{ profile.links|default:"—" }}</div>
           </div>
         {% endif %}
       </div>
