@@ -8,32 +8,38 @@
   }
 
   .crossy-note-card {
-    max-width: 100%;
+    max-width: 1120px;
     margin: 0 auto;
     background: #f6edd8;
     border: 4px solid #3f3f46;
     box-shadow: none;
-    padding: 26px;
+    padding: 22px;
   }
 
   .crossy-note-top {
-    display: block;
-    margin-bottom: 28px;
-    padding: 0;
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 0 0 18px;
     background: transparent;
     border: 0;
     box-shadow: none;
+    border-bottom: 4px solid #c9b98f;
   }
 
   .crossy-note-stamp {
-    width: auto;
-    height: auto;
-    margin-bottom: 14px;
-    display: block;
-    background: transparent;
-    border: 0;
+    width: 84px;
+    height: 84px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #efe5cd;
+    border: 4px solid #5b4037;
     font-family: 'VT323', monospace;
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: #4b5563;
   }
 
@@ -42,7 +48,7 @@
   }
 
   .crossy-note-heading {
-    margin: 0 0 14px;
+    margin: 0 0 10px;
     font-family: 'VT323', monospace;
     font-size: 3.15rem;
     line-height: 1;
@@ -63,7 +69,7 @@
     background: transparent;
     border: 0;
     box-shadow: none;
-    padding: 24px;
+    padding: 10px 8px 0;
   }
 
   .crossy-note-label {
@@ -89,12 +95,12 @@
 
   .crossy-note-input {
     width: 100%;
-    min-height: 220px;
+    min-height: 170px;
     display: block;
     background: #f5f5f7;
     border: 4px solid #111;
     box-shadow: none;
-    padding: 26px 22px;
+    padding: 20px 18px;
     resize: vertical;
     outline: none;
     font-family: 'VT323', monospace;
@@ -117,34 +123,14 @@
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
-    margin-top: 22px;
+    margin-top: 18px;
     align-items: center;
   }
 
-  .crossy-btn {
-    display: inline-block;
-    min-width: 0;
-    padding: 20px 26px;
-    border: 4px solid #202020;
-    text-align: center;
-    text-decoration: none;
-    font-family: 'VT323', monospace;
-    font-size: 1.8rem;
-    line-height: 1;
-    text-transform: uppercase;
-    box-shadow: none;
-    transition: transform 0.08s ease;
-    cursor: pointer;
-  }
-
-  .crossy-btn:hover {
-    transform: translateY(-2px);
-    text-decoration: none;
-  }
-
   .crossy-btn-cancel {
-    background: #d3d4d8;
-    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .update-send-btn {
@@ -152,7 +138,7 @@
     font-size: 1.8rem;
     background: #35aae1;
     color: white;
-    padding: 20px 26px;
+    padding: 18px 24px;
     display: inline-flex;
     align-items: center;
     gap: 12px;
@@ -210,7 +196,10 @@
     }
 
     .crossy-note-top {
+      grid-template-columns: 1fr;
+      gap: 14px;
       margin-bottom: 20px;
+      padding-bottom: 16px;
     }
 
     .crossy-note-heading {
@@ -232,12 +221,11 @@
     }
 
     .crossy-note-buttons {
-      flex-direction: column;
-      align-items: stretch;
+      flex-direction: row;
+      align-items: center;
     }
 
-    .update-send-btn,
-    .crossy-btn {
+    .update-send-btn {
       width: 100%;
       min-width: 0;
       justify-content: center;
@@ -325,7 +313,7 @@
               <span>{% if application %}UPDATE APPLICATION{% else %}APPLY{% endif %}</span>
             </button>
 
-            <a href="{% url 'jobs:job_detail' job.id %}" class="crossy-btn crossy-btn-cancel">
+            <a href="{% url 'jobs:job_detail' job.id %}" class="cr-btn cr-btn-secondary crossy-btn-cancel">
               CANCEL
             </a>
           </div>
