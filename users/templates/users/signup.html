@@ -681,16 +681,26 @@
     color: #f0edd8;
   }
 
-  html.theme-dark .password-rule.ok {
-    background: #2e5b35;
-    color: #e6ffe7;
-    border-color: #4caf50;
+  html.theme-dark .cr-theme .password-rule.ok {
+    background: #2e5b35 !important;
+    color: #e6ffe7 !important;
+    border-color: #4caf50 !important;
+    box-shadow: 0px 6px 0px #17361d !important;
   }
 
-  html.theme-dark .password-rule.bad {
-    background: #6b2d2d;
-    color: #ffe6e6;
-    border-color: #ef5350;
+  html.theme-dark .cr-theme .password-rule.bad {
+    background: #6b2d2d !important;
+    color: #ffe6e6 !important;
+    border-color: #ef5350 !important;
+    box-shadow: 0px 6px 0px #3f1616 !important;
+  }
+
+  html.theme-dark .cr-theme .password-rule.ok::before {
+    color: #e6ffe7 !important;
+  }
+
+  html.theme-dark .cr-theme .password-rule.bad::before {
+    color: #ffe6e6 !important;
   }
 
   html.theme-dark .cr-error-box {
