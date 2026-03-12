@@ -181,7 +181,7 @@ def create_job(request):
                             Notification.objects.create(
                                 recipient=seeker.user,
                                 message=f"New Match! '{job.title}' requires your skills.",
-                                link=f"/jobs/{job.id}/"
+                                link=f"/{job.id}/"
                             )
 
             return redirect('jobs:my_jobs')

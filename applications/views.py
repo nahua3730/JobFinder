@@ -341,3 +341,23 @@ def mark_all_read(request):
         request.user.notifications.filter(is_read=False).update(is_read=True)
         
     return redirect('applications:notifications')
+
+@login_required
+def read_notification(request, notif_id):
+    """ Marks a single notification as read and redirects the user to the target link """
+    notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+    
+    if not notif.is_read:
+        notif.is_read = True
+        notif.save()
+        
+    return redirect(notif.link if notif.link else 'applications:notifications')
+
+@login_required
+def delete_notification(request, notif_id):
+    """ Deletes a single notification """
+    if request.method == "POST":
+        notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+        notif.delete()
+        
+    return redirect('applications:notifications')
