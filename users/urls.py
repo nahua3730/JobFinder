@@ -14,4 +14,5 @@ urlpatterns = [
     path("profile/<str:username>/", views.profile_detail, name="profile_detail"),
     path("recruiter/profile/", views.recruiter_profile, name="recruiter_profile"),
     path("recruiter/profile/edit/", views.recruiter_profile_edit, name="recruiter_profile_edit"),
+    path("", views.enter_page, name="enter"),
 ]

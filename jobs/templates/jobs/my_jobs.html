@@ -4,6 +4,35 @@
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
 <style>
+    .cr-table td:last-child {
+        vertical-align: top;
+    }
+
+    .cr-action-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 14px 18px;
+        max-width: 100%;
+    }
+
+    .cr-action-group .cr-btn {
+        transform: none;
+        min-height: 44px;
+        padding: 10px 16px;
+        font-size: 0.65rem;
+        white-space: normal;
+        line-height: 1.35;
+    }
+
+    .cr-action-group .cr-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .cr-action-group .cr-btn:active {
+        transform: translateY(0);
+    }
+
     .cr-btn-edit {
         background-color: #ffcc00;
         color: #000;
@@ -123,19 +152,19 @@
                         <td>{{ job.created_at|date:"M d, Y" }}</td>
                         <td>
                             <div class="cr-action-group">
-                                <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn" style="padding: 4px 10px;">
+                                <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn cr-btn-sm">
                                     View
                                 </a>
 
-                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-edit" style="padding: 4px 10px;">
+                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-edit cr-btn-sm">
                                     Edit
                                 </a>
 
-                                <a href="{% url 'jobs:job_recommendations' job.id %}" class="cr-btn cr-btn-secondary" style="padding: 4px 10px;">
+                                <a href="{% url 'jobs:job_recommendations' job.id %}" class="cr-btn cr-btn-secondary cr-btn-sm">
                                     Recommended Candidates
                                 </a>
 
-                                <a href="{% url 'jobs:recruiter_applicant_map' job.id %}" class="cr-btn cr-btn-map" style="padding: 4px 10px;">
+                                <a href="{% url 'jobs:recruiter_applicant_map' job.id %}" class="cr-btn cr-btn-map cr-btn-sm">
                                     Applicant Map
                                 </a>
                             </div>

@@ -1,131 +1,236 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
 {% block content %}
+<style>
+  .job-search-shell {
+    display: grid;
+    gap: 8px;
+  }
 
-<div style="max-width:1100px; margin:0 auto;">
-  <!-- OUTER BROWN FRAME -->
-  <div style="background:#e8e2d0; border:10px solid #5a3320; box-shadow:inset 0 0 0 5px #8a6050; padding:1rem; margin-bottom:2rem;">
+  .job-search-shell .cr-panel {
+    margin-bottom: 0 !important;
+  }
 
-    <!-- GREEN BANNER -->
-    <div style="background:#8ec63f; border:4px solid #6fa32e; padding:1.4rem 1.6rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
-      <div>
-        <h1 style="font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#fff; margin:0; text-shadow:2px 2px 0 rgba(0,0,0,0.2); line-height:1.5;">🐔 JOB SEARCH</h1>
-        <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#f0ffd4; margin:0.5rem 0 0;">Filter jobs and find the best match for your next move.</p>
-      </div>
+  .job-search-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .job-search-table .cr-action-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .job-search-table .cr-btn {
+    transform: none;
+  }
+
+  .job-search-table .cr-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .job-search-table .cr-btn:active {
+    transform: translateY(0);
+  }
+
+  .job-search-chip {
+    cursor: default;
+  }
+
+  .job-search-chip-neutral {
+    --cr-btn-face: #dad4c9;
+    --cr-btn-shadow: #8b867e;
+    --cr-btn-ring: #f4eee2;
+    --cr-btn-text: #444;
+  }
+
+  .job-search-chip-sponsored {
+    --cr-btn-face: #4fe264;
+    --cr-btn-shadow: #278838;
+    --cr-btn-ring: #d1ff98;
+    --cr-btn-text: #103a12;
+  }
+
+  .job-search-chip-nosponsor {
+    --cr-btn-face: #ff6357;
+    --cr-btn-shadow: #8a1d17;
+    --cr-btn-ring: #ffc08c;
+    --cr-btn-text: #fff5b3;
+  }
+</style>
+
+<div class="cr-theme job-search-shell">
+
+    <div class="cr-header">
+        <h2 class="cr-title">
+            <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
+                <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+                <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+                <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+                <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+                <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+                <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+                <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+                <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+            Job Search
+        </h2>
+
+        <a href="{% url 'jobs:search' %}" class="cr-btn">
+            Clear Filters
+        </a>
     </div>
 
-    <!-- CREAM FILTER CARD -->
-    <div style="background:#f2ede0; border:4px solid #5a3320; padding:1.5rem; margin-bottom:0;">
-      <h2 style="font-family:'Press Start 2P',cursive; font-size:0.85rem; color:#2a1a10; margin-bottom:1.2rem; line-height:1.5;">SEARCH &amp; FILTERS</h2>
 
-      <form method="get">
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1rem;">
+    <div class="cr-panel">
+        <h2 style="font-size:2rem; text-transform:uppercase; margin-bottom:1rem;">Search & Filters</h2>
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Title</label>
-            {{ form.title }}
-          </div>
+        <form method="get">
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Skills</label>
-            {{ form.skills }}
-            <div style="font-family:'VT323',monospace; font-size:1.1rem; color:#777; margin-top:0.2rem;">Comma-separated (e.g. Python, SQL)</div>
-          </div>
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-4">
+                    <label class="cr-label">Title</label>
+                    {{ form.title }}
+                </div>
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Location</label>
-            {{ form.location }}
-          </div>
+                <div class="col-12 col-md-4">
+                    <label class="cr-label">Skills</label>
+                    {{ form.skills }}
+                    <div class="cr-muted-text mt-1">Comma-separated, e.g. Python, SQL</div>
+                </div>
 
-        </div>
+                <div class="col-12 col-md-4">
+                    <label class="cr-label">Location</label>
+                    {{ form.location }}
+                </div>
+            </div>
 
-        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem;">
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Min Salary</label>
-            {{ form.salary_min }}
-          </div>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-3">
+                    <label class="cr-label">Min Salary</label>
+                    {{ form.salary_min }}
+                </div>
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Max Salary</label>
-            {{ form.salary_max }}
-          </div>
+                <div class="col-12 col-md-3">
+                    <label class="cr-label">Max Salary</label>
+                    {{ form.salary_max }}
+                </div>
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Remote / On-site</label>
-            {{ form.is_remote }}
-          </div>
+                <div class="col-12 col-md-3">
+                    <label class="cr-label">Remote / On-site</label>
+                    {{ form.is_remote }}
+                </div>
 
-          <div>
-            <label style="display:block; font-family:'VT323',monospace; font-size:1.4rem; color:#2a1a10; margin-bottom:0.25rem;">Visa Sponsorship</label>
-            {{ form.visa_sponsorship }}
-          </div>
+                <div class="col-12 col-md-3">
+                    <label class="cr-label">Visa Sponsorship</label>
+                    {{ form.visa_sponsorship }}
+                </div>
+            </div>
 
-        </div>
+            <div class="job-search-actions">
+                <button type="submit" class="cr-btn cr-btn-primary">Search Jobs</button>
+                <a href="{% url 'jobs:search' %}" class="cr-btn">Reset</a>
+            </div>
 
-        <div style="display:flex; gap:0.75rem; align-items:center;">
-          <a href="{% url 'jobs:search' %}" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">CLEAR</a>
-          <button type="submit" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#1ab0e8; border:3px solid #111; padding:0.8rem 1rem; color:#fff; text-transform:uppercase; cursor:pointer; line-height:1.4;">SEARCH JOBS</button>
-        </div>
-      </form>
+        </form>
     </div>
 
-    <!-- BLUE BAR -->
-    <div style="background:#1ab0e8; border:4px solid #1090c0; border-top:none; padding:0.9rem 1.4rem; font-family:'Press Start 2P',cursive; font-size:0.85rem; color:#fff;">
-      JOB RESULTS
-    </div>
+    {% if jobs %}
+        <div class="table-responsive job-search-table">
 
-    <!-- RESULTS -->
-    {% for job in jobs %}
-      <div style="background:#f2ede0; border:4px solid #5a3320; border-top:none; overflow:hidden;">
-        <div style="background:#ddd8c8; border-bottom:3px solid #5a3320; padding:0.9rem 1.2rem; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
-          <h2 style="font-family:'Press Start 2P',cursive; font-size:0.78rem; margin:0; color:#1e1208; line-height:1.5;">{{ job.title }}</h2>
-          {% if user == job.recruiter %}
-            <a href="{% url 'jobs:edit_job' job.id %}" style="font-family:'Press Start 2P',cursive; font-size:0.55rem; background:#f5c400; border:3px solid #111; padding:0.65rem 0.9rem; text-decoration:none; color:#111; text-transform:uppercase; white-space:nowrap;">EDIT</a>
-          {% endif %}
-        </div>
-        <div style="padding:1rem 1.2rem;">
-          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:0.75rem;">
-            <div>
-              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Location</div>
-              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">{{ job.location|default:"—" }}</div>
-            </div>
-            <div>
-              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Remote</div>
-              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
-                {% if job.is_remote %}
-                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#1ab0e8; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">Remote OK</span>
-                {% else %}
-                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#e0ddd4; border:2px solid #111; padding:0.3rem 0.5rem; color:#444; text-transform:uppercase;">On Site</span>
-                {% endif %}
-              </div>
-            </div>
-            <div>
-              <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Visa Sponsorship</div>
-              <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
-                {% if job.visa_sponsorship %}
-                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#52c45a; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">Sponsored</span>
-                {% else %}
-                  <span style="font-family:'Press Start 2P',cursive; font-size:0.45rem; background:#e8503a; border:2px solid #111; padding:0.3rem 0.5rem; color:#fff; text-transform:uppercase;">No Sponsorship</span>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-          <div>
-            <div style="font-family:'VT323',monospace; font-size:1.05rem; color:#888; text-transform:uppercase;">Salary</div>
-            <div style="font-family:'VT323',monospace; font-size:1.35rem; color:#1e1208;">
-              {% if job.min_salary or job.max_salary %}{{ job.min_salary }} – {{ job.max_salary }}
-              {% else %}{{ job.salary_range|default:"—" }}{% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% empty %}
-      <div style="background:#f2ede0; border:4px solid #5a3320; border-top:none; padding:2rem 1.5rem; font-family:'VT323',monospace; font-size:1.4rem; color:#555; text-align:center;">
-        No jobs match your current filters. Try adjusting your search!
-      </div>
-    {% endfor %}
+            <table class="cr-table">
 
-  </div>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Remote</th>
+                        <th>Visa Sponsorship</th>
+                        <th>Salary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for job in jobs %}
+
+                    <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
+
+                        <td style="font-size:1.8rem; font-weight:bold;">
+                            {{ job.title }}
+                        </td>
+
+                        <td>
+                            {{ job.location|default:"—" }}
+                        </td>
+
+                        <td>
+                            {% if job.is_remote %}
+                                <span class="cr-btn cr-btn-sm cr-btn-primary job-search-chip">Remote OK</span>
+                            {% else %}
+                                <span class="cr-btn cr-btn-sm job-search-chip job-search-chip-neutral">On Site</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if job.visa_sponsorship %}
+                                <span class="cr-btn cr-btn-sm job-search-chip job-search-chip-sponsored">Sponsored</span>
+                            {% else %}
+                                <span class="cr-btn cr-btn-sm job-search-chip job-search-chip-nosponsor">No Sponsorship</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if job.min_salary or job.max_salary %}
+                                {{ job.min_salary }} – {{ job.max_salary }}
+                            {% else %}
+                                {{ job.salary_range|default:"—" }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="cr-action-group">
+
+                                <a href="{% url 'jobs:job_detail' job.id %}" class="cr-btn cr-btn-sm">
+                                    View
+                                </a>
+
+                                {% if user == job.recruiter %}
+                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-warning cr-btn-sm">
+                                    Edit
+                                </a>
+                                {% endif %}
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="cr-empty-lane lane-road">
+            <h3 class="cr-empty-title">NO JOBS FOUND.</h3>
+            <p class="cr-empty-text">Try adjusting your filters.</p>
+        </div>
+
+    {% endif %}
+
 </div>
 
 {% endblock %}

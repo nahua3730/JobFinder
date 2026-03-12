@@ -613,8 +613,10 @@
     const formData = new URLSearchParams();
     formData.append("status", newStatus);
 
-    const url = `/recruiter/pipeline/${appId}/status-api/`;
+    const url = draggedCard.dataset.updateUrl;
     const oldColumn = draggedCard.parentElement;
+
+    if (!url) return;
 
     dropZone.appendChild(draggedCard);
     draggedCard.classList.remove("dragging");

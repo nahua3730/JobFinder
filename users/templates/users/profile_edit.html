@@ -3,79 +3,177 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
+<style>
+  .profile-edit-card {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 20px;
+  }
 
-<div style="max-width:1100px; margin:0 auto;">
-  <div style="background:#e8e2d0; border:10px solid #5a3320; box-shadow:inset 0 0 0 5px #8a6050; padding:1rem; margin-bottom:2rem;">
+  .profile-edit-field {
+    margin-bottom: 20px;
+  }
 
-    <!-- GREEN BANNER -->
-    <div style="background:#8ec63f; border:4px solid #6fa32e; padding:1.4rem 1.6rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-      <div>
-        <h1 style="font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#fff; margin:0; text-shadow:2px 2px 0 rgba(0,0,0,0.2); line-height:1.5;">✏️ EDIT PROFILE</h1>
-        <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#f0ffd4; margin:0.5rem 0 0;">Update your player card for better recruiter matching.</p>
-      </div>
-      <a href="{% url 'users:profile_view' %}" style="font-family:'Press Start 2P',cursive; font-size:0.6rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">← BACK</a>
-    </div>
+  .profile-edit-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.45rem;
+    text-transform: uppercase;
+    color: #5a3320;
+  }
 
-    <!-- FORM CARD -->
-    <div style="background:#f2ede0; border:4px solid #5a3320; padding:1.5rem;">
+  .profile-edit-card input,
+  .profile-edit-card textarea,
+  .profile-edit-card select {
+    width: 100%;
+    font-family: 'VT323', monospace;
+    font-size: 1.45rem;
+    padding: 12px 14px;
+    border: 4px solid #333;
+    background: #f5f5f5;
+    outline: none;
+    box-sizing: border-box;
+  }
 
-      <form method="post" novalidate>
-        {% csrf_token %}
+  .profile-edit-card input:focus,
+  .profile-edit-card textarea:focus,
+  .profile-edit-card select:focus {
+    background: #fffde7;
+    border-color: #00a8f3;
+  }
 
-        {% if form.non_field_errors %}
-          <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
-        {% endif %}
+  .profile-edit-card textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
 
-        <!-- HEADLINE -->
-        <div style="margin-bottom:1.25rem;">
-          <label for="{{ form.headline.id_for_label }}" style="display:block; font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Headline</label>
-          {{ form.headline }}
-          {% for error in form.headline.errors %}<div style="font-family:'VT323',monospace; color:#c0392b; font-size:1.1rem; margin-top:0.25rem;">{{ error }}</div>{% endfor %}
-        </div>
+  .profile-edit-help,
+  .profile-edit-error,
+  .profile-edit-tip {
+    font-size: 1.2rem;
+  }
 
-        <!-- SKILLS -->
-        <div style="margin-bottom:1.25rem;">
-          <label for="{{ form.skills.id_for_label }}" style="display:block; font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Skills</label>
-          {{ form.skills }}
-          <div style="font-family:'VT323',monospace; font-size:1.1rem; color:#777; margin-top:0.25rem;">Comma-separated (e.g. Python, Java, SQL)</div>
-          {% for error in form.skills.errors %}<div style="font-family:'VT323',monospace; color:#c0392b; font-size:1.1rem; margin-top:0.25rem;">{{ error }}</div>{% endfor %}
-        </div>
+  .profile-edit-help,
+  .profile-edit-tip {
+    color: #666;
+  }
 
-        <!-- EDUCATION -->
-        <div style="margin-bottom:1.25rem;">
-          <label for="{{ form.education.id_for_label }}" style="display:block; font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Education</label>
-          {{ form.education }}
-          {% for error in form.education.errors %}<div style="font-family:'VT323',monospace; color:#c0392b; font-size:1.1rem; margin-top:0.25rem;">{{ error }}</div>{% endfor %}
-        </div>
+  .profile-edit-error {
+    color: #c0392b;
+    margin-top: 6px;
+  }
 
-        <!-- WORK EXPERIENCE -->
-        <div style="margin-bottom:1.25rem;">
-          <label for="{{ form.work_experience.id_for_label }}" style="display:block; font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Work Experience</label>
-          {{ form.work_experience }}
-          {% for error in form.work_experience.errors %}<div style="font-family:'VT323',monospace; color:#c0392b; font-size:1.1rem; margin-top:0.25rem;">{{ error }}</div>{% endfor %}
-        </div>
+  .profile-edit-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
 
-        <!-- LINKS -->
-        <div style="margin-bottom:1.5rem;">
-          <label for="{{ form.links.id_for_label }}" style="display:block; font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Links</label>
-          {{ form.links }}
-          <div style="font-family:'VT323',monospace; font-size:1.1rem; color:#777; margin-top:0.25rem;">LinkedIn / GitHub / portfolio (one per line)</div>
-          {% for error in form.links.errors %}<div style="font-family:'VT323',monospace; color:#c0392b; font-size:1.1rem; margin-top:0.25rem;">{{ error }}</div>{% endfor %}
-        </div>
+  .profile-edit-actions .cr-btn,
+  .profile-edit-top .cr-btn {
+    transform: none;
+    min-height: 46px;
+    padding: 12px 18px;
+    font-size: 0.7rem;
+  }
 
-        <hr style="border:0; border-top:3px solid #c0b8a8; margin:1.25rem 0;">
+  .profile-edit-actions .cr-btn::before,
+  .profile-edit-top .cr-btn::before {
+    transform: translateY(6px);
+  }
 
-        <div style="display:flex; gap:0.75rem; align-items:center;">
-          <a href="{% url 'users:profile_view' %}" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">CANCEL</a>
-          <button type="submit" style="font-family:'Press Start 2P',cursive; font-size:0.62rem; background:#1ab0e8; border:3px solid #111; padding:0.8rem 1rem; color:#fff; text-transform:uppercase; cursor:pointer; line-height:1.4;">SAVE CHANGES</button>
-        </div>
+  .profile-edit-actions .cr-btn:hover,
+  .profile-edit-top .cr-btn:hover {
+    transform: translateY(-2px);
+  }
 
-      </form>
-    </div>
+  .profile-edit-actions .cr-btn:hover::before,
+  .profile-edit-top .cr-btn:hover::before {
+    transform: translateY(4px);
+  }
 
-    <p style="font-family:'VT323',monospace; font-size:1.15rem; color:#888; margin-top:0.75rem;">Tip: Keep your headline short and your skills specific for better matching.</p>
+  .profile-edit-actions .cr-btn:active,
+  .profile-edit-top .cr-btn:active {
+    transform: translateY(2px);
+  }
 
+  .profile-edit-actions .cr-btn:active::before,
+  .profile-edit-top .cr-btn:active::before {
+    transform: translateY(2px);
+  }
+</style>
+
+<div class="container mt-4 cr-theme">
+  <div class="cr-header profile-edit-top">
+    <h2 class="cr-title">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      Edit Profile
+    </h2>
+
+    <a href="{% url 'users:profile_view' %}" class="cr-btn cr-btn-secondary">Back</a>
   </div>
+
+  <div class="profile-edit-card">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="profile-edit-error" style="margin-bottom: 16px;">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="profile-edit-field">
+        <label class="profile-edit-label" for="{{ form.headline.id_for_label }}">Headline</label>
+        {{ form.headline }}
+        {% for error in form.headline.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="profile-edit-field">
+        <label class="profile-edit-label" for="{{ form.skills.id_for_label }}">Skills</label>
+        {{ form.skills }}
+        <div class="profile-edit-help">Comma-separated, for example Python, Java, SQL.</div>
+        {% for error in form.skills.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="profile-edit-field">
+        <label class="profile-edit-label" for="{{ form.education.id_for_label }}">Education</label>
+        {{ form.education }}
+        {% for error in form.education.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="profile-edit-field">
+        <label class="profile-edit-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
+        {{ form.work_experience }}
+        {% for error in form.work_experience.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="profile-edit-field">
+        <label class="profile-edit-label" for="{{ form.links.id_for_label }}">Links</label>
+        {{ form.links }}
+        <div class="profile-edit-help">LinkedIn, GitHub, or portfolio, one per line.</div>
+        {% for error in form.links.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+      </div>
+
+      <div class="profile-edit-actions">
+        <a href="{% url 'users:profile_view' %}" class="cr-btn cr-btn-warning">Cancel</a>
+        <button type="submit" class="cr-btn cr-btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+  <p class="profile-edit-tip" style="margin-top: 14px;">Tip: keep your headline short and your skills specific for better matching.</p>
 </div>
 
 {% endblock %}

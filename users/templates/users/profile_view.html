@@ -2,90 +2,170 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
+<style>
+  .profile-shell {
+    display: grid;
+    gap: 24px;
+  }
 
-<div style="max-width:1100px; margin:0 auto;">
-  <div style="background:#e8e2d0; border:10px solid #5a3320; box-shadow:inset 0 0 0 5px #8a6050; padding:1rem; margin-bottom:2rem;">
+  .profile-card {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    overflow: hidden;
+  }
 
-    <!-- GREEN BANNER -->
-    <div style="background:#8ec63f; border:4px solid #6fa32e; padding:1.4rem 1.6rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-      <div>
-        <h1 style="font-family:'Press Start 2P',cursive; font-size:1.4rem; color:#fff; margin:0; text-shadow:2px 2px 0 rgba(0,0,0,0.2); line-height:1.5;">👤 MY PROFILE</h1>
-        <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#f0ffd4; margin:0.5rem 0 0;">Manage and preview your public-facing candidate profile.</p>
+  .profile-row {
+    padding: 18px 20px;
+    border-bottom: 4px solid #d3c39a;
+  }
+
+  .profile-row:last-child {
+    border-bottom: 0;
+  }
+
+  .profile-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.45rem;
+    text-transform: uppercase;
+    color: #5a3320;
+  }
+
+  .profile-value {
+    font-size: 1.55rem;
+    color: #1f160e;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+
+  .profile-note,
+  .profile-empty {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 20px;
+    font-size: 1.45rem;
+    color: #444;
+  }
+
+  .profile-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .profile-actions .cr-btn {
+    transform: none;
+    min-height: 46px;
+    padding: 12px 18px;
+    font-size: 0.7rem;
+  }
+
+  .profile-actions .cr-btn::before {
+    transform: translateY(6px);
+  }
+
+  .profile-actions .cr-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .profile-actions .cr-btn:hover::before {
+    transform: translateY(4px);
+  }
+
+  .profile-actions .cr-btn:active {
+    transform: translateY(2px);
+  }
+
+  .profile-actions .cr-btn:active::before {
+    transform: translateY(2px);
+  }
+</style>
+
+<div class="container mt-4 cr-theme">
+  <div class="cr-header">
+    <h2 class="cr-title">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      My Profile
+    </h2>
+
+    {% if is_owner %}
+      <div class="profile-actions">
+        <a href="{% url 'users:profile_edit' %}" class="cr-btn cr-btn-primary">Edit Profile</a>
+        <a href="{% url 'users:privacy_settings' %}" class="cr-btn cr-btn-secondary">Privacy Settings</a>
       </div>
+    {% endif %}
+  </div>
 
-      {% if is_owner %}
-        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <a href="{% url 'users:profile_edit' %}" style="font-family:'Press Start 2P',cursive; font-size:0.6rem; background:#1ab0e8; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#fff; text-transform:uppercase; line-height:1.4;">EDIT PROFILE</a>
-          <a href="{% url 'users:privacy_settings' %}" style="font-family:'Press Start 2P',cursive; font-size:0.6rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">PRIVACY SETTINGS</a>
-        </div>
-      {% endif %}
-    </div>
-
-    <!-- PROFILE CONTENT CARD -->
+  <div class="profile-shell">
     {% if not profile %}
-      <div style="background:#f2ede0; border:4px solid #5a3320; padding:2rem; font-family:'VT323',monospace; font-size:1.4rem; color:#555;">
-        Profile not found. If you're a recruiter, use your recruiter profile page.
+      <div class="profile-empty">
+        Profile not found. If you are a recruiter, use the recruiter profile page instead.
       </div>
-
+    {% elif not is_owner and profile.privacy_enabled %}
+      <div class="profile-empty">
+        This profile is hidden.
+      </div>
     {% else %}
-      {% if not is_owner and profile.privacy_enabled %}
-        <div style="background:#f2ede0; border:4px solid #5a3320; padding:2rem; font-family:'VT323',monospace; font-size:1.4rem; color:#555;">
-          This profile is hidden.
+      <div class="profile-card">
+        <div class="profile-row">
+          <span class="profile-label">Name</span>
+          <div class="profile-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
         </div>
 
-      {% else %}
-        <div style="background:#f2ede0; border:4px solid #5a3320; padding:0;">
-
-          <!-- NAME -->
-          <div style="padding:1.2rem 1.5rem; border-bottom:2px solid #c0b8a8;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Name</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208;">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+        {% if is_owner or profile.show_headline %}
+          <div class="profile-row">
+            <span class="profile-label">Headline</span>
+            <div class="profile-value">{{ profile.headline|default:"—" }}</div>
           </div>
+        {% endif %}
 
-          {% if is_owner or profile.show_headline %}
-          <div style="padding:1.2rem 1.5rem; border-bottom:2px solid #c0b8a8;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Headline</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208;">{{ profile.headline|default:"—" }}</div>
+        {% if is_owner or profile.show_skills %}
+          <div class="profile-row">
+            <span class="profile-label">Skills</span>
+            <div class="profile-value">{{ profile.skills|default:"—" }}</div>
           </div>
-          {% endif %}
+        {% endif %}
 
-          {% if is_owner or profile.show_skills %}
-          <div style="padding:1.2rem 1.5rem; border-bottom:2px solid #c0b8a8;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Skills</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208;">{{ profile.skills|default:"—" }}</div>
+        {% if is_owner or profile.show_education %}
+          <div class="profile-row">
+            <span class="profile-label">Education</span>
+            <div class="profile-value">{{ profile.education|default:"—" }}</div>
           </div>
-          {% endif %}
+        {% endif %}
 
-          {% if is_owner or profile.show_education %}
-          <div style="padding:1.2rem 1.5rem; border-bottom:2px solid #c0b8a8;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Education</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208; white-space:pre-line;">{{ profile.education|default:"—" }}</div>
+        {% if is_owner or profile.show_work_experience %}
+          <div class="profile-row">
+            <span class="profile-label">Work Experience</span>
+            <div class="profile-value">{{ profile.work_experience|default:"—" }}</div>
           </div>
-          {% endif %}
+        {% endif %}
 
-          {% if is_owner or profile.show_work_experience %}
-          <div style="padding:1.2rem 1.5rem; border-bottom:2px solid #c0b8a8;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Work Experience</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208; white-space:pre-line;">{{ profile.work_experience|default:"—" }}</div>
+        {% if is_owner or profile.show_links %}
+          <div class="profile-row">
+            <span class="profile-label">Links</span>
+            <div class="profile-value">{{ profile.links|default:"—" }}</div>
           </div>
-          {% endif %}
-
-          {% if is_owner or profile.show_links %}
-          <div style="padding:1.2rem 1.5rem;">
-            <div style="font-family:'Press Start 2P',cursive; font-size:0.65rem; color:#5a3320; margin-bottom:0.5rem; text-transform:uppercase;">Links</div>
-            <div style="font-family:'VT323',monospace; font-size:1.4rem; color:#1e1208; white-space:pre-line;">{{ profile.links|default:"—" }}</div>
-          </div>
-          {% endif %}
-
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     {% endif %}
 
-    <!-- BACK BUTTON -->
-    <div style="margin-top:1rem;">
-      <a href="{% url 'jobs:home' %}" style="font-family:'Press Start 2P',cursive; font-size:0.6rem; background:#e8e4da; border:3px solid #111; padding:0.8rem 1rem; text-decoration:none; color:#333; text-transform:uppercase; line-height:1.4;">← BACK TO JOBS</a>
+    <div class="profile-actions">
+      <a href="{% url 'jobs:home' %}" class="cr-btn cr-btn-warning">Back To Jobs</a>
     </div>
-
   </div>
 </div>
 

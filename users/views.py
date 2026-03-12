@@ -140,3 +140,5 @@ def recruiter_profile_edit(request):
         "user_form": user_form,
         "profile_form": profile_form,
     })
+def enter_page(request):
+    return render(request, "users/enter.html")

@@ -107,6 +107,54 @@
       padding: 30px 0;
       color: #fff;
     }
+
+    .save-toast-stack {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .save-toast {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: toastIn 0.25s ease forwards, toastOut 0.3s ease 3s forwards;
+    }
+
+    .save-toast.toast-error,
+    .save-toast.toast-danger {
+      background: #d9534f;
+      text-shadow: 2px 2px 0px #7a1d1a;
+    }
+
+    .save-toast.toast-warning {
+      background: #ffcc00;
+      color: #3a2c00;
+      text-shadow: none;
+    }
+
+    .save-toast.toast-info {
+      background: #00a8f3;
+      text-shadow: 2px 2px 0px #005f8a;
+    }
+
+    @keyframes toastIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes toastOut {
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
   </style>
 </head>
 
@@ -186,19 +234,20 @@
   </nav>
 
   <div class="container mt-4">
-
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
-
     {% block content %}
     {% endblock content %}
 
   </div>
+
+  {% if messages %}
+    <div class="save-toast-stack" data-server-toast-stack aria-live="polite" aria-atomic="true">
+      {% for message in messages %}
+        <div class="save-toast{% if message.tags %} toast-{{ message.tags|cut:' ' }}{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
   <section class="pixel-footer d-none d-md-block">
     <div class="container">
@@ -219,6 +268,31 @@
       </div>
     </div>
   </section>
+
+  <script>
+    window.showToast = function (message, level) {
+      const stack = document.querySelector(".save-toast-stack") || (() => {
+        const el = document.createElement("div");
+        el.className = "save-toast-stack";
+        el.setAttribute("aria-live", "polite");
+        el.setAttribute("aria-atomic", "true");
+        document.body.appendChild(el);
+        return el;
+      })();
+
+      const toast = document.createElement("div");
+      toast.className = `save-toast${level ? ` toast-${level}` : ""}`;
+      toast.textContent = message;
+      stack.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+        if (!stack.children.length && !document.querySelector("[data-server-toast-stack]")) {
+          stack.remove();
+        }
+      }, 3400);
+    };
+  </script>
 
 </body>
 </html>

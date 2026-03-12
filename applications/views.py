@@ -17,6 +17,15 @@ from .models import (
 from .forms import ApplicationForm, ApplicationStatusForm
 
 
+APPLICATION_STAGES = [
+    {"value": Application.Status.APPLIED, "label": "Applied", "lane": "road", "badge_class": "status-applied"},
+    {"value": Application.Status.REVIEW, "label": "Review", "lane": "grass", "badge_class": "status-review"},
+    {"value": Application.Status.INTERVIEW, "label": "Interview", "lane": "river", "badge_class": "status-interview"},
+    {"value": Application.Status.OFFER, "label": "Offer", "lane": "grass", "badge_class": "status-offer"},
+    {"value": Application.Status.CLOSED, "label": "Closed", "lane": "road", "badge_class": "status-closed"},
+]
+
+
 def index(request):
     return render(request, "applications/index.html")
 
@@ -62,7 +71,10 @@ def my_applications(request):
         .select_related("job")
         .order_by("-updated_at")
     )
-    return render(request, "applications/my_applications.html", {"applications": apps})
+    return render(request, "applications/my_applications.html", {
+        "applications": apps,
+        "application_stages": APPLICATION_STAGES,
+    })
 
 
 @login_required
@@ -72,19 +84,33 @@ def update_application_status(request, app_id):
 
     app = get_object_or_404(Application, id=app_id, applicant=request.user)
 
-    if request.method == "POST":
-        form = ApplicationStatusForm(request.POST, instance=app)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Application status updated!")
-            return redirect("applications:my_applications")
-    else:
-        form = ApplicationStatusForm(instance=app)
+    if request.method != "POST":
+        return redirect("applications:my_applications")
 
-    return render(request, "applications/update_status.html", {
-        "application": app,
-        "form": form,
-    })
+    form = ApplicationStatusForm(request.POST, instance=app)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Application status updated!")
+
+    return redirect("applications:my_applications")
+
+
+@require_POST
+@login_required
+def update_application_status_api(request, app_id):
+    if not getattr(request.user, "is_job_seeker", False):
+        return JsonResponse({"ok": False, "error": "forbidden"}, status=403)
+
+    app = get_object_or_404(Application, id=app_id, applicant=request.user)
+    new_status = request.POST.get("status")
+    valid = {choice[0] for choice in Application.Status.choices}
+
+    if new_status not in valid:
+        return JsonResponse({"ok": False, "error": "invalid status"}, status=400)
+
+    app.status = new_status
+    app.save(update_fields=["status", "updated_at"])
+    return JsonResponse({"ok": True, "status": app.get_status_display(), "value": app.status})
 
 
 @login_required

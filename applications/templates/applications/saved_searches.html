@@ -1,56 +1,212 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="arcade-page">
+<style>
+  .saved-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
 
-  <div class="arcade-frame">
-    <div class="arcade-banner">
-      <h1 class="arcade-title">SAVED SEARCHES</h1>
-      <p class="arcade-subtitle">Save recruiter filters so you do not repeat the same search twice</p>
-    </div>
+  .saved-panel {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 20px;
+  }
 
-    <div class="arcade-panel">
-      <form method="post" class="arcade-form">
+  .saved-panel-title {
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+    color: #222;
+  }
+
+  .saved-form-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .saved-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.45rem;
+    text-transform: uppercase;
+    color: #333;
+  }
+
+  .saved-input,
+  .saved-checkbox-row {
+    font-family: 'VT323', monospace;
+    font-size: 1.45rem;
+  }
+
+  .saved-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 4px solid #333;
+    background: #f5f5f5;
+    outline: none;
+  }
+
+  .saved-input:focus {
+    background: #fffde7;
+    border-color: #00a8f3;
+  }
+
+  .saved-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+  }
+
+  .saved-checkbox-row input {
+    width: 20px;
+    height: 20px;
+  }
+
+  .saved-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .saved-actions .cr-btn {
+    transform: none;
+    min-height: 46px;
+    padding: 12px 18px;
+    font-size: 0.7rem;
+  }
+
+  .saved-actions .cr-btn::before {
+    transform: translateY(6px);
+  }
+
+  .saved-actions .cr-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .saved-actions .cr-btn:hover::before {
+    transform: translateY(4px);
+  }
+
+  .saved-actions .cr-btn:active {
+    transform: translateY(2px);
+  }
+
+  .saved-actions .cr-btn:active::before {
+    transform: translateY(2px);
+  }
+
+  .saved-table td:last-child {
+    vertical-align: top;
+  }
+
+  .saved-name {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .saved-filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .saved-filter-line {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .saved-muted {
+    opacity: 0.7;
+  }
+
+  .saved-empty {
+    padding: 50px;
+    text-align: center;
+    border: 8px solid #333;
+  }
+
+  .saved-empty-title {
+    color: white;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+  }
+
+  .saved-empty-text {
+    color: #ccc;
+    margin: 12px 0 0;
+  }
+
+  @media (max-width: 992px) {
+    .saved-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="container mt-4 cr-theme">
+  <div class="cr-header">
+    <h2 class="cr-title">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      Saved Searches
+    </h2>
+  </div>
+
+  <div class="saved-layout">
+    <section class="saved-panel">
+      <h3 class="saved-panel-title">Save A Candidate Search</h3>
+
+      <form method="post" class="saved-form-grid">
         {% csrf_token %}
 
-        <h2 class="arcade-section-title">SAVE A NEW CANDIDATE SEARCH</h2>
-
-        <div class="arcade-grid">
-          <div class="arcade-col-6">
-            <label class="arcade-label">Name (Optional)</label>
-            <input type="text" name="name" placeholder="e.g. Python interns in Atlanta">
-          </div>
-
-          <div class="arcade-col-6">
-            <label class="arcade-label">Query (Name / Skills)</label>
-            <input type="text" name="query">
-          </div>
-
-          <div class="arcade-col-6">
-            <label class="arcade-label">Location</label>
-            <input type="text" name="location">
-          </div>
-
-          <div class="arcade-col-6 d-flex align-items-end">
-            <label class="arcade-checkbox mb-0">
-              <input type="checkbox" name="has_projects">
-              Only candidates with projects
-            </label>
-          </div>
+        <div>
+          <label class="saved-label" for="saved-search-name">Name</label>
+          <input id="saved-search-name" class="saved-input" type="text" name="name" placeholder="Python interns in Atlanta">
         </div>
 
-        <div class="arcade-actions mt-4 justify-content-end">
-          <button type="submit" class="btn arcade-btn arcade-btn-blue">Save Search</button>
+        <div>
+          <label class="saved-label" for="saved-search-query">Query</label>
+          <input id="saved-search-query" class="saved-input" type="text" name="query" placeholder="Name or skills">
+        </div>
+
+        <div>
+          <label class="saved-label" for="saved-search-location">Location</label>
+          <input id="saved-search-location" class="saved-input" type="text" name="location" placeholder="City or region">
+        </div>
+
+        <label class="saved-checkbox-row" for="saved-search-projects">
+          <input id="saved-search-projects" type="checkbox" name="has_projects">
+          <span>Only candidates with projects</span>
+        </label>
+
+        <div class="saved-actions">
+          <button type="submit" class="cr-btn cr-btn-primary">Save Search</button>
+          <a href="{% url 'jobs:candidate_search' %}" class="cr-btn cr-btn-secondary">Candidate Search</a>
         </div>
       </form>
-    </div>
+    </section>
 
-    {% if searches %}
-      <div class="arcade-panel">
-        <h2 class="arcade-section-title">YOUR SAVED SEARCHES</h2>
-
-        <div class="arcade-table-wrap">
-          <table class="arcade-table">
+    <section>
+      {% if searches %}
+        <div class="table-responsive">
+          <table class="cr-table saved-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -61,32 +217,30 @@
             </thead>
             <tbody>
               {% for s in searches %}
-                <tr>
-                  <td>{{ s.name|default:"Saved Search" }}</td>
+                <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
+                  <td class="saved-name">{{ s.name|default:"Saved Search" }}</td>
                   <td>
                     {% if s.filters.query or s.filters.location or s.filters.has_projects %}
-                      {% if s.filters.query %}
-                        <div>Query: {{ s.filters.query }}</div>
-                      {% endif %}
-                      {% if s.filters.location %}
-                        <div>Location: {{ s.filters.location }}</div>
-                      {% endif %}
-                      {% if s.filters.has_projects %}
-                        <div>Has projects</div>
-                      {% endif %}
-                      {% else %}
-                        <span class="text-muted">No filters</span>
+                      <div class="saved-filter-list">
+                        {% if s.filters.query %}
+                          <div class="saved-filter-line">Query: {{ s.filters.query }}</div>
+                        {% endif %}
+                        {% if s.filters.location %}
+                          <div class="saved-filter-line">Location: {{ s.filters.location }}</div>
+                        {% endif %}
+                        {% if s.filters.has_projects %}
+                          <div class="saved-filter-line">Has projects</div>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <span class="saved-muted">No filters</span>
                     {% endif %}
                   </td>
                   <td>{{ s.last_checked_at|default:"never" }}</td>
                   <td>
-                    <div class="arcade-actions">
-                      <a href="{% url 'applications:run_saved_search' s.id %}" class="btn arcade-btn arcade-btn-green arcade-btn-sm">
-                        Run
-                      </a>
-                      <a href="{% url 'applications:delete_saved_search' s.id %}" class="btn arcade-btn arcade-btn-red arcade-btn-sm">
-                        Delete
-                      </a>
+                    <div class="saved-actions">
+                      <a href="{% url 'applications:run_saved_search' s.id %}" class="cr-btn cr-btn-success cr-btn-sm">Run</a>
+                      <a href="{% url 'applications:delete_saved_search' s.id %}" class="cr-btn cr-btn-danger cr-btn-sm">Delete</a>
                     </div>
                   </td>
                 </tr>
@@ -94,17 +248,14 @@
             </tbody>
           </table>
         </div>
-      </div>
-    {% else %}
-      <div class="arcade-road-panel">
-        <div class="arcade-empty">
-          <div class="arcade-empty-title">NO SAVED SEARCHES YET</div>
-          <p class="arcade-empty-text">Save a search to quickly find matching candidates later.</p>
+      {% else %}
+        <div class="lane-road saved-empty">
+          <div class="saved-empty-title">No Saved Searches Yet</div>
+          <p class="saved-empty-text">Save a search to quickly find matching candidates later.</p>
         </div>
-      </div>
-    {% endif %}
+      {% endif %}
+    </section>
   </div>
-
 </div>
 
 {% endblock %}

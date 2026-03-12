@@ -56,6 +56,57 @@
         gap: 10px;
         margin-bottom: 14px;
         flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    .search-bar-row .map-search-input {
+        flex: 1 1 300px;
+    }
+
+    .search-bar-row .cr-btn,
+    .cr-form-actions .cr-btn,
+    .cr-header .cr-btn {
+        transform: none;
+        min-height: 48px;
+        padding: 12px 18px;
+        font-size: 0.72rem;
+    }
+
+    .search-bar-row .cr-btn::before,
+    .cr-form-actions .cr-btn::before,
+    .cr-header .cr-btn::before {
+        transform: translateY(6px);
+    }
+
+    .search-bar-row .cr-btn:hover,
+    .cr-form-actions .cr-btn:hover,
+    .cr-header .cr-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .search-bar-row .cr-btn:hover::before,
+    .cr-form-actions .cr-btn:hover::before,
+    .cr-header .cr-btn:hover::before {
+        transform: translateY(4px);
+    }
+
+    .search-bar-row .cr-btn:active,
+    .cr-form-actions .cr-btn:active,
+    .cr-header .cr-btn:active {
+        transform: translateY(2px);
+    }
+
+    .search-bar-row .cr-btn:active::before,
+    .cr-form-actions .cr-btn:active::before,
+    .cr-header .cr-btn:active::before {
+        transform: translateY(2px);
+    }
+
+    .cr-form-actions {
+        margin-top: 40px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
     }
 
     #recruiter-job-map {
@@ -252,11 +303,11 @@
                     {{ form.latitude }}
                     {{ form.longitude }}
 
-                    <div style="margin-top: 40px; display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button type="submit" class="cr-btn cr-btn-primary" style="font-size: 1.8rem;">
+                    <div class="cr-form-actions">
+                        <button type="submit" class="cr-btn cr-btn-primary">
                             Save Job
                         </button>
-                        <a href="{% url 'jobs:my_jobs' %}" class="cr-btn" style="background-color: #ffcc00; color: #000; font-size: 1.8rem; text-decoration: none; display: flex; align-items: center;">
+                        <a href="{% url 'jobs:my_jobs' %}" class="cr-btn cr-btn-warning">
                             Cancel
                         </a>
                     </div>
@@ -281,8 +332,8 @@
                             class="map-search-input"
                             placeholder="Search office address..."
                         />
-                        <button type="button" class="cr-btn" id="searchMapBtn">Search</button>
-                        <button type="button" class="cr-btn" id="clearMapBtn" style="background-color: #9e9e9e; color: white;">Clear</button>
+                        <button type="button" class="cr-btn cr-btn-sm" id="searchMapBtn">Search</button>
+                        <button type="button" class="cr-btn cr-btn-secondary cr-btn-sm" id="clearMapBtn">Clear</button>
                     </div>
 
                     <div id="recruiter-job-map"></div>

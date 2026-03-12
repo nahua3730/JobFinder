@@ -1,0 +1,854 @@
+{% extends "base.html" %}
+{% block title %}Enter Game{% endblock %}
+
+{% block content %}
+<style>
+  .enter-bg {
+    position: relative;
+    min-height: calc(100vh - 80px);
+    overflow: hidden;
+    padding: 34px 16px 48px;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,255,255,0.18), transparent 22%),
+      radial-gradient(circle at 80% 15%, rgba(255,0,140,0.16), transparent 24%),
+      linear-gradient(180deg, #08111f 0%, #10203d 40%, #1b1440 72%, #090c16 100%);
+  }
+
+  .enter-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      linear-gradient(to right, rgba(0,255,255,0.18) 2px, transparent 2px),
+      linear-gradient(to bottom, rgba(0,255,255,0.16) 2px, transparent 2px);
+    background-size: 72px 72px;
+    transform-origin: center bottom;
+    transform: perspective(900px) rotateX(78deg) scale(1.8) translateY(18%);
+    animation: arcadeFloorMove 7s linear infinite;
+    opacity: 0.3;
+  }
+
+  .enter-bg::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1.5px);
+    background-size: 120px 120px;
+    animation: starDrift 22s linear infinite;
+    opacity: 0.18;
+  }
+
+  .enter-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .enter-machine {
+    background: linear-gradient(180deg, #5a3a24 0%, #6d4428 100%);
+    border: 10px solid #2d1a10;
+    box-shadow:
+      0 0 0 4px #8b5a36 inset,
+      0 14px 0 #24140d,
+      0 0 28px rgba(0, 200, 255, 0.18);
+    padding: 20px 20px 28px;
+    position: relative;
+  }
+
+  .enter-marquee {
+    background: linear-gradient(180deg, #101010 0%, #242424 100%);
+    color: #ffcc00;
+    border: 6px solid #000;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 12px 18px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0px #000;
+    animation: marqueeGlow 2.1s ease-in-out infinite;
+  }
+
+  .enter-header {
+    background-color: #aad751;
+    border: 6px solid #8cbf3f;
+    box-shadow: 0px 8px 0px #3e2723;
+    padding: 18px 16px;
+    margin-bottom: 20px;
+  }
+
+  .enter-title {
+    margin: 0;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0px #333;
+    font-size: 2.8rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .enter-subtitle {
+    margin: 10px 0 0;
+    color: #f4ffe0;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    text-shadow: 2px 2px 0px #5f7f2e;
+    letter-spacing: 1px;
+  }
+
+  .enter-stage {
+    position: relative;
+    margin: 20px auto 10px;
+    min-height: 500px;
+    overflow: hidden;
+    border: 6px solid #3a2417;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.05);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.08)),
+      linear-gradient(180deg, #734625 0%, #7f4d2a 45%, #6f4224 100%);
+  }
+
+  .scene-road-bg {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 168px;
+    width: 88%;
+    height: 240px;
+    border: 6px solid #333;
+    background-color: #424242;
+    background-image:
+      repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent 46px,
+        #fff 46px,
+        #fff 84px
+      );
+    background-size: 172px 8px;
+    background-position: 0 calc(100% - 14px);
+    background-repeat: repeat-x;
+    animation: roadMove 6s linear infinite;
+    box-shadow: 0px 6px 0px #24140d;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .scene-road-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.08), transparent 22%, transparent 78%, rgba(0,0,0,0.18));
+    pointer-events: none;
+  }
+
+  .road-cars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .road-car {
+    position: absolute;
+    width: 58px;
+    height: 34px;
+  }
+
+  .road-car::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(#d40000 0 0) 8px 0 / 28px 6px no-repeat,
+      linear-gradient(#ff2d2d 0 0) 4px 6px / 40px 12px no-repeat,
+      linear-gradient(#d40000 0 0) 0 18px / 48px 8px no-repeat,
+      linear-gradient(#111 0 0) 10px 8px / 10px 8px no-repeat,
+      linear-gradient(#111 0 0) 24px 8px / 10px 8px no-repeat,
+      linear-gradient(#111 0 0) 6px 24px / 10px 8px no-repeat,
+      linear-gradient(#111 0 0) 30px 24px / 10px 8px no-repeat,
+      linear-gradient(#ffd9d9 0 0) 2px 20px / 4px 4px no-repeat,
+      linear-gradient(#ffd9d9 0 0) 42px 20px / 4px 4px no-repeat;
+    filter: drop-shadow(2px 2px 0 #240000);
+  }
+
+  .car-a {
+    top: 34px;
+    animation: carDriveA 8s linear infinite;
+  }
+
+  .car-b {
+    top: 108px;
+    animation: carDriveB 10s linear infinite;
+  }
+
+  .car-c {
+    top: 178px;
+    animation: carDriveC 12s linear infinite;
+  }
+
+  .scene-content {
+    position: relative;
+    z-index: 2;
+    padding-top: 22px;
+  }
+
+  .brick-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0;
+    margin-bottom: 18px;
+  }
+
+  .brick {
+    width: 112px;
+    height: 112px;
+    position: relative;
+    border: 6px solid #000;
+    box-shadow: 6px 6px 0 #24140d;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+    margin-right: -2px;
+  }
+
+  .brick-solid {
+    background: linear-gradient(180deg, #d67b38 0%, #b65422 100%);
+  }
+
+  .brick-solid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, transparent 31%, #842f12 31%, #842f12 36%, transparent 36%, transparent 64%, #842f12 64%, #842f12 69%, transparent 69%),
+      linear-gradient(transparent 31%, #842f12 31%, #842f12 36%, transparent 36%, transparent 64%, #842f12 64%, #842f12 69%, transparent 69%);
+    opacity: 0.9;
+    pointer-events: none;
+  }
+
+  .question-brick {
+    background-color: #da6b34;
+    border-radius: 0;
+    box-shadow: 6px 6px 0 #24140d;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    outline: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+
+  .question-brick::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, transparent 31%, #842f12 31%, #842f12 36%, transparent 36%, transparent 64%, #842f12 64%, #842f12 69%, transparent 69%),
+      linear-gradient(transparent 31%, #842f12 31%, #842f12 36%, transparent 36%, transparent 64%, #842f12 64%, #842f12 69%, transparent 69%);
+    opacity: 0.42;
+    pointer-events: none;
+  }
+
+  .question-brick::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 4px solid rgba(255, 210, 120, 0.55);
+    pointer-events: none;
+  }
+
+  .question-brick:hover,
+  .question-brick.long-pressing {
+    animation: animate 1s infinite;
+  }
+
+  .question-brick:active {
+    transform: translateY(-10px);
+  }
+
+  .question-brick:focus,
+  .question-brick:focus-visible,
+  .question-brick:active {
+    outline: none !important;
+  }
+
+  .question-mark {
+    position: relative;
+    z-index: 2;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 3.1rem;
+    line-height: 1;
+    color: #000;
+    text-shadow: 3px 3px 0 #f3a12a;
+    transform: translateY(2px);
+  }
+
+  .pixel-score {
+    position: absolute;
+    left: 50%;
+    top: 116px;
+    transform: translateX(-50%);
+    color: #ffe06f;
+    text-shadow: 2px 2px 0 #5a3a00;
+    font-size: 1.1rem;
+    opacity: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .pixel-score.show {
+    animation: scorePop 0.9s ease forwards;
+  }
+
+  .chicken-jump-zone {
+    position: relative;
+    width: 260px;
+    height: 210px;
+    margin: 8px auto 0;
+  }
+
+  .pixel-coin {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  .pixel-coin.show {
+    animation: pixelCoinRise 1s ease forwards;
+  }
+
+  .pixel-coin::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(#000 0 0) 8px 0 / 28px 4px no-repeat,
+      linear-gradient(#000 0 0) 4px 4px / 36px 4px no-repeat,
+      linear-gradient(#000 0 0) 0 8px / 44px 28px no-repeat,
+      linear-gradient(#000 0 0) 4px 36px / 36px 4px no-repeat,
+      linear-gradient(#000 0 0) 8px 40px / 28px 4px no-repeat;
+  }
+
+  .pixel-coin::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    background:
+      linear-gradient(#ffd84d 0 0) 4px 0 / 24px 4px no-repeat,
+      linear-gradient(#ffef9a 0 0) 8px 4px / 12px 4px no-repeat,
+      linear-gradient(#ffd84d 0 0) 0 4px / 32px 24px no-repeat,
+      linear-gradient(#e4a900 0 0) 24px 4px / 4px 24px no-repeat,
+      linear-gradient(#fff3b6 0 0) 8px 8px / 4px 12px no-repeat,
+      linear-gradient(#fff3b6 0 0) 12px 8px / 4px 4px no-repeat,
+      linear-gradient(#fff3b6 0 0) 12px 16px / 4px 4px no-repeat,
+      linear-gradient(#ffd84d 0 0) 4px 28px / 24px 4px no-repeat;
+  }
+
+  .chicken-shadow {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    width: 74px;
+    height: 16px;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.28);
+    border-radius: 50%;
+    filter: blur(1px);
+    z-index: 1;
+  }
+
+  .chicken-sprite {
+    width: 118px;
+    height: 118px;
+    position: absolute;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: block;
+    filter: drop-shadow(0 6px 0 #24140d);
+    transform-origin: center bottom;
+    z-index: 3;
+  }
+
+  .chicken-sprite.hop {
+    animation: chickenHitBrick 0.78s ease;
+  }
+
+  .hold-wrap {
+    position: relative;
+    z-index: 3;
+    margin-top: 4px;
+  }
+
+  .hold-label {
+    margin-top: 10px;
+    color: #fff47a;
+    text-transform: uppercase;
+    font-size: 1.75rem;
+    letter-spacing: 1.5px;
+    text-shadow: 3px 3px 0px #24140d;
+    animation: holdPromptBlink 0.85s steps(2, end) infinite;
+  }
+
+  .hold-bar {
+    width: 300px;
+    max-width: 82%;
+    height: 16px;
+    margin: 12px auto 0;
+    background: #1f1f1f;
+    border: 4px solid #000;
+    box-shadow: 0px 4px 0px #24140d;
+    overflow: hidden;
+  }
+
+  .hold-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d1ff, #00ffa2);
+    transition: width 0.08s linear;
+  }
+
+  .enter-hint {
+    margin-top: 14px;
+    font-size: 1.45rem;
+    line-height: 1.2;
+    color: #fff6b0;
+    text-shadow: 3px 3px 0 #24140d;
+    animation: holdHintPulse 1.1s ease-in-out infinite;
+  }
+
+  @keyframes holdPromptBlink {
+    0%, 49% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50%, 100% {
+      opacity: 0.45;
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes holdHintPulse {
+    0%, 100% {
+      opacity: 0.82;
+      transform: translateY(0);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+
+  .enter-actions {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-items: center;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    position: relative;
+    z-index: 3;
+  }
+
+  .enter-actions.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .enter-actions .cr-btn {
+    min-height: 62px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    text-align: center;
+    padding-left: 22px;
+    padding-right: 22px;
+    white-space: normal;
+    line-height: 1.1;
+    width: fit-content;
+    max-width: 100%;
+    justify-self: center;
+    transform: translateY(-6px);
+  }
+
+  .enter-actions .cr-btn:hover {
+    transform: translateY(-3px);
+  }
+
+  .enter-actions .cr-btn:active {
+    transform: translateY(0);
+  }
+
+  .enter-actions .guest-action {
+    grid-column: 1 / -1;
+    max-width: 320px;
+    margin: 2px auto 0;
+  }
+
+  .enter-hint {
+    margin-top: 16px;
+    color: #d9f8ff;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.82;
+    position: relative;
+    z-index: 3;
+  }
+
+  .enter-ready {
+    margin-top: 12px;
+    font-size: 0.95rem;
+    color: #ffef9a;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0 #4d3600;
+    position: relative;
+    z-index: 3;
+  }
+
+  .press-start {
+    animation: pressBlink 1.2s infinite;
+  }
+
+  @keyframes animate {
+    0% { background-color: #FFC07B; }
+    75% { background-color: #DE5917; }
+    100% { background-color: #da6b34; }
+  }
+
+  @keyframes pixelCoinRise {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px) scale(0.8);
+    }
+    18% { opacity: 1; }
+    50% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-88px) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-42px) scale(0.92);
+    }
+  }
+
+  @keyframes scorePop {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-36px);
+    }
+  }
+
+  @keyframes chickenHitBrick {
+    0% { transform: translateX(-50%) translateY(0) scale(1); }
+    38% { transform: translateX(-50%) translateY(-124px) scale(1.04); }
+    55% { transform: translateX(-50%) translateY(-102px) scale(1.01); }
+    100% { transform: translateX(-50%) translateY(0) scale(1); }
+  }
+
+  @keyframes carDriveA {
+    0% { transform: translateX(-120px); }
+    100% { transform: translateX(920px); }
+  }
+
+  @keyframes carDriveB {
+    0% { transform: translateX(-360px); }
+    100% { transform: translateX(920px); }
+  }
+
+  @keyframes carDriveC {
+    0% { transform: translateX(-620px); }
+    100% { transform: translateX(920px); }
+  }
+
+  @keyframes roadMove {
+    from { background-position: 0 calc(100% - 14px); }
+    to { background-position: 170px calc(100% - 14px); }
+  }
+
+  @keyframes arcadeFloorMove {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 0 72px, 72px 72px; }
+  }
+
+  @keyframes starDrift {
+    from { transform: translateY(0); }
+    to { transform: translateY(120px); }
+  }
+
+  @keyframes marqueeGlow {
+    0%, 100% { box-shadow: 0px 6px 0px #3e2723, 0 0 0 rgba(255,204,0,0); }
+    50% { box-shadow: 0px 6px 0px #3e2723, 0 0 18px rgba(255,204,0,0.35); }
+  }
+
+  @keyframes pressBlink {
+    0% { opacity: 1; }
+    50% { opacity: 0.35; }
+    100% { opacity: 1; }
+  }
+
+  @media (max-width: 768px) {
+    .enter-title {
+      font-size: 2.1rem;
+    }
+
+    .brick,
+    .question-brick {
+      width: 86px;
+      height: 86px;
+    }
+
+    .question-mark {
+      font-size: 2.5rem;
+    }
+
+    .scene-road-bg {
+      top: 140px;
+      height: 220px;
+      width: 94%;
+    }
+
+    .enter-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .enter-actions .guest-action {
+      grid-column: auto;
+      max-width: none;
+    }
+
+    .chicken-jump-zone {
+      width: 200px;
+      height: 180px;
+    }
+
+    .chicken-sprite {
+      width: 96px;
+      height: 96px;
+    }
+  }
+</style>
+
+<div class="enter-bg">
+  <div class="enter-shell">
+    <div class="enter-machine">
+
+      <div class="enter-marquee">Cross The Road • Find The Job • Start Your Journey</div>
+
+      <div class="enter-header">
+        <h1 class="enter-title">
+          <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+            <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+            <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+            <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+            <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+            <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+            <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+          </svg>
+          GT Job Search
+        </h1>
+        <p class="enter-subtitle">Long press the question block to enter the game</p>
+      </div>
+
+      <div class="enter-stage">
+        <div class="scene-road-bg">
+          <div class="road-cars">
+            <div class="road-car car-a"></div>
+            <div class="road-car car-b"></div>
+            <div class="road-car car-c"></div>
+          </div>
+        </div>
+
+        <div class="scene-content">
+          <div class="brick-row">
+            <div class="brick brick-solid" aria-hidden="true"></div>
+
+            <div class="brick question-brick" id="questionBrick" tabindex="0" role="button" aria-label="Long press to start">
+              <div class="question-mark">?</div>
+            </div>
+
+            <div class="brick brick-solid" aria-hidden="true"></div>
+          </div>
+
+          <div class="pixel-score" id="pixelScore">+100</div>
+
+          <div class="chicken-jump-zone">
+            <div class="pixel-coin" id="coinPop"></div>
+            <div class="chicken-shadow"></div>
+
+            <svg class="chicken-sprite" id="chickenSprite" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+            </svg>
+          </div>
+
+          <div class="hold-wrap">
+            <div class="hold-label press-start" id="holdLabel">Hit the Block to Start</div>
+            <div class="hold-bar">
+              <div class="hold-bar-fill" id="holdFill"></div>
+            </div>
+          </div>
+
+          <div class="enter-actions" id="enterActions">
+            <a href="{% url 'users:signup' %}" class="cr-btn cr-btn-primary">
+              Start as New Player
+            </a>
+
+            <a href="{% url 'users:login' %}" class="cr-btn cr-btn-secondary">
+              Returning Player
+            </a>
+
+            <a href="{% url 'jobs:home' %}" class="cr-btn guest-action">
+              Continue as Guest
+            </a>
+          </div>
+
+          <div class="enter-ready press-start" id="enterReady">Player 1 Ready</div>
+          <div class="enter-hint">Press and hold the center question block to start the game board</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const brick = document.getElementById("questionBrick");
+  const holdFill = document.getElementById("holdFill");
+  const holdLabel = document.getElementById("holdLabel");
+  const coinPop = document.getElementById("coinPop");
+  const chickenSprite = document.getElementById("chickenSprite");
+  const enterActions = document.getElementById("enterActions");
+  const pixelScore = document.getElementById("pixelScore");
+  const enterReady = document.getElementById("enterReady");
+
+  let pressTimer = null;
+  let startTime = 0;
+  let completed = false;
+  const HOLD_MS = 1200;
+
+  function resetHold() {
+    if (completed) return;
+    clearInterval(pressTimer);
+    pressTimer = null;
+    startTime = 0;
+    holdFill.style.width = "0%";
+    brick.classList.remove("long-pressing");
+    holdLabel.textContent = "Hit the Block to Start";
+  }
+
+  function completeHold() {
+    if (completed) return;
+    completed = true;
+    clearInterval(pressTimer);
+    brick.classList.remove("long-pressing");
+    holdFill.style.width = "100%";
+    holdLabel.textContent = "Level Clear!";
+    enterReady.textContent = "Warp Open";
+
+    coinPop.classList.remove("show");
+    void coinPop.offsetWidth;
+    coinPop.classList.add("show");
+
+    pixelScore.classList.remove("show");
+    void pixelScore.offsetWidth;
+    pixelScore.classList.add("show");
+
+    chickenSprite.classList.remove("hop");
+    void chickenSprite.offsetWidth;
+    chickenSprite.classList.add("hop");
+
+    setTimeout(() => {
+      enterActions.classList.add("show");
+    }, 320);
+  }
+
+  function beginHold() {
+    if (completed || pressTimer) return;
+    startTime = Date.now();
+    brick.classList.add("long-pressing");
+    holdLabel.textContent = "Keep Holding...";
+    pressTimer = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, (elapsed / HOLD_MS) * 100);
+      holdFill.style.width = pct + "%";
+      if (elapsed >= HOLD_MS) {
+        completeHold();
+      }
+    }, 16);
+  }
+
+  brick.addEventListener("mousedown", beginHold);
+  brick.addEventListener("touchstart", beginHold, { passive: true });
+  brick.addEventListener("mouseup", resetHold);
+  brick.addEventListener("mouseleave", resetHold);
+  brick.addEventListener("touchend", resetHold);
+  brick.addEventListener("touchcancel", resetHold);
+
+  brick.addEventListener("keydown", (e) => {
+    if (e.code === "Space" || e.code === "Enter") {
+      e.preventDefault();
+      beginHold();
+    }
+  });
+
+  brick.addEventListener("keyup", (e) => {
+    if (e.code === "Space" || e.code === "Enter") {
+      e.preventDefault();
+      resetHold();
+    }
+  });
+</script>
+{% endblock %}

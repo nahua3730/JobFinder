@@ -16,10 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from users.views import enter_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', enter_page, name='enter'),
     path('users/', include('users.urls')),
-    path('', include('jobs.urls')), 
-    path('', include('applications.urls')),
+    path('jobs/', include('jobs.urls')), 
+    path('applications/', include('applications.urls')),
+    path('recruiter/', include('applications.legacy_urls')),
 ]

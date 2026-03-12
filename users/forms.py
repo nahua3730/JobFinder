@@ -77,15 +77,15 @@ class PrivacySettingsForm(forms.ModelForm):
             "show_links",
         ]
         widgets = {
-            "privacy_enabled": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_headline": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_location": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_commute_radius": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_skills": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_education": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_work_experience": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_projects": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-            "show_links": forms.CheckboxInput(attrs={"class": "form-check-input"}),
+            "privacy_enabled": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_headline": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_location": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_commute_radius": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_skills": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_education": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_work_experience": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_projects": forms.CheckboxInput(attrs={"class": "toggle-input"}),
+            "show_links": forms.CheckboxInput(attrs={"class": "toggle-input"}),
         }
 class RecruiterUserForm(forms.ModelForm):
     class Meta:

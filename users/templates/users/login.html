@@ -2,16 +2,66 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-
 <style>
-  .login-shell {
-    max-width: 820px;
-    margin: 28px auto 48px;
+  .arcade-bg {
     position: relative;
+    min-height: 100%;
+    padding: 28px 12px 40px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,255,255,0.18), transparent 22%),
+      radial-gradient(circle at 80% 18%, rgba(255,0,153,0.16), transparent 24%),
+      linear-gradient(180deg, #08111f 0%, #10203d 42%, #1b1140 72%, #090c16 100%);
+  }
+
+  .arcade-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      linear-gradient(to right, rgba(0,255,255,0.2) 2px, transparent 2px),
+      linear-gradient(to bottom, rgba(0,255,255,0.16) 2px, transparent 2px);
+    background-size: 72px 72px;
+    transform-origin: center bottom;
+    transform: perspective(900px) rotateX(78deg) scale(1.8) translateY(18%);
+    animation: arcadeFloorMove 7s linear infinite;
+    opacity: 0.3;
+  }
+
+  .arcade-bg::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 1.5px);
+    background-size: 120px 120px;
+    animation: starDrift 22s linear infinite;
+    opacity: 0.16;
+  }
+
+  .login-shell {
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cr-theme.arcade-machine {
+    background: linear-gradient(180deg, #5a3a24 0%, #6d4428 100%);
+    border: 10px solid #2d1a10;
+    box-shadow:
+      0 0 0 4px #8b5a36 inset,
+      0 14px 0 #24140d,
+      0 0 28px rgba(0, 200, 255, 0.18);
+    padding: 18px;
   }
 
   .login-highscore {
-    background: #1f1f1f;
+    background: linear-gradient(180deg, #101010 0%, #242424 100%);
     color: #ffcc00;
     border: 6px solid #000;
     box-shadow: 0px 6px 0px #3e2723;
@@ -22,6 +72,7 @@
     font-size: 1.45rem;
     letter-spacing: 1px;
     text-shadow: 2px 2px 0px #000;
+    animation: marqueeGlow 2.2s ease-in-out infinite;
   }
 
   .login-highscore .label {
@@ -116,25 +167,6 @@
     font-size: 1.35rem;
   }
 
-  .login-sfx-row {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 8px 0 18px;
-  }
-
-  .login-sfx {
-    display: inline-block;
-    padding: 4px 12px;
-    background: #ffcc00;
-    border: 4px solid #000;
-    box-shadow: 0px 4px 0px #3e2723;
-    text-transform: uppercase;
-    font-size: 1.25rem;
-    color: #000;
-  }
-
   .login-status {
     background: #fff8dc;
     border: 6px solid #333;
@@ -159,19 +191,46 @@
     transform: translateY(-50%);
   }
 
-  .login-status::before {
-    left: 18px;
-  }
-
-  .login-status::after {
-    right: 18px;
-  }
+  .login-status::before { left: 18px; }
+  .login-status::after { right: 18px; }
 
   .login-lane {
     height: 54px;
     border: 6px solid #333;
     margin-bottom: 22px;
   }
+
+  .login-save-panel {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+
+  .login-save-title {
+    text-transform: uppercase;
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .login-save-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .login-save-box {
+    background: #f5f5f5;
+    border: 4px solid #333;
+    box-shadow: 0px 4px 0px #b8a98e;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+  }
+
   .login-card {
     position: relative;
     overflow: hidden;
@@ -297,64 +356,174 @@
     text-transform: uppercase;
     opacity: 0.95;
   }
-  .login-player-card {
-  position: relative;
-  background: #f5f5f5;
-  border: 4px solid #333;
-  box-shadow: 0px 4px 0px #b8a98e;
-  padding: 14px;
-  text-transform: uppercase;
-  min-height: 88px;
-  text-align: left;
-  width: 100%;
-  font-family: 'VT323', monospace;
-  cursor: pointer;
-}
 
-.login-player-card:hover {
-  transform: translateY(-2px);
-}
-
-.login-player-card.active {
-  background: #e8f5b7;
-  border-color: #00a8f3;
-}
-.login-save-panel {
-  background: #fff8dc;
-  border: 6px solid #333;
-  box-shadow: 0px 6px 0px #3e2723;
-  padding: 14px 16px;
-  margin-bottom: 18px;
-}
-
-.login-save-title {
-  text-transform: uppercase;
-  font-size: 1.3rem;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.login-save-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.login-save-box {
-  background: #f5f5f5;
-  border: 4px solid #333;
-  box-shadow: 0px 4px 0px #b8a98e;
-  text-align: center;
-  padding: 10px 8px;
-  font-size: 1.05rem;
-  text-transform: uppercase;
-}
-
-@media (max-width: 768px) {
-  .login-save-row {
-    grid-template-columns: 1fr;
+  .login-button-stage {
+    margin-top: 16px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: center;
+    min-height: 120px;
   }
-}
+
+  .jump-button-wrap {
+    position: relative;
+    width: 110px;
+    height: 110px;
+  }
+
+  .jump-button {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #f6a25b 0%, #d7682c 100%);
+    border: 6px solid #000;
+    box-shadow: 6px 6px 0px #24140d;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .jump-button::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 4px solid rgba(255,255,255,0.15);
+  }
+
+  .jump-button:active {
+    transform: translateY(10px);
+    box-shadow: 6px -2px 0px #24140d;
+  }
+
+  .jump-button-icon {
+    position: absolute;
+    inset: 0;
+  }
+
+  .jump-button-icon .one,
+  .jump-button-icon .two,
+  .jump-button-icon .dots,
+  .jump-button-icon .dots2 {
+    position: absolute;
+  }
+
+  .jump-button-icon .one {
+    left: 43px;
+    top: 30px;
+    width: 18px;
+    height: 6px;
+    background: #de5917;
+    box-shadow: 2px 2px 0px #000;
+  }
+
+  .jump-button-icon .one::before,
+  .jump-button-icon .one::after {
+    content: "";
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background: #de5917;
+    box-shadow: 2px 2px 0px #000;
+    left: 5px;
+  }
+
+  .jump-button-icon .one::before { top: 14px; }
+  .jump-button-icon .one::after { top: 25px; }
+
+  .jump-button-icon .two {
+    left: 32px;
+    top: 34px;
+    width: 9px;
+    height: 9px;
+    background: #de5917;
+    box-shadow: 2px 2px 0px #000;
+  }
+
+  .jump-button-icon .two::before,
+  .jump-button-icon .two::after {
+    content: "";
+    position: absolute;
+    background: #de5917;
+    box-shadow: 2px 2px 0px #000;
+  }
+
+  .jump-button-icon .two::before {
+    width: 9px;
+    height: 14px;
+    left: 17px;
+    top: 0;
+  }
+
+  .jump-button-icon .two::after {
+    width: 12px;
+    height: 5px;
+    left: 22px;
+    top: 8px;
+    box-shadow: none;
+  }
+
+  .jump-button-icon .dots,
+  .jump-button-icon .dots2 {
+    width: 5px;
+    height: 5px;
+    background: #000;
+  }
+
+  .jump-button-icon .dots { left: 24px; top: 24px; }
+  .jump-button-icon .dots::after,
+  .jump-button-icon .dots2::after {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: #000;
+    left: 46px;
+    top: 0;
+  }
+
+  .jump-button-icon .dots2 { left: 24px; top: 63px; }
+
+  .jump-coin {
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    transform: translateX(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff4a6 0%, #ffd54d 35%, #e7a800 70%, #b87300 100%);
+    border: 4px solid #000;
+    box-shadow: 0px 4px 0px #3e2723;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #5a3a00;
+    font-size: 1rem;
+    font-weight: bold;
+    pointer-events: none;
+  }
+
+  .jump-button-wrap:hover .jump-coin {
+    animation: jumpCoin 0.95s ease forwards;
+  }
+
+  @keyframes jumpCoin {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(8px) rotateY(0deg);
+    }
+    15% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-96px) rotateY(180deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-38px) rotateY(360deg);
+    }
+  }
 
   @keyframes coinBob {
     0% { transform: translateY(0); }
@@ -368,17 +537,24 @@
     100% { transform: translateY(0) rotate(0deg); }
   }
 
-  @media (max-width: 768px) {
-    .login-shell {
-      margin: 20px auto 36px;
-    }
+  @keyframes arcadeFloorMove {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 0 72px, 72px 72px; }
+  }
 
+  @keyframes starDrift {
+    from { transform: translateY(0); }
+    to { transform: translateY(120px); }
+  }
+
+  @keyframes marqueeGlow {
+    0%, 100% { box-shadow: 0px 6px 0px #3e2723, 0 0 0 rgba(255, 204, 0, 0); }
+    50% { box-shadow: 0px 6px 0px #3e2723, 0 0 18px rgba(255, 204, 0, 0.35); }
+  }
+
+  @media (max-width: 768px) {
     .login-hud {
       grid-template-columns: repeat(2, 1fr);
-    }
-
-    .login-player-grid {
-      grid-template-columns: 1fr;
     }
 
     .login-actions {
@@ -403,23 +579,53 @@
       justify-content: center;
       margin-top: 10px;
     }
+
+    .login-save-row {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
-<div class="cr-theme login-shell">
+<div class="arcade-bg">
+  <div class="login-shell">
+    <div class="cr-theme arcade-machine">
 
-  <div class="login-highscore">
-    <span class="label">High Score</span>
-    <span>999999</span>
-  </div>
+      <div class="login-highscore">
+        <span class="label">High Score</span>
+        <span>999999</span>
+      </div>
 
-  <div class="login-insert-coin press-start">Insert Coin</div>
+      <div class="login-insert-coin press-start">Insert Coin</div>
 
-  <div class="login-header-wrap">
-    <div class="cr-header cr-header-start">
-      <div class="cr-title-wrap w-100">
-        <div class="cr-title">
-          <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <div class="login-header-wrap">
+        <div class="cr-header cr-header-start">
+          <div class="cr-title-wrap w-100">
+            <div class="cr-title">
+              <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+                <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+                <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+                <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+                <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+                <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+                <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+                <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+                <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+              </svg>
+              Player Login
+            </div>
+
+            <div class="login-marquee">
+              <p class="login-subtitle press-start">Returning player access</p>
+              <p class="login-subtitle-2">Load your profile and resume the journey</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="login-corner-decor" aria-hidden="true">
+          <div class="login-coin">$</div>
+          <svg class="login-mini-chicken" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
             <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
             <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
@@ -431,84 +637,63 @@
             <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
             <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
           </svg>
-          Player Login
-        </div>
-
-        <div class="login-marquee">
-          <p class="login-subtitle press-start">Returning player access</p>
-          <p class="login-subtitle-2">Load your profile and resume the journey</p>
         </div>
       </div>
+
+      <div class="login-hud">
+        <div class="login-hud-box">1UP</div>
+        <div class="login-hud-box">Credit 01</div>
+        <div class="login-hud-box">Stage A</div>
+        <div class="login-hud-box">Ready</div>
+      </div>
+
+      <div class="login-status">
+        Player access portal • authorized users only
+      </div>
+
+      <div class="lane-road login-lane"></div>
+
+      <div class="login-save-panel">
+        <div class="login-save-title">Continue Saved Profile</div>
+        <div class="login-save-row">
+          <div class="login-save-box">Mode: Returning Player</div>
+          <div class="login-save-box">Access: Authorized Users</div>
+          <div class="login-save-box">Status: Ready</div>
+        </div>
+      </div>
+      <div class="cr-panel login-card">
+        <form method="post" class="login-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+
+          <div class="login-actions">
+            <button type="submit" class="cr-btn cr-btn-primary press-start login-primary">
+              Continue
+            </button>
+
+            <a href="{% url 'users:signup' %}" class="cr-btn cr-btn-secondary">
+              New Player
+            </a>
+          </div>
+        </form>
+
+        <div class="login-help">
+          Search jobs and continue your journey
+        </div>
+
+        <div class="login-footer-hint">
+          <span class="login-chip">Secure Gate</span>
+          <span class="login-chip">Profile Save</span>
+          <span class="login-chip">Next Level: Job Search</span>
+        </div>
+      </div>
+
+      <div class="login-bonus">
+        Continue your journey across the board
+      </div>
+
     </div>
-
-    <div class="login-corner-decor" aria-hidden="true">
-      <div class="login-coin">$</div>
-      <svg class="login-mini-chicken" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-      </svg>
-    </div>
-  </div>
-
-  <div class="login-hud">
-    <div class="login-hud-box">1UP</div>
-    <div class="login-hud-box">Credit 01</div>
-    <div class="login-hud-box">Stage A</div>
-    <div class="login-hud-box">Ready</div>
-  </div>
-
-  <div class="login-status">
-    Player access portal • authorized users only
-  </div>
-
-  <div class="lane-road login-lane"></div>
-  <div class="login-save-panel">
-  <div class="login-save-title">Continue Saved Profile</div>
-  <div class="login-save-row">
-    <div class="login-save-box">Mode: Returning Player</div>
-    <div class="login-save-box">Access: Authorized Users</div>
-    <div class="login-save-box">Status: Ready</div>
   </div>
 </div>
 
-  <div class="cr-panel login-card">
-    <form method="post" class="login-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-
-      <div class="login-actions">
-        <button type="submit" class="cr-btn cr-btn-primary press-start login-primary">
-          Continue
-        </button>
-
-        <a href="{% url 'users:signup' %}" class="cr-btn cr-btn-secondary" id="signupBtn">
-          New Player
-        </a>
-      </div>
-    </form>
-
-    <div class="login-help" id="loginHelpText">
-      Search jobs and continue your journey
-    </div>
-
-    <div class="login-footer-hint">
-      <span class="login-chip">Secure Gate</span>
-      <span class="login-chip">Profile Save</span>
-      <span class="login-chip">Next Level: Job Search</span>
-    </div>
-  </div>
-
-  <div class="login-bonus">
-    Continue your journey across the board
-  </div>
-
-</div>
 {% endblock %}

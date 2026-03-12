@@ -58,6 +58,137 @@
     line-height: 1.15;
   }
 
+  .privacy-toggle-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+
+  .toggle-container.arcade-toggle {
+    --knob-size: 1.5em;
+    font-size: 2.2rem;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 120px;
+    margin: 0;
+  }
+
+  .toggle-container.arcade-toggle .toggle-input {
+    position: absolute;
+    z-index: 2;
+    bottom: 132.5%;
+    border-radius: 50%;
+    transform: rotate(-25deg);
+    transform-origin: 50% 4.75em;
+    width: var(--knob-size);
+    height: var(--knob-size);
+    opacity: 0;
+    font: inherit;
+    transition: transform .24s cubic-bezier(.65, 1.35, .5, 1);
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .toggle-container.arcade-toggle .toggle-input:checked {
+    transform: rotate(25deg);
+  }
+
+  .toggle-container.arcade-toggle .toggle-input:disabled {
+    cursor: not-allowed;
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle-wrapper {
+    position: absolute;
+    z-index: 1;
+    bottom: -135%;
+    -webkit-mask-image: linear-gradient(to bottom, #000 62.125%, transparent 50%);
+    mask-image: linear-gradient(to bottom, #000 62.125%, transparent 50%);
+    width: 200%;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: rotate(-25deg);
+    transform-origin: bottom center;
+    transition: transform .24s cubic-bezier(.65, 1.35, .5, 1);
+  }
+
+  .toggle-container.arcade-toggle .toggle-input:checked + .toggle-handle-wrapper > .toggle-handle {
+    transform: rotate(25deg);
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle-knob {
+    position: relative;
+    z-index: 1;
+    border-radius: 50%;
+    width: var(--knob-size);
+    height: var(--knob-size);
+    background-image: radial-gradient(farthest-corner at 70% 30%, #ffffff 4%, #61bdda 12% 24%, #4791b2 50% 65%, #61bdda 75%);
+    transition: transform .24s cubic-bezier(.65, 1.35, .5, 1);
+  }
+
+  .toggle-container.arcade-toggle .toggle-input:checked + .toggle-handle-wrapper .toggle-handle-knob {
+    transform: rotate(-90deg);
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle-knob::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 8px 2px rgb(255 255 255 / .4);
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle-bar-wrapper {
+    position: relative;
+    width: .5em;
+    height: 3em;
+  }
+
+  .toggle-container.arcade-toggle .toggle-handle-bar {
+    position: absolute;
+    top: calc(var(--knob-size) / 2 * -1);
+    left: 0;
+    width: 100%;
+    height: calc(100% + var(--knob-size) / 2);
+    background-image: linear-gradient(to right, #1f1f1f, #161616, #1f1f1f 45% 55%, #161616, #1f1f1f);
+    background-position-x: .06125em;
+    transition: background-position-x .24s cubic-bezier(.65, 1.35, .5, 1);
+    box-shadow: inset 0 1em .25em rgb(0 0 0 / .4);
+  }
+
+  .toggle-container.arcade-toggle .toggle-input:checked + .toggle-handle-wrapper .toggle-handle-bar {
+    background-position-x: -.06125em;
+  }
+
+  .toggle-container.arcade-toggle .toggle-base {
+    position: relative;
+    border-radius: 3.125em;
+    padding: .25em;
+    width: 3em;
+    height: 1em;
+    background-color: #222222;
+    background-image: linear-gradient(to bottom, #444444, #222222);
+    box-shadow: 0 -.25em .5em #fff, 0 .25em .5em #d7d7d7;
+  }
+
+  .toggle-container.arcade-toggle .toggle-base-inside {
+    position: relative;
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to bottom, #1f1f1f, #0f0f0f);
+    box-shadow: inset 0 .0625em rgb(255 255 255 / .2), inset 0 -.03125em rgb(255 255 255 / 1), inset 0 -.0625em .25em rgb(0 0 0 / .1);
+  }
+
   .preview-profile-header {
     background: #fff;
     border: 4px solid #333;
@@ -179,8 +310,21 @@
                   When enabled, recruiters cannot view your profile.
                 </div>
               </div>
-              <div class="pixel-switch">
-                {{ form.privacy_enabled }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.privacy_enabled }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -192,8 +336,21 @@
               <label for="{{ form.show_headline.id_for_label }}" class="privacy-label">
                 Show Headline
               </label>
-              <div class="pixel-switch">
-                {{ form.show_headline }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_headline }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -201,8 +358,21 @@
               <label for="{{ form.show_location.id_for_label }}" class="privacy-label">
                 Show Location
               </label>
-              <div class="pixel-switch">
-                {{ form.show_location }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_location }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -210,8 +380,21 @@
               <label for="{{ form.show_commute_radius.id_for_label }}" class="privacy-label">
                 Show Commute Radius
               </label>
-              <div class="pixel-switch">
-                {{ form.show_commute_radius }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_commute_radius }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -219,8 +402,21 @@
               <label for="{{ form.show_skills.id_for_label }}" class="privacy-label">
                 Show Skills
               </label>
-              <div class="pixel-switch">
-                {{ form.show_skills }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_skills }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -228,8 +424,21 @@
               <label for="{{ form.show_education.id_for_label }}" class="privacy-label">
                 Show Education
               </label>
-              <div class="pixel-switch">
-                {{ form.show_education }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_education }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -237,8 +446,21 @@
               <label for="{{ form.show_work_experience.id_for_label }}" class="privacy-label">
                 Show Work Experience
               </label>
-              <div class="pixel-switch">
-                {{ form.show_work_experience }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_work_experience }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -246,8 +468,21 @@
               <label for="{{ form.show_projects.id_for_label }}" class="privacy-label">
                 Show Projects
               </label>
-              <div class="pixel-switch">
-                {{ form.show_projects }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_projects }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -255,8 +490,21 @@
               <label for="{{ form.show_links.id_for_label }}" class="privacy-label">
                 Show Links
               </label>
-              <div class="pixel-switch">
-                {{ form.show_links }}
+              <div class="privacy-toggle-wrap">
+                <div class="toggle-container arcade-toggle">
+                  {{ form.show_links }}
+                  <div class="toggle-handle-wrapper">
+                    <div class="toggle-handle">
+                      <div class="toggle-handle-knob"></div>
+                      <div class="toggle-handle-bar-wrapper">
+                        <div class="toggle-handle-bar"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="toggle-base">
+                    <div class="toggle-base-inside"></div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -368,7 +616,7 @@ const fieldMap = [
   ["{{ form.show_links.id_for_label }}", "preview-links"]
 ];
 
-const inputs = document.querySelectorAll(".pixel-switch input:not(#{{ form.privacy_enabled.id_for_label }})");
+const inputs = document.querySelectorAll(".privacy-toggle-wrap .toggle-input:not(#{{ form.privacy_enabled.id_for_label }})");
 const previewHiddenMessage = document.getElementById("previewHiddenMessage");
 const previewContent = document.getElementById("previewContent");
 
@@ -408,22 +656,4 @@ fieldMap.forEach(([inputId]) => {
   }
 });
 </script>
-
-{% if messages %}
-<div id="save-toast" class="save-toast">
-  {% for message in messages %}
-    {{ message }}
-  {% endfor %}
-</div>
-<script>
-  setTimeout(() => {
-    const toast = document.getElementById("save-toast");
-    if (toast) {
-      toast.style.opacity = "0";
-      toast.style.transition = "opacity 0.3s ease";
-      setTimeout(() => toast.remove(), 300);
-    }
-  }, 2200);
-</script>
-{% endif %}
 {% endblock %}

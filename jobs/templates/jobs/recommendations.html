@@ -1,86 +1,103 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="arcade-page">
+<div class="cr-theme">
 
-  <div class="arcade-frame">
-    <div class="arcade-banner">
-      <h1 class="arcade-title">RECOMMENDED CANDIDATES</h1>
-      <p class="arcade-subtitle">Best player matches for this job posting</p>
-    </div>
+  <div class="cr-header">
+    <h2 class="cr-title">
+      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
+        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+      </svg>
+      Recommended Candidates
+    </h2>
 
-    <div class="arcade-panel">
-      <div class="arcade-grid">
-        <div class="arcade-col-12">
-          <div class="arcade-label">Job Title</div>
-          <div class="arcade-value">{{ job.title }}</div>
-        </div>
-
-        <div class="arcade-col-6">
-          <div class="arcade-label">Skills</div>
-          <div class="arcade-value">{{ job.skills|default:"—" }}</div>
-        </div>
-
-        <div class="arcade-col-6">
-          <div class="arcade-label">Location</div>
-          <div class="arcade-value">
-            {{ job.location }}
-            {% if job.is_remote %}
-              <span class="arcade-chip arcade-chip-blue ms-2">Remote OK</span>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {% if recommendations %}
-      <div class="arcade-panel">
-        <h2 class="arcade-section-title">MATCHED CANDIDATES</h2>
-
-        <div class="arcade-table-wrap">
-          <table class="arcade-table">
-            <thead>
-              <tr>
-                <th>Candidate</th>
-                <th>Score</th>
-                <th>Skills</th>
-                <th>Location</th>
-                <th>Match Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for r in recommendations %}
-                <tr>
-                  <td>
-                    {{ r.profile.user.first_name }} {{ r.profile.user.last_name }}
-                  </td>
-                  <td>
-                    <span class="arcade-chip arcade-chip-green">{{ r.score }}</span>
-                  </td>
-                  <td>{{ r.profile.skills|default:"—" }}</td>
-                  <td>{{ r.profile.location|default:"—" }}</td>
-                  <td>
-                    {% if r.reasons %}
-                      {{ r.reasons|join:" • " }}
-                    {% else %}
-                      —
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    {% else %}
-      <div class="arcade-road-panel">
-        <div class="arcade-empty">
-          <div class="arcade-empty-title">NO PLAYERS ON THE BOARD</div>
-          <p class="arcade-empty-text">No recommended candidates yet. Try adding job skills first.</p>
-        </div>
-      </div>
-    {% endif %}
+    <a href="{% url 'jobs:my_jobs' %}" class="cr-btn">
+      Back
+    </a>
   </div>
+
+  <div class="cr-panel mb-4">
+    <h2 style="font-size:2rem; text-transform:uppercase; margin-bottom:1rem;">Job Info</h2>
+
+    <div class="row g-3">
+      <div class="col-12">
+        <div class="cr-muted-text" style="text-transform:uppercase;">Job Title</div>
+        <div style="font-size:1.8rem; font-weight:bold;">{{ job.title }}</div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="cr-muted-text" style="text-transform:uppercase;">Skills</div>
+        <div style="font-size:1.5rem;">{{ job.skills|default:"—" }}</div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="cr-muted-text" style="text-transform:uppercase;">Location</div>
+        <div style="font-size:1.5rem;">
+          {{ job.location|default:"—" }}
+          {% if job.is_remote %}
+            <span class="cr-btn cr-btn-sm cr-btn-primary" style="cursor:default; margin-left:8px;">Remote OK</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if recommendations %}
+    <div class="table-responsive">
+      <table class="cr-table">
+        <thead>
+          <tr>
+            <th>Candidate</th>
+            <th>Score</th>
+            <th>Skills</th>
+            <th>Location</th>
+            <th>Match Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in recommendations %}
+            <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
+              <td style="font-size:1.7rem; font-weight:bold;">
+                {{ r.profile.user.first_name }} {{ r.profile.user.last_name }}
+              </td>
+
+              <td>
+                <span class="cr-btn cr-btn-sm" style="cursor:default; background:#4caf50; color:#fff;">
+                  {{ r.score }}
+                </span>
+              </td>
+
+              <td>{{ r.profile.skills|default:"—" }}</td>
+
+              <td>{{ r.profile.location|default:"—" }}</td>
+
+              <td>
+                {% if r.reasons %}
+                  {{ r.reasons|join:" • " }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="lane-road cr-empty-lane">
+      <div class="cr-empty-title">NO PLAYERS ON THE BOARD.</div>
+      <div class="cr-empty-text">No recommended candidates yet. Try adding job skills first.</div>
+    </div>
+  {% endif %}
 
 </div>
 

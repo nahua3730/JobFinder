@@ -60,135 +60,367 @@
   .status-offer { background: #4caf50; color: #fff; }
   .status-closed { background: #e53935; color: #fff; }
 
-  .stage-board {
-    position: relative;
-    background: #2f2f6f;
-    border: 6px solid #1f1f4a;
-    box-shadow: inset 0px 0px 0px 4px rgba(255,255,255,0.06);
-    min-height: 210px;
-    padding: 28px 22px 22px;
-    overflow: hidden;
+  .status-updating {
+    opacity: 0.7;
   }
 
-  .stage-board::before {
+  .stage-board {
+    position: relative;
+    min-height: 250px;
+    padding: 20px 18px 26px;
+    overflow: hidden;
+    border: 6px solid #333;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.04);
+  }
+
+  .chicken-runner {
+    position: absolute;
+    left: 10%;
+    bottom: 18px;
+    width: 66px;
+    height: 66px;
+    z-index: 4;
+    --chicken-scale: -1;
+    transform: translateX(-50%) scaleX(var(--chicken-scale));
+    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.18));
+    transition: left 0.22s linear;
+  }
+
+  .chicken-runner.hop {
+    animation: applicationChickenHop 0.95s cubic-bezier(0.22, 0.7, 0.2, 1);
+  }
+
+  .chicken-trail {
+    position: absolute;
+    left: 10%;
+    bottom: 46px;
+    --trail-scale: 1;
+    width: 176px;
+    height: 46px;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: left 0.22s linear;
+    transform-origin: center;
+  }
+
+  .chicken-trail.sparkle {
+    animation: chickenTrail 3s ease-out forwards;
+  }
+
+  .chicken-trail::before,
+  .chicken-trail::after {
     content: "";
     position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        to right,
-        transparent 0,
-        transparent calc(20% - 3px),
-        rgba(255,255,255,0.95) calc(20% - 3px),
-        rgba(255,255,255,0.95) calc(20% + 3px),
-        transparent calc(20% + 3px),
-        transparent 40%
-      );
-    opacity: 0.95;
-    pointer-events: none;
+    background: #ffeb3b;
+    box-shadow: 0 0 0 2px #fff6b3;
+    clip-path: polygon(50% 0%, 62% 35%, 100% 50%, 62% 65%, 50% 100%, 38% 65%, 0% 50%, 38% 35%);
+  }
+
+  .chicken-trail::before {
+    width: 18px;
+    height: 18px;
+    left: 18px;
+    top: 18px;
+  }
+
+  .chicken-trail::after {
+    width: 13px;
+    height: 13px;
+    left: 50px;
+    top: 6px;
+    background: #ffd54f;
+    box-shadow: 0 0 0 2px #fff3a1;
+  }
+
+  .chicken-trail i {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    left: 80px;
+    top: 22px;
+    background: #fff176;
+    box-shadow: 0 0 0 2px #fff8c4;
+    clip-path: polygon(50% 0%, 62% 35%, 100% 50%, 62% 65%, 50% 100%, 38% 65%, 0% 50%, 38% 35%);
+    display: block;
+  }
+
+  .chicken-trail i::before,
+  .chicken-trail i::after {
+    content: "";
+    position: absolute;
+    clip-path: polygon(50% 0%, 62% 35%, 100% 50%, 62% 65%, 50% 100%, 38% 65%, 0% 50%, 38% 35%);
+  }
+
+  .chicken-trail i::before {
+    width: 9px;
+    height: 9px;
+    left: 28px;
+    top: -10px;
+    background: #ffe082;
+    box-shadow: 0 0 0 2px #fff2b0;
+  }
+
+  .chicken-trail i::after {
+    width: 8px;
+    height: 8px;
+    left: 62px;
+    top: 6px;
+    background: #fff59d;
+    box-shadow: 0 0 0 2px #fff8c4;
   }
 
   .stage-row {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
     z-index: 2;
-    margin-top: 78px;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(100px, 1fr));
+    gap: 12px;
+    min-height: 190px;
+    align-items: end;
   }
 
   .stage-slot {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
-  }
-
-  .stage-marker {
-    width: 92px;
-    height: 92px;
-    border-radius: 50%;
-    border: 5px solid #23235a;
-    background: radial-gradient(circle at 35% 35%, #4c4c9a 0%, #2b2b68 70%);
-    box-shadow: inset 0px 0px 0px 4px rgba(255,255,255,0.06);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    min-height: 190px;
     position: relative;
   }
 
-  .stage-marker::after {
+  .stage-car-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .stage-car-btn:disabled {
+    cursor: default;
+  }
+
+  .stage-car-track {
+    position: relative;
+    width: 100%;
+    height: 128px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .stage-car {
+    position: relative;
+    width: 58px;
+    height: 86px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.15s ease, opacity 0.15s ease;
+    animation: carRise 4.6s linear infinite;
+    bottom: -22px;
+  }
+
+  .stage-car.car-variant-1::before {
+    background:
+      linear-gradient(#4a0000 0 0) 21px 4px / 16px 10px no-repeat,
+      linear-gradient(#d10000 0 0) 16px 12px / 26px 14px no-repeat,
+      linear-gradient(#ff3b30 0 0) 10px 24px / 38px 34px no-repeat,
+      linear-gradient(#ffc9c9 0 0) 18px 18px / 22px 10px no-repeat,
+      linear-gradient(#ff8a80 0 0) 16px 32px / 26px 16px no-repeat,
+      linear-gradient(#8b0000 0 0) 14px 58px / 30px 12px no-repeat,
+      linear-gradient(#111 0 0) 8px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 42px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 10px 58px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 40px 58px / 8px 14px no-repeat,
+      linear-gradient(#ffe082 0 0) 14px 66px / 6px 8px no-repeat,
+      linear-gradient(#ffe082 0 0) 38px 66px / 6px 8px no-repeat,
+      linear-gradient(#7a0000 0 0) 18px 72px / 22px 6px no-repeat;
+  }
+
+  .stage-car.car-variant-2::before {
+    background:
+      linear-gradient(#00324a 0 0) 19px 4px / 20px 10px no-repeat,
+      linear-gradient(#0077b8 0 0) 14px 12px / 30px 12px no-repeat,
+      linear-gradient(#29b6f6 0 0) 8px 22px / 42px 38px no-repeat,
+      linear-gradient(#d6f4ff 0 0) 16px 18px / 26px 10px no-repeat,
+      linear-gradient(#81d4fa 0 0) 14px 34px / 30px 16px no-repeat,
+      linear-gradient(#005f8f 0 0) 12px 60px / 34px 10px no-repeat,
+      linear-gradient(#111 0 0) 6px 30px / 8px 16px no-repeat,
+      linear-gradient(#111 0 0) 44px 30px / 8px 16px no-repeat,
+      linear-gradient(#111 0 0) 8px 58px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 42px 58px / 8px 14px no-repeat,
+      linear-gradient(#fff59d 0 0) 16px 66px / 6px 8px no-repeat,
+      linear-gradient(#fff59d 0 0) 36px 66px / 6px 8px no-repeat,
+      linear-gradient(#004b70 0 0) 18px 72px / 22px 6px no-repeat;
+  }
+
+  .stage-car.car-variant-3::before {
+    background:
+      linear-gradient(#2f5a00 0 0) 20px 4px / 18px 10px no-repeat,
+      linear-gradient(#5cae00 0 0) 14px 12px / 30px 14px no-repeat,
+      linear-gradient(#8bc34a 0 0) 10px 24px / 38px 36px no-repeat,
+      linear-gradient(#efffd9 0 0) 18px 18px / 22px 12px no-repeat,
+      linear-gradient(#aed581 0 0) 16px 34px / 26px 16px no-repeat,
+      linear-gradient(#437a00 0 0) 14px 60px / 30px 10px no-repeat,
+      linear-gradient(#111 0 0) 8px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 42px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 10px 58px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 40px 58px / 8px 14px no-repeat,
+      linear-gradient(#ffecb3 0 0) 16px 66px / 6px 8px no-repeat,
+      linear-gradient(#ffecb3 0 0) 36px 66px / 6px 8px no-repeat,
+      linear-gradient(#315900 0 0) 18px 72px / 22px 6px no-repeat;
+  }
+
+  .stage-car.car-variant-4::before {
+    background:
+      linear-gradient(#5b3a00 0 0) 16px 4px / 26px 10px no-repeat,
+      linear-gradient(#d18a00 0 0) 10px 14px / 38px 14px no-repeat,
+      linear-gradient(#ffb300 0 0) 8px 28px / 42px 34px no-repeat,
+      linear-gradient(#fff0c2 0 0) 14px 18px / 30px 10px no-repeat,
+      linear-gradient(#ffd54f 0 0) 14px 34px / 30px 14px no-repeat,
+      linear-gradient(#9a6200 0 0) 10px 62px / 38px 10px no-repeat,
+      linear-gradient(#111 0 0) 6px 26px / 8px 18px no-repeat,
+      linear-gradient(#111 0 0) 44px 26px / 8px 18px no-repeat,
+      linear-gradient(#111 0 0) 8px 58px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 42px 58px / 8px 14px no-repeat,
+      linear-gradient(#fff0a6 0 0) 14px 68px / 8px 8px no-repeat,
+      linear-gradient(#fff0a6 0 0) 36px 68px / 8px 8px no-repeat,
+      linear-gradient(#6f4700 0 0) 18px 74px / 22px 6px no-repeat;
+  }
+
+  .stage-car-btn:hover .stage-car:not(.is-current) {
+    filter: brightness(1.05);
+  }
+
+  .stage-car.is-current {
+    filter: drop-shadow(0 0 10px rgba(255, 235, 59, 0.3));
+  }
+
+  .stage-car::before {
     content: "";
     position: absolute;
-    bottom: 12px;
-    width: 42px;
-    height: 12px;
-    background: repeating-linear-gradient(
-      to right,
-      rgba(0,0,0,0.18) 0px,
-      rgba(0,0,0,0.18) 3px,
-      transparent 3px,
-      transparent 6px
-    );
+    inset: 0;
+    background:
+      linear-gradient(#4a0000 0 0) 21px 4px / 16px 10px no-repeat,
+      linear-gradient(#d10000 0 0) 16px 12px / 26px 14px no-repeat,
+      linear-gradient(#ff3b30 0 0) 10px 24px / 38px 34px no-repeat,
+      linear-gradient(#ffc9c9 0 0) 18px 18px / 22px 10px no-repeat,
+      linear-gradient(#ff8a80 0 0) 16px 32px / 26px 16px no-repeat,
+      linear-gradient(#8b0000 0 0) 14px 58px / 30px 12px no-repeat,
+      linear-gradient(#111 0 0) 8px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 42px 28px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 10px 58px / 8px 14px no-repeat,
+      linear-gradient(#111 0 0) 40px 58px / 8px 14px no-repeat,
+      linear-gradient(#ffe082 0 0) 14px 66px / 6px 8px no-repeat,
+      linear-gradient(#ffe082 0 0) 38px 66px / 6px 8px no-repeat,
+      linear-gradient(#7a0000 0 0) 18px 72px / 22px 6px no-repeat;
+    filter: drop-shadow(2px 2px 0 #240000);
+    transform: rotate(0deg);
+    transform-origin: center;
+  }
+
+  .stage-car svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .stage-label {
-    color: #ff5a48;
-    font-size: 1.45rem;
+    margin-top: 8px;
+    font-size: 1.4rem;
     line-height: 1;
-    text-shadow: 1px 1px 0px #2d1b1b;
-    margin-bottom: 4px;
     text-transform: uppercase;
+    color: #fff4d0;
+    text-shadow: 2px 2px 0px #222;
   }
 
   .stage-sub {
-    color: #d9d9ff;
+    margin-top: 4px;
     font-size: 1rem;
     line-height: 1;
-    opacity: 0.9;
+    color: #d6e6f0;
+    text-transform: uppercase;
   }
 
-  .chicken-runner {
-    position: absolute;
-    top: 22px;
-    width: 68px;
-    height: 68px;
-    z-index: 3;
-    left: 10%;
-    transform: translateX(-50%) scaleX(-1);
-    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.18));
-    transition: left 0.18s linear;
+  .stage-car-btn.is-selected .stage-label,
+  .stage-car-btn.is-selected .stage-sub {
+    color: #ffeb3b;
   }
 
-  .chicken-runner.hop {
-    animation: chickenHop 2s steps(6, end);
+  .stage-car-btn.is-selected .stage-car {
+    filter: brightness(1.08) drop-shadow(0 0 10px rgba(255, 235, 59, 0.35));
   }
 
-  @keyframes chickenHop {
-    0%   { transform: translateX(-50%) scaleX(-1) translateY(0); }
-    25%  { transform: translateX(-50%) scaleX(-1) translateY(-10px); }
-    50%  { transform: translateX(-50%) scaleX(-1) translateY(-16px); }
-    75%  { transform: translateX(-50%) scaleX(-1) translateY(-8px); }
-    100% { transform: translateX(-50%) scaleX(-1) translateY(0); }
+  .stage-helper {
+    margin-top: 12px;
+    font-size: 1.15rem;
+    color: #555;
   }
 
-  @media (max-width: 991px) {
-    .stage-marker {
-      width: 72px;
-      height: 72px;
+  .empty-state {
+    background: #fff8dc;
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 34px 24px;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  @keyframes applicationChickenHop {
+    0% { transform: translateX(-50%) scaleX(var(--chicken-scale)) translateY(0); }
+    20% { transform: translateX(-56%) scaleX(var(--chicken-scale)) translateY(-20px); }
+    50% { transform: translateX(-50%) scaleX(var(--chicken-scale)) translateY(-42px); }
+    80% { transform: translateX(-44%) scaleX(var(--chicken-scale)) translateY(-18px); }
+    100% { transform: translateX(-50%) scaleX(var(--chicken-scale)) translateY(0); }
+  }
+
+  @keyframes chickenTrail {
+    0% {
+      opacity: 0;
+      transform: translateX(calc(-24px * var(--trail-scale))) translateY(20px) scale(0.7);
     }
-
-    .stage-label {
-      font-size: 1.15rem;
+    18% {
+      opacity: 1;
+      transform: translateX(calc(-58px * var(--trail-scale))) translateY(2px) scale(1);
     }
-
-    .stage-sub {
-      font-size: 0.85rem;
+    45% {
+      opacity: 1;
+      transform: translateX(calc(-92px * var(--trail-scale))) translateY(-12px) scale(1.08);
     }
+    100% {
+      opacity: 0;
+      transform: translateX(calc(-168px * var(--trail-scale))) translateY(-22px) scale(1.2);
+    }
+  }
 
-    .chicken-runner {
-      width: 56px;
-      height: 56px;
+  @keyframes carRise {
+    0% {
+      transform: translateY(36px);
+      opacity: 0;
+    }
+    12% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    82% {
+      transform: translateY(-72px);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-110px);
+      opacity: 0;
     }
   }
 
@@ -204,10 +436,6 @@
 
     .stage-row {
       min-width: 620px;
-    }
-
-    .chicken-runner {
-      top: 16px;
     }
   }
 </style>
@@ -229,366 +457,258 @@
       </svg>
       <div>
         <h1 class="cr-title">My Applications</h1>
-        <p class="cr-subtitle">Track your application progress lane by lane</p>
+        <p class="cr-subtitle">Click a car to move your application through the Crossy Road lanes</p>
       </div>
     </div>
   </div>
 
   {% if applications %}
     {% for app in applications %}
-      {% if app.status == 'applied' %}
-        {% with stage_num='1' %}
-        <div class="application-card">
-          <div class="app-top">
-            <div>
-              <div class="app-title">{{ app.job.title }}</div>
-              <div class="app-meta">
-                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+      <div class="application-card">
+        <div class="app-top">
+          <div>
+            <div class="app-title">{{ app.job.title }}</div>
+            <div class="app-meta">
+              Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+            </div>
+
+            {% if app.note %}
+              <div class="app-note">
+                <strong>Note:</strong> {{ app.note }}
               </div>
-
-              {% if app.note %}
-                <div class="app-note">
-                  <strong>Note:</strong> {{ app.note }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex flex-column align-items-end gap-2">
-              <span class="status-badge status-applied">{{ app.get_status_display }}</span>
-
-              <a class="cr-btn update-status-btn"
-                 href="{% url 'applications:update_status' app.id %}"
-                 data-app-id="{{ app.id }}"
-                 data-current-stage="{{ stage_num }}">
-                Update Status
-              </a>
-            </div>
+            {% endif %}
           </div>
 
-          <div class="stage-board"
-               data-app-id="{{ app.id }}"
-               data-current-stage="{{ stage_num }}">
-            <svg class="chicken-runner"
-                 viewBox="0 0 16 16"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
-              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-            </svg>
-
-            <div class="stage-row">
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
-            </div>
+          <div class="d-flex flex-column align-items-end gap-2">
+            <span class="status-badge js-status-badge
+              {% for stage in application_stages %}{% if stage.value == app.status %}{{ stage.badge_class }}{% endif %}{% endfor %}">
+              {{ app.get_status_display }}
+            </span>
+            <div class="stage-helper">Current stage</div>
           </div>
         </div>
-        {% endwith %}
 
-      {% elif app.status == 'review' %}
-        {% with stage_num='2' %}
-        <div class="application-card">
-          <div class="app-top">
-            <div>
-              <div class="app-title">{{ app.job.title }}</div>
-              <div class="app-meta">
-                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
+        <div class="stage-board lane-road"
+             data-app-id="{{ app.id }}"
+             data-current-status="{{ app.status }}"
+             data-update-url="{% url 'applications:update_status_api' app.id %}">
+          <div class="chicken-trail" aria-hidden="true"><i></i></div>
+          <svg class="chicken-runner"
+               viewBox="0 0 16 16"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true">
+            <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+            <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+            <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+            <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+            <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
+            <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+            <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+            <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+          </svg>
+
+          <div class="stage-row">
+            {% for stage in application_stages %}
+              <div class="stage-slot">
+                <button
+                  type="button"
+                  class="stage-car-btn{% if stage.value == app.status %} is-selected{% endif %}"
+                  data-status="{{ stage.value }}"
+                  data-label="{{ stage.label }}"
+                  {% if stage.value == app.status %}disabled{% endif %}
+                >
+                  <div class="stage-car-track">
+                    <div class="stage-car car-variant-{% cycle '1' '4' '2' '3' '4' %}{% if stage.value == app.status %} is-current{% endif %}" style="animation-delay: -{{ forloop.counter0 }}.55s;">
+                      <svg viewBox="0 0 48 82" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+                    </div>
+                  </div>
+                  <div class="stage-label">{{ stage.label }}</div>
+                  <div class="stage-sub">Click To Set</div>
+                </button>
               </div>
-
-              {% if app.note %}
-                <div class="app-note">
-                  <strong>Note:</strong> {{ app.note }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex flex-column align-items-end gap-2">
-              <span class="status-badge status-review">{{ app.get_status_display }}</span>
-
-              <a class="cr-btn update-status-btn"
-                 href="{% url 'applications:update_status' app.id %}"
-                 data-app-id="{{ app.id }}"
-                 data-current-stage="{{ stage_num }}">
-                Update Status
-              </a>
-            </div>
-          </div>
-
-          <div class="stage-board"
-               data-app-id="{{ app.id }}"
-               data-current-stage="{{ stage_num }}">
-            <svg class="chicken-runner"
-                 viewBox="0 0 16 16"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
-              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-            </svg>
-
-            <div class="stage-row">
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
-            </div>
+            {% endfor %}
           </div>
         </div>
-        {% endwith %}
-
-      {% elif app.status == 'interview' %}
-        {% with stage_num='3' %}
-        <div class="application-card">
-          <div class="app-top">
-            <div>
-              <div class="app-title">{{ app.job.title }}</div>
-              <div class="app-meta">
-                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
-              </div>
-
-              {% if app.note %}
-                <div class="app-note">
-                  <strong>Note:</strong> {{ app.note }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex flex-column align-items-end gap-2">
-              <span class="status-badge status-interview">{{ app.get_status_display }}</span>
-
-              <a class="cr-btn update-status-btn"
-                 href="{% url 'applications:update_status' app.id %}"
-                 data-app-id="{{ app.id }}"
-                 data-current-stage="{{ stage_num }}">
-                Update Status
-              </a>
-            </div>
-          </div>
-
-          <div class="stage-board"
-               data-app-id="{{ app.id }}"
-               data-current-stage="{{ stage_num }}">
-            <svg class="chicken-runner"
-                 viewBox="0 0 16 16"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
-              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-            </svg>
-
-            <div class="stage-row">
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
-            </div>
-          </div>
-        </div>
-        {% endwith %}
-
-      {% elif app.status == 'offer' %}
-        {% with stage_num='4' %}
-        <div class="application-card">
-          <div class="app-top">
-            <div>
-              <div class="app-title">{{ app.job.title }}</div>
-              <div class="app-meta">
-                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
-              </div>
-
-              {% if app.note %}
-                <div class="app-note">
-                  <strong>Note:</strong> {{ app.note }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex flex-column align-items-end gap-2">
-              <span class="status-badge status-offer">{{ app.get_status_display }}</span>
-
-              <a class="cr-btn update-status-btn"
-                 href="{% url 'applications:update_status' app.id %}"
-                 data-app-id="{{ app.id }}"
-                 data-current-stage="{{ stage_num }}">
-                Update Status
-              </a>
-            </div>
-          </div>
-
-          <div class="stage-board"
-               data-app-id="{{ app.id }}"
-               data-current-stage="{{ stage_num }}">
-            <svg class="chicken-runner"
-                 viewBox="0 0 16 16"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
-              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-            </svg>
-
-            <div class="stage-row">
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
-            </div>
-          </div>
-        </div>
-        {% endwith %}
-
-      {% else %}
-        {% with stage_num='5' %}
-        <div class="application-card">
-          <div class="app-top">
-            <div>
-              <div class="app-title">{{ app.job.title }}</div>
-              <div class="app-meta">
-                Applied: {{ app.created_at|date:"M d, Y" }} • Updated: {{ app.updated_at|date:"M d, Y" }}
-              </div>
-
-              {% if app.note %}
-                <div class="app-note">
-                  <strong>Note:</strong> {{ app.note }}
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="d-flex flex-column align-items-end gap-2">
-              <span class="status-badge status-closed">{{ app.get_status_display }}</span>
-
-              <a class="cr-btn update-status-btn"
-                 href="{% url 'applications:update_status' app.id %}"
-                 data-app-id="{{ app.id }}"
-                 data-current-stage="{{ stage_num }}">
-                Update Status
-              </a>
-            </div>
-          </div>
-
-          <div class="stage-board"
-               data-app-id="{{ app.id }}"
-               data-current-stage="{{ stage_num }}">
-            <svg class="chicken-runner"
-                 viewBox="0 0 16 16"
-                 xmlns="http://www.w3.org/2000/svg"
-                 aria-hidden="true">
-              <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-              <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-              <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-              <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-              <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-              <rect x="9" y="5" width="1" height="1" fill="#fbc02d"/>
-              <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-              <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-              <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-              <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-            </svg>
-
-            <div class="stage-row">
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Applied</div><div class="stage-sub">Stage 1</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Review</div><div class="stage-sub">Stage 2</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Interview</div><div class="stage-sub">Stage 3</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Offer</div><div class="stage-sub">Stage 4</div></div></div></div>
-              <div class="stage-slot"><div class="stage-marker"><div class="text-center"><div class="stage-label">Closed</div><div class="stage-sub">Stage 5</div></div></div></div>
-            </div>
-          </div>
-        </div>
-        {% endwith %}
-      {% endif %}
+      </div>
     {% endfor %}
   {% else %}
     <div class="empty-state">
-      You haven’t applied to any jobs yet.
+      You have not applied to any jobs yet.
     </div>
   {% endif %}
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  const stages = ["applied", "review", "interview", "offer", "closed"];
   const stagePositions = {
-    1: "10%",
-    2: "30%",
-    3: "50%",
-    4: "70%",
-    5: "90%"
+    applied: "10%",
+    review: "30%",
+    interview: "50%",
+    offer: "70%",
+    closed: "90%"
+  };
+  const badgeClasses = {
+    applied: "status-applied",
+    review: "status-review",
+    interview: "status-interview",
+    offer: "status-offer",
+    closed: "status-closed"
   };
 
-  function hopChickenToStage(chicken, targetStage) {
-    let currentStage = 1;
-    const finalStage = parseInt(targetStage, 10) || 1;
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
 
-    chicken.style.left = stagePositions[1];
-
-    if (finalStage <= 1) return;
-
-    function doHop() {
-      if (currentStage >= finalStage) return;
-
-      currentStage += 1;
-      chicken.classList.remove("hop");
-
-      requestAnimationFrame(() => {
-        chicken.classList.add("hop");
-        chicken.style.left = stagePositions[currentStage];
-      });
-
-      setTimeout(() => {
-        chicken.classList.remove("hop");
-        doHop();
-      }, 420);
+  function moveChicken(board, status, hopSequentially, startStatus) {
+    const chicken = board.querySelector(".chicken-runner");
+    const trail = board.querySelector(".chicken-trail");
+    if (!chicken || !stagePositions[status]) return;
+    if (!hopSequentially) {
+      chicken.style.setProperty("--chicken-scale", "-1");
+      chicken.style.left = stagePositions[status];
+      if (trail) {
+        trail.style.left = stagePositions[status];
+        trail.style.setProperty("--trail-scale", "1");
+      }
+      return;
     }
 
-    setTimeout(doHop, 120);
+    const targetIndex = stages.indexOf(status);
+    const initialStatus = startStatus && stages.includes(startStatus) ? startStatus : "applied";
+    let currentIndex = stages.indexOf(initialStatus);
+
+    if (currentIndex < 0) currentIndex = 0;
+    if (targetIndex < 0) return;
+
+    chicken.style.left = stagePositions[stages[currentIndex]];
+    if (trail) {
+      trail.style.left = stagePositions[stages[currentIndex]];
+      trail.style.setProperty("--trail-scale", "1");
+    }
+
+    if (targetIndex === currentIndex) {
+      chicken.classList.remove("hop");
+      trail?.classList.remove("sparkle");
+      requestAnimationFrame(() => {
+        chicken.classList.add("hop");
+        trail?.classList.add("sparkle");
+      });
+      setTimeout(() => {
+        chicken.classList.remove("hop");
+      }, 950);
+      setTimeout(() => {
+        trail?.classList.remove("sparkle");
+      }, 3000);
+      return;
+    }
+
+    function hopNext() {
+      if (currentIndex === targetIndex) return;
+      const direction = targetIndex > currentIndex ? 1 : -1;
+      chicken.style.setProperty("--chicken-scale", direction > 0 ? "-1" : "1");
+      trail?.style.setProperty("--trail-scale", direction > 0 ? "1" : "-1");
+      currentIndex += direction;
+      chicken.classList.remove("hop");
+      trail?.classList.remove("sparkle");
+      requestAnimationFrame(() => {
+        chicken.classList.add("hop");
+        chicken.style.left = stagePositions[stages[currentIndex]];
+        if (trail) {
+          trail.style.left = stagePositions[stages[currentIndex]];
+          trail.classList.add("sparkle");
+        }
+      });
+      setTimeout(() => {
+        chicken.classList.remove("hop");
+        hopNext();
+      }, 950);
+      setTimeout(() => {
+        trail?.classList.remove("sparkle");
+      }, 3000);
+    }
+
+    setTimeout(hopNext, 140);
+  }
+
+  function applySelectedStage(board, status, label) {
+    board.dataset.currentStatus = status;
+    board.querySelectorAll(".stage-car-btn").forEach((button) => {
+      const isCurrent = button.dataset.status === status;
+      button.classList.toggle("is-selected", isCurrent);
+      button.disabled = isCurrent;
+      const car = button.querySelector(".stage-car");
+      if (car) {
+        car.classList.toggle("is-current", isCurrent);
+      }
+      const sub = button.querySelector(".stage-sub");
+      if (sub) {
+        sub.textContent = isCurrent ? "Current Stage" : "Click To Set";
+      }
+    });
+
+    const card = board.closest(".application-card");
+    const badge = card ? card.querySelector(".js-status-badge") : null;
+    if (badge) {
+      badge.textContent = label;
+      badge.className = `status-badge js-status-badge ${badgeClasses[status] || ""}`;
+    }
+  }
+
+  async function updateStatus(board, button) {
+    const newStatus = button.dataset.status;
+    const currentStatus = board.dataset.currentStatus;
+    const url = board.dataset.updateUrl;
+
+    if (!newStatus || !url || newStatus === currentStatus) return;
+
+    const csrfToken = getCookie("csrftoken");
+    const card = board.closest(".application-card");
+    const previousLabel = button.dataset.label || newStatus;
+    const previousStatus = currentStatus;
+
+    card?.classList.add("status-updating");
+    applySelectedStage(board, newStatus, previousLabel);
+    moveChicken(board, newStatus, true, previousStatus);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": csrfToken
+      },
+      body: new URLSearchParams({ status: newStatus }).toString()
+    });
+
+    card?.classList.remove("status-updating");
+
+    if (!response.ok) {
+      applySelectedStage(board, previousStatus, previousStatus.charAt(0).toUpperCase() + previousStatus.slice(1));
+      moveChicken(board, previousStatus, true, newStatus);
+      if (window.showToast) {
+        window.showToast("Failed to update application status.", "error");
+      }
+      return;
+    }
+
+    const data = await response.json();
+    applySelectedStage(board, newStatus, data.status || previousLabel);
+    if (window.showToast) {
+      window.showToast("Application status updated!");
+    }
   }
 
   document.querySelectorAll(".stage-board").forEach((board) => {
-    const stage = board.dataset.currentStage;
-    const chicken = board.querySelector(".chicken-runner");
-
-    if (!chicken) return;
-
-    hopChickenToStage(chicken, stage);
+    moveChicken(board, board.dataset.currentStatus, true);
+    board.querySelectorAll(".stage-car-btn").forEach((button) => {
+      button.addEventListener("click", () => updateStatus(board, button));
+    });
   });
 });
 </script>
