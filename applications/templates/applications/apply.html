@@ -2,8 +2,6 @@
 {% block title %}Apply{% endblock %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-
 <div class="container mt-4 cr-theme">
 
   <div class="cr-header">
@@ -30,22 +28,50 @@
   </div>
 
   <div class="cr-panel">
-    <form method="post">
+    <form method="post" class="crossy-apply-form">
       {% csrf_token %}
 
-      <div class="mb-3">
-        <label class="cr-label">Tailored Note (Optional)</label>
-        {{ form.note }}
-      </div>
+      <div class="crossy-note-card">
+        <div class="crossy-note-top">
+          <div class="crossy-note-stamp">✉</div>
 
-      <div class="d-flex gap-2 flex-wrap mt-4">
-        <button class="cr-btn cr-btn-primary" type="submit">
-          {% if application %}Update Application{% else %}Apply{% endif %}
-        </button>
+          <div class="crossy-note-heading-wrap">
+            <h2 class="crossy-note-heading">TAILORED NOTE</h2>
+            <p class="crossy-note-desc">
+              Leave a short message to make your application feel more personal.
+            </p>
+          </div>
+        </div>
 
-        <a class="cr-btn cr-btn-secondary" href="{% url 'jobs:job_detail' job.id %}">
-          Cancel
-        </a>
+        <div class="crossy-note-inner">
+          <label for="tailored_note" class="crossy-note-label">
+            Recruiter Message
+            <span class="crossy-note-optional">OPTIONAL</span>
+          </label>
+
+          <textarea
+            id="tailored_note"
+            name="tailored_note"
+            class="crossy-note-input"
+            placeholder="Hi! I’m excited about this role because..."
+          >{% if application and application.tailored_note %}{{ application.tailored_note }}{% elif request.POST.tailored_note %}{{ request.POST.tailored_note }}{% endif %}</textarea>
+
+          <div class="crossy-note-helper">
+            <span class="crossy-helper-chip">SHORT</span>
+            <span class="crossy-helper-chip">SPECIFIC</span>
+            <span class="crossy-helper-chip">FRIENDLY</span>
+          </div>
+        </div>
+
+        <div class="crossy-note-buttons">
+          <button type="submit" class="crossy-btn crossy-btn-apply">
+            {% if application %}UPDATE APPLICATION{% else %}APPLY{% endif %}
+          </button>
+
+          <a href="{% url 'jobs:job_detail' job.id %}" class="crossy-btn crossy-btn-cancel">
+            CANCEL
+          </a>
+        </div>
       </div>
     </form>
   </div>

@@ -529,3 +529,218 @@
   50% { opacity: 0.35; }
   100% { opacity: 1; }
 }
+
+/* =========================================
+   APPLY PAGE - TAILORED NOTE CARD
+========================================= */
+
+.crossy-apply-form {
+    margin: 0;
+}
+
+.crossy-note-card {
+    max-width: 980px;
+    margin: 0 auto;
+    background: #f6edd8;
+    border: 8px solid #4e342e;
+    box-shadow:
+        inset 0 0 0 6px #8d6e63,
+        0 6px 0 rgba(0, 0, 0, 0.18);
+    padding: 28px;
+}
+
+.crossy-note-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    background: #b7db4d;
+    border: 6px solid #4e342e;
+    box-shadow: inset 0 0 0 4px #97bb38;
+}
+
+.crossy-note-stamp {
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff7df;
+    border: 5px solid #4e342e;
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: #4e342e;
+}
+
+.crossy-note-heading-wrap {
+    min-width: 0;
+}
+
+.crossy-note-heading {
+    margin: 0;
+    font-family: 'VT323', monospace;
+    font-size: 3rem;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow: 3px 3px 0 #5d4037;
+    letter-spacing: 1px;
+}
+
+.crossy-note-desc {
+    margin: 8px 0 0 0;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #2f2f2f;
+    line-height: 1.1;
+}
+
+.crossy-note-inner {
+    background: #efe5cb;
+    border: 6px solid #4e342e;
+    box-shadow: inset 0 0 0 4px #d8ccb0;
+    padding: 24px;
+}
+
+.crossy-note-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: #2f2f2f;
+    letter-spacing: 0.5px;
+}
+
+.crossy-note-optional {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #ffe082;
+    border: 3px solid #4e342e;
+    font-size: 1rem;
+    line-height: 1;
+    color: #4e342e;
+}
+
+.crossy-note-input {
+    width: 100%;
+    min-height: 220px;
+    display: block;
+    background: #fcfcfc;
+    border: 5px solid #222;
+    box-shadow: inset 0 0 0 4px #d7d7d7;
+    padding: 18px;
+    resize: vertical;
+    outline: none;
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    line-height: 1.25;
+    color: #3a3a3a;
+}
+
+.crossy-note-input:focus {
+    background: #ffffff;
+    box-shadow:
+        inset 0 0 0 4px #d7d7d7,
+        0 0 0 5px #7ecbff;
+}
+
+.crossy-note-input::placeholder {
+    color: #8b8b8b;
+    opacity: 1;
+}
+
+.crossy-note-helper {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.crossy-helper-chip {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #fff3b0;
+    border: 3px solid #4e342e;
+    font-family: 'VT323', monospace;
+    font-size: 1.15rem;
+    color: #4e342e;
+    line-height: 1;
+}
+
+.crossy-note-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.crossy-btn {
+    display: inline-block;
+    min-width: 160px;
+    padding: 14px 24px;
+    border: 5px solid #111;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    line-height: 1;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.15);
+    transition: transform 0.08s ease;
+    cursor: pointer;
+}
+
+.crossy-btn:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.crossy-btn-apply {
+    background: #29b6f6;
+    color: #ffffff;
+}
+
+.crossy-btn-cancel {
+    background: #bdbdbd;
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .crossy-note-card {
+        padding: 18px;
+    }
+
+    .crossy-note-top {
+        align-items: flex-start;
+        padding: 14px;
+    }
+
+    .crossy-note-heading {
+        font-size: 2.3rem;
+    }
+
+    .crossy-note-desc {
+        font-size: 1.25rem;
+    }
+
+    .crossy-note-label {
+        font-size: 1.6rem;
+        flex-wrap: wrap;
+    }
+
+    .crossy-note-input {
+        min-height: 170px;
+        font-size: 1.5rem;
+    }
+
+    .crossy-note-buttons {
+        flex-direction: column;
+    }
+
+    .crossy-btn {
+        width: 100%;
+    }
+}
