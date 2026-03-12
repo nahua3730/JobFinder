@@ -506,10 +506,20 @@
                   </div>
                 </div>
 
-                <div class="pipeline-card-action">
+                <div class="pipeline-card-action" style="gap: 8px; flex-wrap: wrap;">
+                  <a class="cr-btn cr-btn-primary cr-btn-sm"
+                    draggable="false"
+                    href="{% url 'applications:compose_message' app.applicant.id %}?job_id={{ app.job.id }}">
+                    Message
+                  </a>
+                  <a class="cr-btn cr-btn-secondary cr-btn-sm"
+                    draggable="false"
+                    href="{% url 'applications:compose_email' app.applicant.id %}?job_id={{ app.job.id }}">
+                    Email
+                  </a>
                   <a class="cr-btn cr-btn-yellow cr-btn-sm"
-                     draggable="false"
-                     href="{% url 'applications:recruiter_update_application_status' app.id %}">
+                    draggable="false"
+                    href="{% url 'applications:recruiter_update_application_status' app.id %}">
                     Move
                   </a>
                 </div>

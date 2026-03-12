@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-3">Sent</h2>
+
+  {% for m in snet_iterms %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <b>To:</b> {{ m.recipient.username }}
+            {% if m.subject %}<span class="ms-2">| <b>Subject:</b> {{ m.subject }}</span>{% endif %}
+            {% if m.job %}<span class="ms-2">| <b>Job:</b> {{ m.job.title }}</span>{% endif %}
+            <span class="ms-2 badge bg-dark">{{ m.get_delivery_display }}</span>
+
+            {% if m.delivery == "email" %}
+              <span class="ms-2 badge bg-secondary">{{ m.get_email_status_display }}</span>
+              <span class="ms-2 text-muted">{{ m.to_email }}</span>
+            {% endif %}
+          </div>
+          <small class="text-muted">{{ m.created_at }}</small>
+        </div>
+        <hr>
+        <p class="mb-0">{{ m.body }}</p>
+
+        {% if m.delivery == "email" and m.email_status == "failed" %}
+          <div class="mt-2 text-danger small">Error: {{ m.error_message }}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">No sent messages yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

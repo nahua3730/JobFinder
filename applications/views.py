@@ -8,6 +8,9 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
 from types import SimpleNamespace
+from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.core.mail import send_mail
 
 from jobs.models import JobPosting
 from users.models import JobSeekerProfile
@@ -16,9 +19,11 @@ from .models import (
     SavedCandidateSearch,
     SavedSearchSeenCandidate,
     RecruiterNotification,
+    Message,
 )
 from .forms import ApplicationForm, ApplicationStatusForm
 
+User = get_user_model()
 
 APPLICATION_STAGES = [
     {"value": Application.Status.APPLIED, "label": "Applied", "lane": "road", "badge_class": "status-applied"},
@@ -424,3 +429,145 @@ def delete_recruiter_notification(request, notif_id):
         notif.delete()
 
     return redirect("applications:notifications")
+
+@login_required
+def inbox(request):
+    if not getattr(request.user, "is_job_seeker", False):
+        return redirect("jobs:home")
+
+    msgs = (
+        Message.objects
+        .filter(recipient=request.user, delivery=Message.Delivery.IN_APP)
+        .select_related("sender", "job")
+        .order_by("-created_at")
+    )
+
+    Message.objects.filter(recipient=request.user, delivery=Message.Delivery.IN_APP, is_read=False).update(is_read=True)
+
+    return render(request, "applications/inbox.html", {"inbox_messages": msgs})
+
+@login_required
+def sent_messages(request):
+    if not getattr(request.user, "is_recruiter", False):
+        return redirect("jobs:home")
+
+    msgs = (
+        Message.objects
+        .filter(sender=request.user)
+        .select_related("recipient", "job")
+        .order_by("-created_at")
+    )
+    return render(request, "applications/sent.html", {"sent_items": msgs})
+
+@login_required
+def compose_message(request, user_id):
+    # Recruiter sends IN_APP message to a candidate
+    if not getattr(request.user, "is_recruiter", False):
+        return redirect("jobs:home")
+
+    recipient = get_object_or_404(User, id=user_id)
+    if not getattr(recipient, "is_job_seeker", False):
+        messages.error(request, "You can only message job seekers.")
+        return redirect("jobs:home")
+
+    job = None
+    job_id = request.GET.get("job_id")
+    if job_id:
+        job = JobPosting.objects.filter(id=job_id, recruiter=request.user).first()
+
+    if request.method == "POST":
+        subject = (request.POST.get("subject") or "").strip()
+        body = (request.POST.get("body") or "").strip()
+
+        if not body:
+            messages.error(request, "Message body cannot be empty.")
+            return redirect("applications:compose_message", user_id=recipient.id)
+
+        msg = Message.objects.create(
+            sender=request.user,
+            recipient=recipient,
+            job=job,
+            subject=subject,
+            body=body,
+            delivery=Message.Delivery.IN_APP,
+        )
+
+        Notification.objects.create(
+            recipient=recipient,
+            message=f"New message from recruiter {request.user.username}",
+            link=reverse("applications:inbox")
+        )
+
+        messages.success(request, "Message sent!")
+        return redirect("applications:sent_messages")
+
+    return render(request, "applications/compose_message.html", {
+        "recipient": recipient,
+        "job": job,
+    })
+
+
+@login_required
+def compose_email(request, user_id):
+    if not getattr(request.user, "is_recruiter", False):
+        return redirect("jobs:home")
+
+    recipient = get_object_or_404(User, id=user_id)
+    if not getattr(recipient, "is_job_seeker", False):
+        messages.error(request, "You can only email job seekers.")
+        return redirect("jobs:home")
+
+    if not recipient.email:
+        messages.error(request, "Candidate does not have an email on file.")
+        return redirect("jobs:home")
+
+    job = None
+    job_id = request.GET.get("job_id")
+    if job_id:
+        job = JobPosting.objects.filter(id=job_id, recruiter=request.user).first()
+
+    if request.method == "POST":
+        subject = (request.POST.get("subject") or "").strip()
+        body = (request.POST.get("body") or "").strip()
+
+        if not subject:
+            messages.error(request, "Email subject cannot be empty.")
+            return redirect("applications:compose_email", user_id=recipient.id)
+        if not body:
+            messages.error(request, "Email body cannot be empty.")
+            return redirect("applications:compose_email", user_id=recipient.id)
+
+        msg = Message.objects.create(
+            sender=request.user,
+            recipient=recipient,
+            job=job,
+            subject=subject,
+            body=body,
+            delivery=Message.Delivery.EMAIL,
+            to_email=recipient.email,
+            email_status=Message.EmailStatus.LOGGED,
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+                recipient_list=[recipient.email],
+                fail_silently=False,
+            )
+            msg.email_status = Message.EmailStatus.SENT
+            msg.save(update_fields=["email_status"])
+            messages.success(request, f"Email sent to {recipient.email}!")
+        except Exception as e:
+            msg.email_status = Message.EmailStatus.FAILED
+            msg.error_message = str(e)[:255]
+            msg.save(update_fields=["email_status", "error_message"])
+            messages.warning(request, "Email was logged, but sending failed (check email settings).")
+
+        return redirect("applications:sent_messages")
+
+    return render(request, "applications/compose_email.html", {
+        "recipient": recipient,
+        "job": job,
+    })

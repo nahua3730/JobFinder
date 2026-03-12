@@ -161,6 +161,7 @@
                         <th>Skills</th>
                         <th>Location</th>
                         <th>Projects</th>
+                        <th>Contact</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -199,6 +200,16 @@
                                     {% else %}
                                         —
                                     {% endif %}
+                                </td>
+                                <td>
+                                    <a class="cr-btn cr-btn-primary cr-btn-sm"
+                                        href="{% url 'applications:compose_message' candidate.user.id %}">
+                                        Message
+                                    </a>
+                                    <a class="cr-btn cr-btn-secondary cr-btn-sm"
+                                        href="{% url 'applications:compose_email' candidate.user.id %}">
+                                        Email
+                                    </a>
                                 </td>
                             {% endif %}
                         </tr>

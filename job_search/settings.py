@@ -107,3 +107,6 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'jobs:home'
 LOGOUT_REDIRECT_URL = 'jobs:home'
 LOGIN_URL = 'users:login'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "no-reply@gtjobsearch.local"

@@ -24,9 +24,7 @@ class Application(models.Model):
 
     def __str__(self):
         return f"{self.applicant} -> {self.job} ({self.status})"
-from django.db import models
-from django.conf import settings
-
+    
 class SavedCandidateSearch(models.Model):
     recruiter = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -82,3 +80,59 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient.username}: {self.message}"
+    
+class Message(models.Model):
+    class Delivery(models.TextChoices):
+        IN_APP = "in_app", "In-app"
+        EMAIL = "email", "Email"
+
+    class EmailStatus(models.TextChoices):
+        LOGGED = "logged", "Logged"
+        SENT = "sent", "Sent"
+        FAILED = "failed", "Failed"
+
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sent_messages",
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="received_messages",
+    )
+
+    job = models.ForeignKey(
+        "jobs.JobPosting",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="messages",
+    )
+
+    subject = models.CharField(max_length=255, blank=True, default="")
+    body = models.TextField()
+
+    delivery = models.CharField(
+        max_length=10,
+        choices=Delivery.choices,
+        default=Delivery.IN_APP,
+    )
+
+    is_read = models.BooleanField(default=False)
+
+    to_email = models.EmailField(blank=True, default="")
+    email_status = models.CharField(
+        max_length=10,
+        choices=EmailStatus.choices,
+        default=EmailStatus.LOGGED,
+    )
+    error_message = models.CharField(max_length=255, blank=True, default="")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.delivery}: {self.sender} -> {self.recipient} ({self.created_at})"

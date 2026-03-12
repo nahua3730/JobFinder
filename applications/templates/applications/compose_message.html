@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-3">Message Candidate</h2>
+  <div class="mb-2"><b>To:</b> {{ recipient.username }}</div>
+  {% if job %}<div class="mb-3"><b>Job Context:</b> {{ job.title }}</div>{% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Subject (optional)</label>
+      <input name="subject" class="form-control" placeholder="Quick subject..." />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Message</label>
+      <textarea name="body" class="form-control" rows="6" placeholder="Type your message..."></textarea>
+    </div>
+    <button class="btn btn-dark">Send In-App Message</button>
+    <a class="btn btn-outline-secondary" href="{% url 'applications:sent_messages' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

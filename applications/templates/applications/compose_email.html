@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-3">Email Candidate</h2>
+  <div class="mb-2"><b>To:</b> {{ recipient.username }} ({{ recipient.email }})</div>
+  {% if job %}<div class="mb-3"><b>Job Context:</b> {{ job.title }}</div>{% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Subject</label>
+      <input name="subject" class="form-control" placeholder="Subject..." />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Email Body</label>
+      <textarea name="body" class="form-control" rows="7" placeholder="Write your email..."></textarea>
+    </div>
+    <button class="btn btn-warning">Send Email</button>
+    <a class="btn btn-outline-secondary" href="{% url 'applications:sent_messages' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}
