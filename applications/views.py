@@ -95,38 +95,15 @@ def my_applications(request):
 
 @login_required
 def update_application_status(request, app_id):
-    if not getattr(request.user, "is_job_seeker", False):
-        return redirect("jobs:home")
-
-    app = get_object_or_404(Application, id=app_id, applicant=request.user)
-
-    if request.method != "POST":
-        return redirect("applications:my_applications")
-
-    form = ApplicationStatusForm(request.POST, instance=app)
-    if form.is_valid():
-        form.save()
-        messages.success(request, "Application status updated!")
-
+    if getattr(request.user, "is_job_seeker", False):
+        messages.error(request, "Only recruiters can move candidates through the pipeline.")
     return redirect("applications:my_applications")
 
 
 @require_POST
 @login_required
 def update_application_status_api(request, app_id):
-    if not getattr(request.user, "is_job_seeker", False):
-        return JsonResponse({"ok": False, "error": "forbidden"}, status=403)
-
-    app = get_object_or_404(Application, id=app_id, applicant=request.user)
-    new_status = request.POST.get("status")
-    valid = {choice[0] for choice in Application.Status.choices}
-
-    if new_status not in valid:
-        return JsonResponse({"ok": False, "error": "invalid status"}, status=400)
-
-    app.status = new_status
-    app.save(update_fields=["status", "updated_at"])
-    return JsonResponse({"ok": True, "status": app.get_status_display(), "value": app.status})
+    return JsonResponse({"ok": False, "error": "forbidden"}, status=403)
 
 
 @login_required

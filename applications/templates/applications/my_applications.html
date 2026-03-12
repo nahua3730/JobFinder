@@ -207,22 +207,13 @@
     pointer-events: none;
   }
 
-  .stage-car-btn {
-    appearance: none;
-    border: 0;
-    background: transparent;
-    padding: 0;
+  .stage-car-display {
     color: inherit;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: pointer;
     position: relative;
-  }
-
-  .stage-car-btn:disabled {
-    cursor: default;
   }
 
   .stage-car-track {
@@ -508,8 +499,7 @@
 
         <div class="stage-board lane-road"
              data-app-id="{{ app.id }}"
-             data-current-status="{{ app.status }}"
-             data-update-url="{% url 'applications:update_status_api' app.id %}">
+             data-current-status="{{ app.status }}">
           <div class="chicken-trail" aria-hidden="true"><i></i></div>
           <svg class="chicken-runner"
                viewBox="0 0 16 16"
@@ -531,12 +521,10 @@
           <div class="stage-row">
             {% for stage in application_stages %}
               <div class="stage-slot">
-                <button
-                  type="button"
-                  class="stage-car-btn{% if stage.value == app.status %} is-selected{% endif %}"
+                <div
+                  class="stage-car-display{% if stage.value == app.status %} is-selected{% endif %}"
                   data-status="{{ stage.value }}"
                   data-label="{{ stage.label }}"
-                  {% if stage.value == app.status %}disabled{% endif %}
                 >
                   <div class="stage-car-track">
                     <div class="stage-car car-variant-{% cycle '1' '4' '2' '3' '4' %}{% if stage.value == app.status %} is-current{% endif %}" style="animation-delay: -{{ forloop.counter0 }}.55s;">
@@ -544,8 +532,8 @@
                     </div>
                   </div>
                   <div class="stage-label">{{ stage.label }}</div>
-                  <div class="stage-sub">Click To Set</div>
-                </button>
+                  <div class="stage-sub">{% if stage.value == app.status %}Current Stage{% endif %}</div>
+                </div>
               </div>
             {% endfor %}
           </div>
@@ -655,78 +643,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(hopNext, 140);
   }
 
-  function applySelectedStage(board, status, label) {
-    board.dataset.currentStatus = status;
-    board.querySelectorAll(".stage-car-btn").forEach((button) => {
-      const isCurrent = button.dataset.status === status;
-      button.classList.toggle("is-selected", isCurrent);
-      button.disabled = isCurrent;
-      const car = button.querySelector(".stage-car");
-      if (car) {
-        car.classList.toggle("is-current", isCurrent);
-      }
-      const sub = button.querySelector(".stage-sub");
-      if (sub) {
-        sub.textContent = isCurrent ? "Current Stage" : "Click To Set";
-      }
-    });
-
-    const card = board.closest(".application-card");
-    const badge = card ? card.querySelector(".js-status-badge") : null;
-    if (badge) {
-      badge.textContent = label;
-      badge.className = `status-badge js-status-badge ${badgeClasses[status] || ""}`;
-    }
-  }
-
-  async function updateStatus(board, button) {
-    const newStatus = button.dataset.status;
-    const currentStatus = board.dataset.currentStatus;
-    const url = board.dataset.updateUrl;
-
-    if (!newStatus || !url || newStatus === currentStatus) return;
-
-    const csrfToken = getCookie("csrftoken");
-    const card = board.closest(".application-card");
-    const previousLabel = button.dataset.label || newStatus;
-    const previousStatus = currentStatus;
-
-    card?.classList.add("status-updating");
-    applySelectedStage(board, newStatus, previousLabel);
-    moveChicken(board, newStatus, true, previousStatus);
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-CSRFToken": csrfToken
-      },
-      body: new URLSearchParams({ status: newStatus }).toString()
-    });
-
-    card?.classList.remove("status-updating");
-
-    if (!response.ok) {
-      applySelectedStage(board, previousStatus, previousStatus.charAt(0).toUpperCase() + previousStatus.slice(1));
-      moveChicken(board, previousStatus, true, newStatus);
-      if (window.showToast) {
-        window.showToast("Failed to update application status.", "error");
-      }
-      return;
-    }
-
-    const data = await response.json();
-    applySelectedStage(board, newStatus, data.status || previousLabel);
-    if (window.showToast) {
-      window.showToast("Application status updated!");
-    }
-  }
-
   document.querySelectorAll(".stage-board").forEach((board) => {
     moveChicken(board, board.dataset.currentStatus, true);
-    board.querySelectorAll(".stage-car-btn").forEach((button) => {
-      button.addEventListener("click", () => updateStatus(board, button));
-    });
   });
 });
 </script>
