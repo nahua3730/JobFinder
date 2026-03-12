@@ -1,22 +1,57 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="container py-4">
-  <h2 class="mb-3">Message Candidate</h2>
-  <div class="mb-2"><b>To:</b> {{ recipient.username }}</div>
-  {% if job %}<div class="mb-3"><b>Job Context:</b> {{ job.title }}</div>{% endif %}
+{% block title %}Message Candidate{% endblock %}
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label class="form-label">Subject (optional)</label>
-      <input name="subject" class="form-control" placeholder="Quick subject..." />
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<div class="container mt-4 cr-theme">
+
+  <div class="cr-header">
+    <div>
+      <h1 class="cr-title">
+        <!-- same chicken icon style -->
+        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+        </svg>
+        MESSAGE
+      </h1>
+
+      <div class="cr-subtitle">
+        To: {{ recipient.get_full_name|default:recipient.username }}
+        {% if job %} • Job: {{ job.title }}{% endif %}
+      </div>
     </div>
-    <div class="mb-3">
-      <label class="form-label">Message</label>
-      <textarea name="body" class="form-control" rows="6" placeholder="Type your message..."></textarea>
-    </div>
-    <button class="btn btn-dark">Send In-App Message</button>
-    <a class="btn btn-outline-secondary" href="{% url 'applications:sent_messages' %}">Cancel</a>
-  </form>
+  </div>
+
+  <div class="cr-panel">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="cr-label">Subject (Optional)</label>
+        <input name="subject" class="form-control" placeholder="Short subject..." />
+      </div>
+
+      <div class="mb-3">
+        <label class="cr-label">Message</label>
+        <textarea name="body" class="form-control" rows="6" placeholder="Type your message..."></textarea>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap mt-4">
+        <button class="cr-btn cr-btn-primary" type="submit">Send Message</button>
+        <a class="cr-btn cr-btn-secondary" href="{% url 'applications:sent_messages' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+
 </div>
 {% endblock %}
