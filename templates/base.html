@@ -260,18 +260,20 @@
       .pixel-navbar .navbar-collapse {
         display: flex !important;
         flex: 1 1 auto;
-        justify-content: stretch;
+        justify-content: flex-end;
+        margin-left: auto;
         min-width: 0;
       }
 
       .pixel-navbar .navbar-nav {
-        margin-left: 0 !important;
+        margin-left: auto !important;
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
-        justify-content: space-between;
-        gap: clamp(8px, 1vw, 18px);
-        width: 100%;
+        justify-content: flex-end;
+        gap: clamp(10px, 1.1vw, 22px);
+        width: auto;
+        flex: 0 1 auto;
       }
     }
 
