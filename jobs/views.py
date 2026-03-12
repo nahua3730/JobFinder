@@ -4,7 +4,7 @@ from users.models import JobSeekerProfile
 from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from applications.models import Application
+from applications.models import Application, Notification
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from .geocoding import geocode_us, reverse_geocode_us
@@ -168,6 +168,22 @@ def create_job(request):
                         job.latitude, job.longitude = coords
 
             job.save()
+
+            if job.skills:
+                job_skills = {s.strip().lower() for s in job.skills.split(",") if s.strip()}
+                
+                seekers = JobSeekerProfile.objects.filter(user__is_job_seeker=True, privacy_enabled=False).select_related('user')
+                
+                for seeker in seekers:
+                    if seeker.skills:
+                        seeker_skills = {s.strip().lower() for s in seeker.skills.split(",") if s.strip()}
+                        if job_skills.intersection(seeker_skills):
+                            Notification.objects.create(
+                                recipient=seeker.user,
+                                message=f"New Match! '{job.title}' requires your skills.",
+                                link=f"/{job.id}/"
+                            )
+
             return redirect('jobs:my_jobs')
     else:
         form = JobPostingForm()
@@ -344,6 +360,12 @@ def job_applications(request, job_id):
             if new_status in valid_statuses:
                 application.status = new_status
                 application.save()
+                
+                Notification.objects.create(
+                    recipient=application.applicant,
+                    message=f"Update: Your application for {job.title} is now '{application.get_status_display()}'.",
+                    link="/my-applications/"
+                )
 
         return redirect('jobs:job_applications', job_id=job.id)
 
@@ -355,7 +377,6 @@ def job_applications(request, job_id):
         'status_choices': Application.Status.choices,
     }
     return render(request, 'jobs/job_applications.html', context)
-
 
 def _split_skills(text):
     if not text:
@@ -512,4 +533,6 @@ def recruiter_applicant_map_data(request, job_id):
             "longitude": profile.longitude,
         })
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse(data, safe=False)\
+    
+    

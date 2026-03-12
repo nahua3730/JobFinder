@@ -1,3 +1,4 @@
+from applications.models import Application, Notification
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
@@ -5,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Q
+from types import SimpleNamespace
 
 from jobs.models import JobPosting
 from users.models import JobSeekerProfile
@@ -49,6 +51,14 @@ def apply_to_job(request, job_id):
             if not app.status:
                 app.status = Application.Status.APPLIED
             app.save()
+
+            if not existing:
+                Notification.objects.create(
+                    recipient=job.recruiter,
+                    message=f"New Applicant! {request.user.username} applied for {job.title}.",
+                    link=f"/{job.id}/applications/"
+                )
+
             messages.success(request, "Application submitted!")
             return redirect("jobs:job_detail", job_id=job.id)
     else:
@@ -328,18 +338,60 @@ def delete_saved_search(request, search_id):
 
 @login_required
 def notifications(request):
-    if not request.user.is_recruiter:
-        return redirect("jobs:home")
+    items = []
 
-    _refresh_saved_search_notifications(request.user)
+    if getattr(request.user, "is_recruiter", False):
+        _refresh_saved_search_notifications(request.user)
+        recruiter_notes = RecruiterNotification.objects.filter(user=request.user)
+        items.extend(
+            SimpleNamespace(
+                title=note.title,
+                body=note.body,
+                url=note.url,
+                is_read=note.is_read,
+                created_at=note.created_at,
+            )
+            for note in recruiter_notes
+        )
 
-    notes = RecruiterNotification.objects.filter(user=request.user).order_by("-created_at")
+    legacy_notes = Notification.objects.filter(recipient=request.user)
+    items.extend(
+        SimpleNamespace(
+            title="Notification",
+            body=note.message,
+            url=note.link or "",
+            is_read=note.is_read,
+            created_at=note.created_at,
+        )
+        for note in legacy_notes
+    )
 
+    items.sort(key=lambda note: note.created_at, reverse=True)
+    return render(request, "applications/notifications.html", {"notifications": items})
+
+@login_required
+def mark_all_read(request):
     if request.method == "POST":
-        RecruiterNotification.objects.filter(
-            user=request.user,
-            is_read=False
-        ).update(is_read=True)
-        return redirect("applications:notifications")
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+        if getattr(request.user, "is_recruiter", False):
+            RecruiterNotification.objects.filter(user=request.user, is_read=False).update(is_read=True)
 
-    return render(request, "applications/notifications.html", {"notifications": notes})
+    return redirect("applications:notifications")
+
+@login_required
+def read_notification(request, notif_id):
+    notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+
+    if not notif.is_read:
+        notif.is_read = True
+        notif.save()
+
+    return redirect(notif.link if notif.link else "applications:notifications")
+
+@login_required
+def delete_notification(request, notif_id):
+    if request.method == "POST":
+        notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+        notif.delete()
+
+    return redirect("applications:notifications")

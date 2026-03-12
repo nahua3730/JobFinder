@@ -11,6 +11,8 @@ from .forms import PrivacySettingsForm
 from .forms import RecruiterUserForm, RecruiterProfileForm
 from jobs.geocoding import geocode_us
 from django.contrib import messages
+from applications.models import Notification
+from jobs.models import JobPosting
 
 def login_view(request):
     return render(request, 'users/login.html')
@@ -30,6 +32,7 @@ def profile_view(request):
         return redirect("users:recruiter_profile")
     profile = _get_profile(request.user)
     return render(request, "users/profile_view.html", {"profile": profile, "is_owner": True})
+
 @login_required
 def profile_edit(request):
     if not request.user.is_job_seeker:
@@ -50,11 +53,28 @@ def profile_edit(request):
                     profile.latitude, profile.longitude = coords
                     
             form.save()
+            
+            if profile.skills:
+                seeker_skills = {s.strip().lower() for s in profile.skills.split(",") if s.strip()}
+                
+                active_jobs = JobPosting.objects.filter(status=JobPosting.Status.APPROVED).exclude(skills="")
+                
+                for job in active_jobs:
+                    job_skills = {s.strip().lower() for s in job.skills.split(",") if s.strip()}
+                    
+                    if seeker_skills.intersection(job_skills):
+                        Notification.objects.get_or_create(
+                            recipient=request.user,
+                            message=f"New Match! '{job.title}' requires your skills.",
+                            link=f"/{job.id}/"
+                        )
+
             return redirect("users:profile_view")  
     else:
         form = JobSeekerProfileForm(instance=profile)
 
     return render(request, "users/profile_edit.html", {"form": form})
+
 def signup(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)

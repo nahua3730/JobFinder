@@ -21,7 +21,7 @@
   .hy-hero {
     background: linear-gradient(180deg, #aad751 0%, #8bc34a 100%);
     border: 6px solid #8cbf3f;
-    box-shadow: 0px 8px 0px #3e2723;
+    box-shadow: 0px 12px 0px #201311; 
     padding: 28px;
     border-radius: 8px;
     margin-bottom: 24px;
@@ -43,15 +43,48 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='1' y='6' width='2' height='2' fill='white'/><rect x='5' y='1' width='4' height='2' fill='white'/><rect x='7' y='3' width='2' height='1' fill='white'/><rect x='3' y='3' width='8' height='10' fill='white'/><rect x='4' y='4' width='2' height='2' fill='black'/><rect x='5' y='8' width='4' height='3' fill='%23dddddd'/><rect x='4' y='13' width='2' height='2' fill='white'/><rect x='8' y='13' width='2' height='2' fill='white'/><rect x='11' y='4' width='2' height='9' fill='%23cccccc'/><rect x='3' y='13' width='8' height='1' fill='%23cccccc'/></svg>");
     pointer-events: none;
   }
-  .hy-title {
+
+  .hy-title-text {
     color: white;
-    text-shadow: 3px 3px 0px #333;
+    text-shadow: 
+        2px 2px 0px #212121, 
+        4px 4px 0px #212121,
+        6px 6px 0px #212121,
+        8px 8px 0px #212121;
+    z-index: 2;
+    position: relative;
+    text-transform: uppercase;
+  }
+
+  /* the hopping chicken */
+  @keyframes retro-hop {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-12px); }
+  }
+
+  .cr-animated-chicken {
+    display: inline-block;
+    animation: retro-hop 0.3s infinite alternate steps(2);
+    z-index: 2;
+    position: relative;
+  }
+
+  @keyframes arcade-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  .pixel-blink {
+    animation: arcade-pulse 1.2s infinite;
+  }
+
+  .hy-title {
     font-size: 4rem;
     margin: 0 0 10px 0;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 14px;
-    text-transform: uppercase;
     line-height: 1;
   }
 
@@ -59,7 +92,10 @@
     font-size: 1.6rem;
     color: #f5f5f5;
     max-width: 800px;
-    margin-bottom: 20px;
+    margin: 0 auto 20px auto;
+    text-shadow: 2px 2px 0px #333; 
+    position: relative;
+    z-index: 2;
   }
 
   .hy-btn {
@@ -77,6 +113,8 @@
     transition: transform 0.12s ease, border-bottom-width 0.12s ease, filter 0.12s ease;
     margin-right: 10px;
     margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
   }
 
   .hy-btn:hover {
@@ -258,20 +296,23 @@
   <div class="hy-frame">
 
     <div class="hy-hero">
+      
       <h1 class="hy-title">
-        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-        </svg>
-        Find Your Next Chapter
+        <span class="cr-animated-chicken">
+          <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+            <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+            <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+            <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+            <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+            <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+            <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+            <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+            <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+          </svg>
+        </span>
+        <span class="hy-title-text">Find Your Next Chapter</span>
       </h1>
 
       <p class="hy-subtitle">
