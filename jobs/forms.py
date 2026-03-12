@@ -86,11 +86,19 @@ class JobPostingForm(forms.ModelForm):
         }
         
 class CandidateSearchForm(forms.Form):
-    query = forms.CharField(required=False, label="Name or Skills", 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Python, John Doe...'}))
-    
-    location = forms.CharField(required=False, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Atlanta, GA'}))
-    
-    has_projects = forms.BooleanField(required=False, label="Must have Projects listed",
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
+    name = forms.CharField(
+        label="Name", 
+        required=False, 
+        widget=forms.TextInput(attrs={"placeholder": "John Doe..."})
+    )
+    skills = forms.CharField(
+        label="Skills", 
+        required=False, 
+        widget=forms.TextInput(attrs={"placeholder": "Python, Java..."})
+    )
+    location = forms.CharField(
+        label="Location", 
+        required=False, 
+        widget=forms.TextInput(attrs={"placeholder": "Atlanta, GA"})
+    )
+    has_projects = forms.BooleanField(label="Must Have Projects", required=False)

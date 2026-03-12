@@ -237,21 +237,20 @@ def candidate_search(request):
     )
 
     if form.is_valid():
-        query = form.cleaned_data.get("query")
+        name = form.cleaned_data.get("name")
+        skills = form.cleaned_data.get("skills")
         location = form.cleaned_data.get("location")
         has_projects = form.cleaned_data.get("has_projects")
 
-        if query:
-            q_obj = Q(
-                user__first_name__icontains=query
-            ) | Q(
-                user__last_name__icontains=query
+        if name:
+            candidates = candidates.filter(
+                Q(user__first_name__icontains=name) | 
+                Q(user__last_name__icontains=name) |
+                Q(user__username__icontains=name)
             )
 
-            q_obj |= Q(show_skills=True, skills__icontains=query)
-            q_obj |= Q(show_projects=True, projects__icontains=query)
-
-            candidates = candidates.filter(q_obj)
+        if skills:
+            candidates = candidates.filter(show_skills=True, skills__icontains=skills)
 
         if location:
             candidates = candidates.filter(show_location=True, location__icontains=location)

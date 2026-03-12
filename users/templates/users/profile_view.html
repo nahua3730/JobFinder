@@ -12,111 +12,166 @@
     white-space: pre-line;
   }
 
+  .profile-paper {
+    background-color: #f5f1e6;
+    border: 6px solid #3e2723;
+    box-shadow: 0 8px 0 #3e2723;
+    padding: 30px;
+    border-radius: 8px;
+    color: #2b2b2b;
+    margin-bottom: 40px;
+  }
+
+  .cr-detail-row {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 4px dotted #ccc;
+  }
+
+  .cr-detail-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .cr-detail-label {
+    display: block;
+    font-size: 1.4rem;
+    color: #795548;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+
+  .cr-detail-value {
+    font-size: 1.8rem;
+    color: #111;
+  }
+
+  html.theme-dark .profile-paper {
+    background-color: #2a241d;
+    border-color: #111;
+    box-shadow: 0 8px 0 #111;
+    color: #efe5d4;
+  }
+
+  html.theme-dark .cr-detail-label {
+    color: #b8ad95;
+  }
+
+  html.theme-dark .cr-detail-value {
+    color: #efe5d4;
+  }
+
+  html.theme-dark .cr-detail-row {
+    border-bottom-color: #111;
+  }
 </style>
 
 <div class="container mt-4 cr-theme">
-  <div class="cr-header">
-    <h2 class="cr-title">
-      <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
-        <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
-        <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
-        <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
-        <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
-        <rect x="4" y="4" width="2" height="2" fill="#000000"/>
-        <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
-        <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
-        <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
-        <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
-      </svg>
-      {% if not is_owner and request.user.is_authenticated and request.user.is_recruiter %}Candidate Profile{% else %}My Profile{% endif %}
-    </h2>
+  <div class="profile-paper">
+    <div class="cr-header" style="margin-bottom: 24px;">
+      <h2 class="cr-title">
+        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+        </svg>
+        {% if not is_owner and request.user.is_authenticated and request.user.is_recruiter %}Candidate Profile{% else %}My Profile{% endif %}
+      </h2>
 
-    {% if is_owner %}
-      <div class="profile-actions cr-btn-group">
-        <a href="{% url 'users:profile_edit' %}" class="cr-btn cr-btn-primary">Edit Profile</a>
-        <a href="{% url 'users:privacy_settings' %}" class="cr-btn cr-btn-secondary">Privacy Settings</a>
-      </div>
-    {% endif %}
-  </div>
-
-  <div class="profile-shell">
-    {% if not profile %}
-      <div class="profile-empty cr-note-panel">
-        Profile not found. If you are a recruiter, use the recruiter profile page instead.
-      </div>
-    {% elif not is_owner and profile.privacy_enabled %}
-      <div class="profile-empty cr-note-panel">
-        This profile is hidden.
-      </div>
-    {% else %}
-      <div class="cr-detail-card">
-        <div class="profile-row cr-detail-row">
-          <span class="profile-label cr-detail-label">Name</span>
-          <div class="profile-value cr-detail-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+      {% if is_owner %}
+        <div class="profile-actions cr-btn-group">
+          <a href="{% url 'users:profile_edit' %}" class="cr-btn cr-btn-primary">Edit Profile</a>
+          <a href="{% url 'users:privacy_settings' %}" class="cr-btn cr-btn-secondary">Privacy Settings</a>
         </div>
+      {% endif %}
+    </div>
 
-        {% if is_owner or profile.show_headline %}
+    <div class="profile-shell">
+      {% if not profile %}
+        <div class="profile-empty cr-note-panel">
+          Profile not found. If you are a recruiter, use the recruiter profile page instead.
+        </div>
+      {% elif not is_owner and profile.privacy_enabled %}
+        <div class="profile-empty cr-note-panel">
+          This profile is hidden.
+        </div>
+      {% else %}
+        <div class="cr-detail-card">
           <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Headline</span>
-            <div class="profile-value cr-detail-value">{{ profile.headline|default:"—" }}</div>
+            <span class="profile-label cr-detail-label">Name</span>
+            <div class="profile-value cr-detail-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
           </div>
-        {% endif %}
 
-        {% if is_owner or profile.show_location %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Location</span>
-            <div class="profile-value cr-detail-value profile-preline">{% if profile.street_address %}{{ profile.street_address }}{% if profile.location %}
+          {% if is_owner or profile.show_headline %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Headline</span>
+              <div class="profile-value cr-detail-value">{{ profile.headline|default:"—" }}</div>
+            </div>
+          {% endif %}
+
+          {% if is_owner or profile.show_location %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Location</span>
+              <div class="profile-value cr-detail-value profile-preline">{% if profile.street_address %}{{ profile.street_address }}{% if profile.location %}
 {{ profile.location }}{% endif %}{% else %}{{ profile.location|default:"—" }}{% endif %}</div>
-          </div>
-        {% endif %}
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_commute_radius %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Preferred Commute Radius</span>
-            <div class="profile-value cr-detail-value">{{ profile.preferred_commute_radius_miles }} miles</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_commute_radius %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Preferred Commute Radius</span>
+              <div class="profile-value cr-detail-value">{{ profile.preferred_commute_radius_miles }} miles</div>
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_skills %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Skills</span>
-            <div class="profile-value cr-detail-value">{{ profile.skills|default:"—" }}</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_skills %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Skills</span>
+              <div class="profile-value cr-detail-value">{{ profile.skills|default:"—" }}</div>
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_education %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Education</span>
-            <div class="profile-value cr-detail-value profile-preline">{{ profile.education|default:"—" }}</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_education %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Education</span>
+              <div class="profile-value cr-detail-value profile-preline">{{ profile.education|default:"—" }}</div>
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_work_experience %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Work Experience</span>
-            <div class="profile-value cr-detail-value profile-preline">{{ profile.work_experience|default:"—" }}</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_work_experience %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Work Experience</span>
+              <div class="profile-value cr-detail-value profile-preline">{{ profile.work_experience|default:"—" }}</div>
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_projects %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Projects</span>
-            <div class="profile-value cr-detail-value profile-preline">{{ profile.projects|default:"—" }}</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_projects %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Projects</span>
+              <div class="profile-value cr-detail-value profile-preline">{{ profile.projects|default:"—" }}</div>
+            </div>
+          {% endif %}
 
-        {% if is_owner or profile.show_links %}
-          <div class="profile-row cr-detail-row">
-            <span class="profile-label cr-detail-label">Links</span>
-            <div class="profile-value cr-detail-value profile-preline">{{ profile.links|default:"—" }}</div>
-          </div>
-        {% endif %}
+          {% if is_owner or profile.show_links %}
+            <div class="profile-row cr-detail-row">
+              <span class="profile-label cr-detail-label">Links</span>
+              <div class="profile-value cr-detail-value profile-preline">{{ profile.links|default:"—" }}</div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="profile-actions cr-btn-group">
+        <a href="{% url 'jobs:home' %}" class="cr-btn cr-btn-warning">Back To Jobs</a>
       </div>
-    {% endif %}
-
-    <div class="profile-actions cr-btn-group">
-      <a href="{% url 'jobs:home' %}" class="cr-btn cr-btn-warning">Back To Jobs</a>
     </div>
   </div>
 </div>

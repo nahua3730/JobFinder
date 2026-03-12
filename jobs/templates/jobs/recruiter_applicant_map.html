@@ -35,6 +35,25 @@
 .stat-value {
   font-size: 1.6rem;
 }
+
+.leaflet-div-icon.cr-map-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.cr-map-sprite {
+  width: 34px;
+  height: 34px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+.cr-map-egg {
+  background-image: url("/static/img/egg.png");
+}
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -93,13 +112,21 @@ const clusterGroup = L.markerClusterGroup();
 const bounds = [];
 const applicantCount = document.getElementById("applicantCount");
 
+const eggIcon = L.divIcon({
+  className: "cr-map-marker",
+  html: "<div class='cr-map-sprite cr-map-egg'></div>",
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+  popupAnchor: [0, -16],
+});
+
 fetch("{% url 'jobs:recruiter_applicant_map_data' job.id %}")
   .then(response => response.json())
   .then(data => {
     applicantCount.textContent = data.length;
 
     data.forEach(applicant => {
-      const marker = L.marker([applicant.latitude, applicant.longitude]);
+      const marker = L.marker([applicant.latitude, applicant.longitude], { icon: eggIcon });
 
       marker.bindPopup(`
         <div style="min-width:240px;">
