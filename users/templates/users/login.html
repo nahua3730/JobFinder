@@ -180,68 +180,10 @@
     font-size: 1.35rem;
   }
 
-  .login-status {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 14px 18px;
-    text-align: center;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    margin-bottom: 18px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .login-status::before,
-  .login-status::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 26px;
-    height: 6px;
-    background: #333;
-    transform: translateY(-50%);
-  }
-
-  .login-status::before { left: 18px; }
-  .login-status::after { right: 18px; }
-
   .login-lane {
     height: 54px;
     border: 6px solid #333;
     margin-bottom: 22px;
-  }
-
-  .login-save-panel {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 14px 16px;
-    margin-bottom: 18px;
-  }
-
-  .login-save-title {
-    text-transform: uppercase;
-    font-size: 1.3rem;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .login-save-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-
-  .login-save-box {
-    background: #f5f5f5;
-    border: 4px solid #333;
-    box-shadow: 0px 4px 0px #b8a98e;
-    text-align: center;
-    padding: 10px 8px;
-    font-size: 1.05rem;
-    text-transform: uppercase;
   }
 
   .login-card {
@@ -593,9 +535,6 @@
       margin-top: 10px;
     }
 
-    .login-save-row {
-      grid-template-columns: 1fr;
-    }
   }
 
   html.theme-dark .login-highscore .label,
@@ -616,9 +555,6 @@
     box-shadow: 0px 5px 0px #171717;
   }
 
-  html.theme-dark .login-status,
-  html.theme-dark .login-save-panel,
-  html.theme-dark .login-save-box,
   html.theme-dark .login-chip {
     background: #2f3437;
     color: #f0edd8;
@@ -626,17 +562,6 @@
     box-shadow: 0px 4px 0px #171717;
   }
 
-  html.theme-dark .login-status,
-  html.theme-dark .login-save-panel {
-    box-shadow: 0px 6px 0px #171717;
-  }
-
-  html.theme-dark .login-status::before,
-  html.theme-dark .login-status::after {
-    background: #d8d4c2;
-  }
-
-  html.theme-dark .login-save-title,
   html.theme-dark .login-help,
   html.theme-dark .login-bonus {
     color: #f0edd8;
@@ -704,20 +629,7 @@
         <div class="login-hud-box">Ready</div>
       </div>
 
-      <div class="login-status">
-        Player access portal • authorized users only
-      </div>
-
       <div class="lane-road login-lane"></div>
-
-      <div class="login-save-panel">
-        <div class="login-save-title">Continue Saved Profile</div>
-        <div class="login-save-row">
-          <div class="login-save-box">Mode: Returning Player</div>
-          <div class="login-save-box">Access: Authorized Users</div>
-          <div class="login-save-box">Status: Ready</div>
-        </div>
-      </div>
       <div class="cr-panel login-card">
         <form method="post" class="login-form">
           {% csrf_token %}
