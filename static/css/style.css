@@ -284,39 +284,6 @@
   background-color: #2563eb;
   border-color: #2563eb;
 }
-.privacy-row:hover {
-  background-color: #f1f5f9;
-}
-.save-toast {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background-color: #16a34a;
-  color: white;
-  padding: 14px 22px;
-  border-radius: 8px;
-  font-weight: 500;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-
-  opacity: 0;
-  transform: translateY(20px);
-  animation: toastIn 0.4s ease forwards,
-             toastOut 0.4s ease 3s forwards;
-}
-
-@keyframes toastIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes toastOut {
-  to {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-}
 .pipeline-board {
   display: flex;
   gap: 16px;

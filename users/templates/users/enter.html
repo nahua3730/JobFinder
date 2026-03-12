@@ -107,6 +107,15 @@
     letter-spacing: 1px;
   }
 
+  .enter-subtitle-instruction {
+    margin: 6px 0 0;
+    color: #ffeb7a;
+    text-transform: uppercase;
+    font-size: 1.15rem;
+    text-shadow: 2px 2px 0px #5a3a00;
+    letter-spacing: 1px;
+  }
+
   .enter-stage {
     position: relative;
     margin: 20px auto 10px;
@@ -377,6 +386,7 @@
     border-radius: 50%;
     filter: blur(1px);
     z-index: 1;
+    animation: chickenShadowIdle 0.9s ease-in-out infinite;
   }
 
   .chicken-sprite {
@@ -390,10 +400,33 @@
     filter: drop-shadow(0 6px 0 #24140d);
     transform-origin: center bottom;
     z-index: 3;
+    animation: chickenIdleHop 0.9s ease-in-out infinite;
   }
 
   .chicken-sprite.hop {
     animation: chickenHitBrick 0.78s ease;
+  }
+
+  @keyframes chickenIdleHop {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+      transform: translateX(-50%) translateY(-14px);
+    }
+  }
+
+  @keyframes chickenShadowIdle {
+    0%, 100% {
+      transform: translateX(-50%) scaleX(1);
+      opacity: 0.32;
+    }
+
+    50% {
+      transform: translateX(-50%) scaleX(0.82);
+      opacity: 0.2;
+    }
   }
 
   .hold-wrap {
@@ -491,7 +524,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1rem;
+    font-size: 1.45rem;
     letter-spacing: 0.02em;
     text-align: center;
     padding-left: 22px;
@@ -691,7 +724,7 @@
           </svg>
           GT Job Search
         </h1>
-        <p class="enter-subtitle">Long press the question block to enter the game</p>
+        <p class="enter-subtitle-instruction press-start">Press and hold the center brick to unlock the board</p>
       </div>
 
       <div class="enter-stage">
@@ -735,7 +768,7 @@
           </div>
 
           <div class="hold-wrap">
-            <div class="hold-label press-start" id="holdLabel">Hit the Block to Start</div>
+            <div class="hold-label press-start" id="holdLabel">Hit the Brick to Start</div>
             <div class="hold-bar">
               <div class="hold-bar-fill" id="holdFill"></div>
             </div>
@@ -756,7 +789,7 @@
           </div>
 
           <div class="enter-ready press-start" id="enterReady">Player 1 Ready</div>
-          <div class="enter-hint">Press and hold the center question block to start the game board</div>
+          <div class="enter-hint">Press and hold the center brick until the board unlocks.</div>
         </div>
       </div>
 

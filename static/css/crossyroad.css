@@ -68,6 +68,9 @@
 .cr-title-wrap {
   min-width: 0;
   flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .cr-header-actions {
@@ -87,9 +90,14 @@
   text-shadow: 3px 3px 0px #333;
   font-size: 2.6rem;
   margin: 0;
-  line-height: 1;
+  line-height: 0.92;
   min-width: 0;
   flex-wrap: wrap;
+}
+
+.cr-subtitle {
+  margin: 0;
+  line-height: 1.05;
 }
 
 .cr-title span {
@@ -277,7 +285,7 @@
   user-select: none;
   isolation: isolate;
   font-family: "VT323", monospace;
-  font-size: clamp(1.18rem, 1.08rem + 0.28vw, 1.4rem);
+  font-size: clamp(1.3rem, 1.16rem + 0.34vw, 1.55rem);
   line-height: 1.08;
   letter-spacing: 0.02em;
   border: 3px solid #000;
@@ -357,9 +365,9 @@
   --cr-btn-ring-size: 3px;
   --cr-btn-outline-size: 5px;
   margin: 3px 4px 7px 3px;
-  padding: 7px 12px;
-  min-height: 34px;
-  font-size: 1.06rem;
+  padding: 11px 17px;
+  min-height: 44px;
+  font-size: 1.7rem;
   letter-spacing: 0;
 }
 
@@ -840,20 +848,6 @@ select:not([multiple]):focus {
 .pixel-switch input[type="checkbox"]:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(0, 168, 243, 0.22);
-}
-.save-toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #aad751;
-    color: #fff;
-    border: 4px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 12px 18px;
-    font-family: 'VT323', monospace;
-    font-size: 1.35rem;
-    z-index: 2000;
-    text-shadow: 2px 2px 0px #5f7f2e;
 }
 @keyframes roadMove {
   from {

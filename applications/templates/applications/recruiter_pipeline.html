@@ -143,6 +143,19 @@
     line-height: 1.35;
   }
 
+  .pipeline-card-main {
+    cursor: grab;
+  }
+
+  .pipeline-card-handle {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b5a2a;
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+
   .pipeline-card:hover {
     transform: translateY(-3px);
     box-shadow: 0px 6px 0px #777;
@@ -229,55 +242,143 @@
     background: rgba(0, 0, 0, 0.45);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.32s ease, visibility 0s linear 0.32s;
     z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
   }
 
   .candidate-panel-overlay.show {
     opacity: 1;
     visibility: visible;
+    transition: opacity 0.32s ease;
   }
 
   .candidate-panel {
     position: fixed;
-    top: 0;
-    right: 0;
-    width: 420px;
-    max-width: 95vw;
-    height: 100vh;
-    background: #fff8dc;
-    border-left: 8px solid #3e2723;
-    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.18);
-    transform: translateX(100%);
-    transition: transform 0.28s ease;
+    top: 46%;
+    left: 50%;
+    width: min(720px, 92vw);
+    max-width: 92vw;
+    max-height: min(84vh, 900px);
+    background: linear-gradient(180deg, #efe6c2 0%, #e6d7a8 100%);
+    border: 6px solid #3e2723;
+    border-radius: 22px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+    transform: translate(-50%, calc(-50% + 22px)) scale(0.96);
+    opacity: 0;
+    transition:
+      transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.24s ease;
+    will-change: transform, opacity;
     z-index: 1050;
     padding: 24px;
     overflow-y: auto;
     font-family: 'VT323', monospace;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .candidate-panel.show {
-    transform: translateX(0);
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .candidate-panel-header {
+    background: #aad751;
+    border: 6px solid #8cbf3f;
+    border-radius: 16px;
+    box-shadow: 0px 6px 0px #3e2723;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    gap: 12px;
+    flex-wrap: nowrap;
   }
 
   .candidate-panel-header h4 {
     font-size: 2rem;
     margin-bottom: 0;
+    color: #fff;
+    text-shadow: 2px 2px 0px #333;
+  }
+
+  .candidate-panel-header .text-muted {
+    color: #eef7d1 !important;
+    font-size: 1.2rem !important;
+  }
+
+  .candidate-panel hr {
+    border: 0;
+    border-top: 4px solid rgba(62, 39, 35, 0.35);
+    margin: 18px 0;
   }
 
   .panel-label {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     text-transform: uppercase;
-    color: #666;
+    color: #5e4a1d;
+    letter-spacing: 0.04em;
   }
 
   .candidate-panel-section {
     line-height: 1.5;
     font-size: 1.45rem;
+    background: rgba(255, 255, 255, 0.55);
+    border: 4px solid #3e2723;
+    border-radius: 14px;
+    box-shadow: 0px 4px 0px rgba(62, 39, 35, 0.55);
+    padding: 12px 14px;
+  }
+
+  .pipeline-card .cr-btn {
+    margin-top: 8px;
+  }
+
+  .pipeline-card a.cr-btn.cr-btn-sm {
+    min-height: 34px;
+    padding: 5px 12px;
+    font-size: 1rem;
+  }
+
+  .pipeline-card-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  #panelExpandButton {
+    width: 100%;
   }
 
   .panel-multiline {
     white-space: pre-line;
+  }
+
+  .candidate-panel-close {
+    min-width: 0;
+    width: auto !important;
+    min-height: 40px;
+    padding: 6px 12px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .candidate-panel-identity {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .candidate-panel-identity h4,
+  .candidate-panel-identity #panelUsername {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   @media (max-width: 1200px) {
@@ -295,6 +396,33 @@
     .pipeline-stage {
       min-width: 100%;
       flex: 0 0 100%;
+    }
+
+    .candidate-panel {
+      width: min(94vw, 520px);
+      max-width: 94vw;
+      max-height: 86vh;
+      padding: 18px 16px 24px;
+    }
+
+    .candidate-panel-header {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    .candidate-panel-header h4 {
+      font-size: 1.7rem;
+    }
+
+    .candidate-panel-close {
+      min-height: 38px;
+      padding: 6px 12px;
+      font-size: 1rem;
+    }
+
+    .candidate-panel-section {
+      padding: 10px 12px;
+      font-size: 1.3rem;
     }
   }
 
@@ -319,8 +447,7 @@
 .cr-stage-card,
 .cr-stage-body,
 .pipeline-card,
-.empty-placeholder,
-.cr-stage-card * {
+.empty-placeholder {
   border-radius: 0 !important;
 }
 </style>
@@ -398,32 +525,38 @@
                     ondragleave="handleDragLeave(event)"
                     ondragend="handleDragEnd(event)"
                     onclick="openCandidatePanel(event, this)">
-                <div class="fw-semibold applicant-name-text">
-                  {{ app.applicant.first_name }} {{ app.applicant.last_name }}
-                </div>
-                <div class="text-muted small applicant-job-text">
-                  {{ app.job.title }}
-                </div>
-                <div class="text-muted small">Applied {{ app.created_at|timesince }} ago</div>
+                <div class="pipeline-card-main">
+                  <div class="pipeline-card-handle">Drag card</div>
+                  <div class="fw-semibold applicant-name-text">
+                    {{ app.applicant.first_name }} {{ app.applicant.last_name }}
+                  </div>
+                  <div class="text-muted small applicant-job-text">
+                    {{ app.job.title }}
+                  </div>
+                  <div class="text-muted small">Applied {{ app.created_at|timesince }} ago</div>
 
-                <div class="candidate-preview">
-                  {% if app.applicant.seeker_profile.skills %}
-                    <div class="text-muted small">
-                      <strong>Skills:</strong> {{ app.applicant.seeker_profile.skills }}
-                    </div>
-                  {% endif %}
+                  <div class="candidate-preview">
+                    {% if app.applicant.seeker_profile.skills %}
+                      <div class="text-muted small">
+                        <strong>Skills:</strong> {{ app.applicant.seeker_profile.skills }}
+                      </div>
+                    {% endif %}
 
-                  {% if app.applicant.seeker_profile.headline %}
-                    <div class="text-muted small mt-1">
-                      <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
-                    </div>
-                  {% endif %}
+                    {% if app.applicant.seeker_profile.headline %}
+                      <div class="text-muted small mt-1">
+                        <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
+                      </div>
+                    {% endif %}
+                  </div>
                 </div>
 
-                <a class="btn btn-sm mt-2"
-                   href="{% url 'applications:recruiter_update_application_status' app.id %}">
-                  Move Stage
-                </a>
+                <div class="pipeline-card-action">
+                  <a class="cr-btn cr-btn-yellow cr-btn-sm"
+                     draggable="false"
+                     href="{% url 'applications:recruiter_update_application_status' app.id %}">
+                    Move
+                  </a>
+                </div>
               </div>
             {% empty %}
               <div class="empty-placeholder">No applicants</div>
@@ -443,11 +576,13 @@
 
 <div id="candidatePanel" class="candidate-panel">
   <div class="candidate-panel-header d-flex justify-content-between align-items-start">
-    <div>
+    <div class="candidate-panel-identity">
       <h4 id="panelName" class="mb-1"></h4>
       <div id="panelUsername" class="text-muted small"></div>
     </div>
-    <button type="button" class="btn-close" aria-label="Close" onclick="closeCandidatePanel()"></button>
+    <button type="button" class="cr-btn cr-btn-secondary cr-btn-sm candidate-panel-close" aria-label="Close" onclick="closeCandidatePanel()">
+      X
+    </button>
   </div>
 
   <hr>
@@ -512,7 +647,7 @@
   </div>
 
   <div class="candidate-panel-section mt-4">
-    <button id="panelExpandButton" class="btn btn-dark w-100" type="button" onclick="toggleFullProfile()">
+    <button id="panelExpandButton" class="cr-btn cr-btn-primary" type="button" onclick="toggleFullProfile()">
       View Full Profile
     </button>
   </div>

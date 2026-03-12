@@ -19,6 +19,20 @@
     margin-bottom: 1.25rem;
   }
 
+  .cr-header .cr-title-wrap {
+    gap: 8px;
+  }
+
+  .cr-header .cr-title {
+    margin-bottom: 4px;
+    line-height: 0.95;
+  }
+
+  .cr-header .cr-subtitle {
+    margin-bottom: 0;
+    line-height: 1.05;
+  }
+
   .settings-section-title {
     font-size: 1.45rem;
     text-transform: uppercase;
@@ -77,6 +91,13 @@
   }
 
   .toggle-container.arcade-toggle .toggle-input {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent;
     position: absolute;
     z-index: 2;
     bottom: 132.5%;
@@ -219,6 +240,29 @@
     margin-bottom: 14px;
   }
 
+  .privacy-toggle-wrap .toggle-input:focus,
+  .privacy-toggle-wrap .toggle-input:hover,
+  .privacy-toggle-wrap .toggle-input:checked:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .cr-theme .cr-btn:hover,
+  .cr-theme .cr-btn:focus-visible {
+    transform: translateY(calc(var(--cr-btn-lift) * -1));
+    filter: none;
+    box-shadow:
+      0 var(--cr-btn-lift) 0 var(--cr-btn-shadow),
+      0 0 0 var(--cr-btn-ring-size) var(--cr-btn-ring),
+      0 0 0 var(--cr-btn-outline-size) #000;
+  }
+
+  .preview-pill:hover,
+  .preview-pill:focus-visible {
+    filter: none;
+    transform: none;
+  }
+
   .preview-section h6 {
     font-size: 1.25rem;
     text-transform: uppercase;
@@ -263,6 +307,32 @@
     .privacy-row {
       gap: 12px;
     }
+  }
+
+  html.theme-dark .section-title,
+  html.theme-dark .settings-section-title,
+  html.theme-dark .privacy-label,
+  html.theme-dark .preview-profile-header h5,
+  html.theme-dark .preview-section h6 {
+    color: #f4f1da !important;
+  }
+
+  html.theme-dark .section-subtitle,
+  html.theme-dark .privacy-help,
+  html.theme-dark .preview-profile-header p,
+  html.theme-dark .preview-section p {
+    color: #d7d3c2 !important;
+  }
+
+  html.theme-dark .privacy-row {
+    border-bottom-color: #5a5144;
+  }
+
+  html.theme-dark .preview-profile-header,
+  html.theme-dark .preview-section {
+    background: #2a241d !important;
+    border-color: #111 !important;
+    box-shadow: 0px 4px 0px #111 !important;
   }
 </style>
 

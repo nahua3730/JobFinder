@@ -345,6 +345,8 @@ def notifications(request):
         recruiter_notes = RecruiterNotification.objects.filter(user=request.user)
         items.extend(
             SimpleNamespace(
+                id=note.id,
+                source="recruiter",
                 title=note.title,
                 body=note.body,
                 url=note.url,
@@ -357,6 +359,8 @@ def notifications(request):
     legacy_notes = Notification.objects.filter(recipient=request.user)
     items.extend(
         SimpleNamespace(
+            id=note.id,
+            source="legacy",
             title="Notification",
             body=note.message,
             url=note.link or "",
@@ -392,6 +396,26 @@ def read_notification(request, notif_id):
 def delete_notification(request, notif_id):
     if request.method == "POST":
         notif = get_object_or_404(Notification, id=notif_id, recipient=request.user)
+        notif.delete()
+
+    return redirect("applications:notifications")
+
+
+@login_required
+def read_recruiter_notification(request, notif_id):
+    notif = get_object_or_404(RecruiterNotification, id=notif_id, user=request.user)
+
+    if not notif.is_read:
+        notif.is_read = True
+        notif.save(update_fields=["is_read"])
+
+    return redirect(notif.url or "applications:notifications")
+
+
+@login_required
+def delete_recruiter_notification(request, notif_id):
+    if request.method == "POST":
+        notif = get_object_or_404(RecruiterNotification, id=notif_id, user=request.user)
         notif.delete()
 
     return redirect("applications:notifications")

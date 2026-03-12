@@ -1,5 +1,32 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Applications</h1>
-<p>Placeholder page for apply/status/pipeline.</p>
+<div class="container mt-4 cr-theme">
+  <div class="cr-header cr-header-start">
+    <div>
+      <h1 class="cr-title">Applications</h1>
+      <div class="cr-subtitle">
+        Track your jobs, stages, and recruiter activity.
+      </div>
+    </div>
+  </div>
+
+  <div class="cr-panel">
+    <p style="font-size: 1.4rem; margin-bottom: 1.25rem;">
+      Choose where you want to go next in the applications flow.
+    </p>
+
+    <div class="d-flex flex-wrap gap-3">
+      <a class="cr-btn cr-btn-primary" href="{% url 'applications:my_applications' %}">
+        My Applications
+      </a>
+      <a class="cr-btn cr-btn-secondary" href="{% url 'applications:notifications' %}">
+        Notifications
+      </a>
+      <a class="cr-btn cr-btn-success" href="{% url 'applications:saved_searches' %}">
+        Saved Searches
+      </a>
+    </div>
+  </div>
+</div>
 {% endblock %}

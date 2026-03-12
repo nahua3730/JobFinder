@@ -202,6 +202,12 @@
     position: relative;
   }
 
+  .role-toggle-wrap,
+  .role-label-box,
+  .toggle-container.arcade-toggle {
+    cursor: pointer;
+  }
+
   .role-toggle-status {
     margin-top: 14px;
     font-size: 1.15rem;
@@ -220,17 +226,17 @@
   }
 
 .toggle-container.arcade-toggle .toggle-input {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
   position: absolute;
-  z-index: 2;
-  bottom: 132.5%;
-  border-radius: 50%;
-  transform: rotate(-25deg);
-  transform-origin: 50% 4.75em;
-  width: var(--knob-size);
-  height: var(--knob-size);
+  inset: -18px;
+  z-index: 3;
   opacity: 0;
-  font: inherit;
-  transition: transform .24s cubic-bezier(.65, 1.35, .5, 1);
   cursor: pointer;
 }
 
@@ -276,12 +282,7 @@
 }
 
 .toggle-container.arcade-toggle .toggle-handle-knob::after {
-  content: '';
-  position: absolute;
-  border-radius: inherit;
-  width: 100%;
-  height: 100%;
-  box-shadow: inset 0 0 8px 2px rgb(255 255 255 / .4);
+  content: none;
 }
 
 .toggle-container.arcade-toggle .toggle-handle-bar-wrapper {
@@ -632,6 +633,75 @@
       margin-top: 10px;
     }
   }
+
+  html.theme-dark .signup-banner .label,
+  html.theme-dark .signup-subtitle,
+  html.theme-dark .signup-subtitle-2,
+  html.theme-dark .signup-help,
+  html.theme-dark .signup-role-title,
+  html.theme-dark .role-toggle-status,
+  html.theme-dark .signup-form label,
+  html.theme-dark .password-title {
+    color: #f4f1da;
+    text-shadow: none;
+  }
+
+  html.theme-dark .role-label-box {
+    background: #2f3437;
+    border-color: #141414;
+    box-shadow: 0px 4px 0px #171717;
+    color: #f3efda;
+  }
+
+  html.theme-dark .role-label-box.active {
+    background: #405b26;
+    border-color: #6db3ff;
+    box-shadow: 0px 4px 0px #171717, 0 0 0 4px rgba(109, 179, 255, 0.14) inset;
+  }
+
+  html.theme-dark .role-desc,
+  html.theme-dark .signup-help,
+  html.theme-dark .signup-subtitle-2,
+  html.theme-dark .role-toggle-status,
+  html.theme-dark .password-title {
+    color: #d9d6c4;
+  }
+
+  html.theme-dark .signup-chip {
+    background: #2d3133;
+    border-color: #151515;
+    box-shadow: 0px 4px 0px #151515;
+    color: #f0edd8;
+  }
+
+  html.theme-dark .password-rule {
+    background: #2f3437;
+    border-color: #111;
+    box-shadow: 0px 6px 0px #171717;
+    color: #f0edd8;
+  }
+
+  html.theme-dark .password-rule.ok {
+    background: #2e5b35;
+    color: #e6ffe7;
+    border-color: #4caf50;
+  }
+
+  html.theme-dark .password-rule.bad {
+    background: #6b2d2d;
+    color: #ffe6e6;
+    border-color: #ef5350;
+  }
+
+  html.theme-dark .cr-error-box {
+    background: #5c2323;
+    color: #ffe3e3;
+    border-color: #ff7b7b;
+  }
+
+  html.theme-dark .cr-error-inline {
+    color: #ffb3b3;
+  }
 </style>
 
 <div class="arcade-bg">
@@ -833,6 +903,8 @@
   const roleStatusText = document.getElementById("roleStatusText");
   const jobseekerLabelBox = document.getElementById("jobseekerLabelBox");
   const recruiterLabelBox = document.getElementById("recruiterLabelBox");
+  const roleToggleWrap = document.querySelector(".role-toggle-wrap");
+  const arcadeRoleToggle = document.querySelector(".toggle-container.arcade-toggle");
   const levelClearBanner = document.getElementById("levelClearBanner");
 
   function setSignupRole(role) {
@@ -859,6 +931,30 @@
     roleToggle.addEventListener("change", () => {
       setSignupRole(roleToggle.checked ? "recruiter" : "jobseeker");
     });
+  }
+
+  if (arcadeRoleToggle) {
+    arcadeRoleToggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      setSignupRole(roleToggle && roleToggle.checked ? "jobseeker" : "recruiter");
+    });
+  }
+
+  if (roleToggleWrap) {
+    roleToggleWrap.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        setSignupRole(roleToggle && roleToggle.checked ? "jobseeker" : "recruiter");
+      }
+    });
+  }
+
+  if (jobseekerLabelBox) {
+    jobseekerLabelBox.addEventListener("click", () => setSignupRole("jobseeker"));
+  }
+
+  if (recruiterLabelBox) {
+    recruiterLabelBox.addEventListener("click", () => setSignupRole("recruiter"));
   }
 
   const password1 = document.getElementById("id_password1");

@@ -64,6 +64,17 @@
     overflow-wrap: anywhere;
   }
 
+  .notifications-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .notifications-inline-form {
+    display: inline-flex;
+  }
+
   .notifications-empty {
     padding: 50px;
     text-align: center;
@@ -119,7 +130,7 @@
               <th>Title</th>
               <th>Message</th>
               <th>Time</th>
-              <th>Link</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -136,11 +147,35 @@
                 <td class="notifications-copy">{{ n.body }}</td>
                 <td class="notifications-copy">{{ n.created_at }}</td>
                 <td class="notifications-copy">
-                  {% if n.url %}
-                    <a class="cr-btn cr-btn-primary cr-btn-sm" href="{{ n.url }}">View Matches</a>
-                  {% else %}
-                    &mdash;
-                  {% endif %}
+                  <div class="notifications-links">
+                    {% if n.url %}
+                      {% if n.source == "recruiter" %}
+                        <a class="cr-btn cr-btn-primary cr-btn-sm" href="{% url 'applications:read_recruiter_notification' n.id %}">View</a>
+                      {% else %}
+                        <a class="cr-btn cr-btn-primary cr-btn-sm" href="{% url 'applications:read_notification' n.id %}">View</a>
+                      {% endif %}
+                    {% endif %}
+
+                    {% if not n.is_read %}
+                      {% if n.source == "recruiter" %}
+                        <a class="cr-btn cr-btn-secondary cr-btn-sm" href="{% url 'applications:read_recruiter_notification' n.id %}">Mark Read</a>
+                      {% else %}
+                        <a class="cr-btn cr-btn-secondary cr-btn-sm" href="{% url 'applications:read_notification' n.id %}">Mark Read</a>
+                      {% endif %}
+                    {% endif %}
+
+                    {% if n.source == "recruiter" %}
+                      <form method="post" action="{% url 'applications:delete_recruiter_notification' n.id %}" class="notifications-inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm">Delete</button>
+                      </form>
+                    {% else %}
+                      <form method="post" action="{% url 'applications:delete_notification' n.id %}" class="notifications-inline-form">
+                        {% csrf_token %}
+                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm">Delete</button>
+                      </form>
+                    {% endif %}
+                  </div>
                 </td>
               </tr>
             {% endfor %}
