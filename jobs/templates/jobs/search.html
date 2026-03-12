@@ -18,25 +18,6 @@
     align-items: center;
   }
 
-  .job-search-table .cr-action-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  .job-search-table .cr-btn {
-    transform: none;
-  }
-
-  .job-search-table .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .job-search-table .cr-btn:active {
-    transform: translateY(0);
-  }
-
   .job-search-chip {
     cursor: default;
   }
@@ -197,14 +178,14 @@
                         </td>
 
                         <td>
-                            <div class="cr-action-group">
+                            <div class="cr-btn-group-table">
 
-                                <a href="{% url 'jobs:job_detail' job.id %}" class="cr-btn cr-btn-sm">
+                                <a href="{% url 'jobs:job_detail' job.id %}" class="cr-btn cr-btn-sm cr-btn-flat">
                                     View
                                 </a>
 
                                 {% if user == job.recruiter %}
-                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-warning cr-btn-sm">
+                                <a href="{% url 'jobs:edit_job' job.id %}" class="cr-btn cr-btn-warning cr-btn-sm cr-btn-flat">
                                     Edit
                                 </a>
                                 {% endif %}

@@ -13,21 +13,6 @@
     flex-wrap: wrap;
   }
 
-  .notifications-actions .cr-btn,
-  .notifications-table .cr-btn {
-    transform: none;
-  }
-
-  .notifications-actions .cr-btn:hover,
-  .notifications-table .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .notifications-actions .cr-btn:active,
-  .notifications-table .cr-btn:active {
-    transform: translateY(0);
-  }
-
   .notifications-table td {
     vertical-align: top;
   }
@@ -116,7 +101,7 @@
 
     <form method="post" action="{% url 'applications:mark_all_read' %}" class="m-0 notifications-actions">
       {% csrf_token %}
-      <button type="submit" class="cr-btn cr-btn-secondary">Mark All As Read</button>
+      <button type="submit" class="cr-btn cr-btn-secondary cr-btn-flat">Mark All As Read</button>
     </form>
   </div>
 
@@ -150,29 +135,29 @@
                   <div class="notifications-links">
                     {% if n.url %}
                       {% if n.source == "recruiter" %}
-                        <a class="cr-btn cr-btn-primary cr-btn-sm" href="{% url 'applications:read_recruiter_notification' n.id %}">View</a>
+                        <a class="cr-btn cr-btn-primary cr-btn-sm cr-btn-flat" href="{% url 'applications:read_recruiter_notification' n.id %}">View</a>
                       {% else %}
-                        <a class="cr-btn cr-btn-primary cr-btn-sm" href="{% url 'applications:read_notification' n.id %}">View</a>
+                        <a class="cr-btn cr-btn-primary cr-btn-sm cr-btn-flat" href="{% url 'applications:read_notification' n.id %}">View</a>
                       {% endif %}
                     {% endif %}
 
                     {% if not n.is_read %}
                       {% if n.source == "recruiter" %}
-                        <a class="cr-btn cr-btn-secondary cr-btn-sm" href="{% url 'applications:read_recruiter_notification' n.id %}">Mark Read</a>
+                        <a class="cr-btn cr-btn-secondary cr-btn-sm cr-btn-flat" href="{% url 'applications:read_recruiter_notification' n.id %}">Mark Read</a>
                       {% else %}
-                        <a class="cr-btn cr-btn-secondary cr-btn-sm" href="{% url 'applications:read_notification' n.id %}">Mark Read</a>
+                        <a class="cr-btn cr-btn-secondary cr-btn-sm cr-btn-flat" href="{% url 'applications:read_notification' n.id %}">Mark Read</a>
                       {% endif %}
                     {% endif %}
 
                     {% if n.source == "recruiter" %}
                       <form method="post" action="{% url 'applications:delete_recruiter_notification' n.id %}" class="notifications-inline-form">
                         {% csrf_token %}
-                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm">Delete</button>
+                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm cr-btn-flat">Delete</button>
                       </form>
                     {% else %}
                       <form method="post" action="{% url 'applications:delete_notification' n.id %}" class="notifications-inline-form">
                         {% csrf_token %}
-                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm">Delete</button>
+                        <button type="submit" class="cr-btn cr-btn-danger cr-btn-sm cr-btn-flat">Delete</button>
                       </form>
                     {% endif %}
                   </div>

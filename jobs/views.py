@@ -4,6 +4,7 @@ from users.models import JobSeekerProfile
 from .forms import JobSearchForm, JobPostingForm, CandidateSearchForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.urls import reverse
 from applications.models import Application, Notification
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
@@ -181,7 +182,7 @@ def create_job(request):
                             Notification.objects.create(
                                 recipient=seeker.user,
                                 message=f"New Match! '{job.title}' requires your skills.",
-                                link=f"/{job.id}/"
+                                link=reverse("jobs:job_detail", args=[job.id])
                             )
 
             return redirect('jobs:my_jobs')
@@ -364,7 +365,7 @@ def job_applications(request, job_id):
                 Notification.objects.create(
                     recipient=application.applicant,
                     message=f"Update: Your application for {job.title} is now '{application.get_status_display()}'.",
-                    link="/my-applications/"
+                    link=reverse("applications:my_applications")
                 )
 
         return redirect('jobs:job_applications', job_id=job.id)

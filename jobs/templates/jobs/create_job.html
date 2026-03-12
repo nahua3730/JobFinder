@@ -63,45 +63,6 @@
         flex: 1 1 300px;
     }
 
-    .search-bar-row .cr-btn,
-    .cr-form-actions .cr-btn,
-    .cr-header .cr-btn {
-        transform: none;
-        min-height: 52px;
-        padding: 12px 18px;
-        font-size: 1.45rem;
-    }
-
-    .search-bar-row .cr-btn::before,
-    .cr-form-actions .cr-btn::before,
-    .cr-header .cr-btn::before {
-        transform: translateY(6px);
-    }
-
-    .search-bar-row .cr-btn:hover,
-    .cr-form-actions .cr-btn:hover,
-    .cr-header .cr-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .search-bar-row .cr-btn:hover::before,
-    .cr-form-actions .cr-btn:hover::before,
-    .cr-header .cr-btn:hover::before {
-        transform: translateY(4px);
-    }
-
-    .search-bar-row .cr-btn:active,
-    .cr-form-actions .cr-btn:active,
-    .cr-header .cr-btn:active {
-        transform: translateY(2px);
-    }
-
-    .search-bar-row .cr-btn:active::before,
-    .cr-form-actions .cr-btn:active::before,
-    .cr-header .cr-btn:active::before {
-        transform: translateY(2px);
-    }
-
     .cr-form-actions {
         margin-top: 40px;
         display: flex;
@@ -227,7 +188,7 @@
 
 <div class="container mt-4 cr-theme">
 
-    <div class="cr-header">
+    <div class="cr-header cr-btn-toolbar">
         <h2 class="cr-title">
             <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3">
                 <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
@@ -360,7 +321,7 @@
                     {{ form.latitude }}
                     {{ form.longitude }}
 
-                    <div class="cr-form-actions">
+                    <div class="cr-form-actions cr-btn-toolbar">
                         <button type="submit" class="cr-btn cr-btn-primary">
                             Save Job
                         </button>
@@ -382,7 +343,7 @@
                         </div>
                     </div>
 
-                    <div class="search-bar-row">
+                    <div class="search-bar-row cr-btn-toolbar">
                         <input
                             type="text"
                             id="mapSearchInput"

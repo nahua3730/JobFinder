@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}My Profile{% endblock %}
+{% block title %}{% if not is_owner and request.user.is_authenticated and request.user.is_recruiter %}Candidate Profile{% else %}My Profile{% endif %}{% endblock %}
 
 {% block content %}
 <style>
@@ -8,80 +8,6 @@
     gap: 24px;
   }
 
-  .profile-card {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    overflow: hidden;
-  }
-
-  .profile-row {
-    padding: 18px 20px;
-    border-bottom: 4px solid #d3c39a;
-  }
-
-  .profile-row:last-child {
-    border-bottom: 0;
-  }
-
-  .profile-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    color: #5a3320;
-  }
-
-  .profile-value {
-    font-size: 1.55rem;
-    color: #1f160e;
-    line-height: 1.35;
-    overflow-wrap: anywhere;
-    white-space: pre-line;
-  }
-
-  .profile-note,
-  .profile-empty {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 20px;
-    font-size: 1.45rem;
-    color: #444;
-  }
-
-  .profile-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  .profile-actions .cr-btn {
-    transform: none;
-    min-height: 50px;
-    padding: 12px 18px;
-    font-size: 1.45rem;
-  }
-
-  .profile-actions .cr-btn::before {
-    transform: translateY(6px);
-  }
-
-  .profile-actions .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .profile-actions .cr-btn:hover::before {
-    transform: translateY(4px);
-  }
-
-  .profile-actions .cr-btn:active {
-    transform: translateY(2px);
-  }
-
-  .profile-actions .cr-btn:active::before {
-    transform: translateY(2px);
-  }
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -99,11 +25,11 @@
         <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
         <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
       </svg>
-      My Profile
+      {% if not is_owner and request.user.is_authenticated and request.user.is_recruiter %}Candidate Profile{% else %}My Profile{% endif %}
     </h2>
 
     {% if is_owner %}
-      <div class="profile-actions">
+      <div class="profile-actions cr-btn-group">
         <a href="{% url 'users:profile_edit' %}" class="cr-btn cr-btn-primary">Edit Profile</a>
         <a href="{% url 'users:privacy_settings' %}" class="cr-btn cr-btn-secondary">Privacy Settings</a>
       </div>
@@ -112,58 +38,58 @@
 
   <div class="profile-shell">
     {% if not profile %}
-      <div class="profile-empty">
+      <div class="profile-empty cr-note-panel">
         Profile not found. If you are a recruiter, use the recruiter profile page instead.
       </div>
     {% elif not is_owner and profile.privacy_enabled %}
-      <div class="profile-empty">
+      <div class="profile-empty cr-note-panel">
         This profile is hidden.
       </div>
     {% else %}
-      <div class="profile-card">
-        <div class="profile-row">
-          <span class="profile-label">Name</span>
-          <div class="profile-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+      <div class="cr-detail-card">
+        <div class="profile-row cr-detail-row">
+          <span class="profile-label cr-detail-label">Name</span>
+          <div class="profile-value cr-detail-value">{{ profile.user.get_full_name|default:profile.user.username }}</div>
         </div>
 
         {% if is_owner or profile.show_headline %}
-          <div class="profile-row">
-            <span class="profile-label">Headline</span>
-            <div class="profile-value">{{ profile.headline|default:"—" }}</div>
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Headline</span>
+            <div class="profile-value cr-detail-value">{{ profile.headline|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_skills %}
-          <div class="profile-row">
-            <span class="profile-label">Skills</span>
-            <div class="profile-value">{{ profile.skills|default:"—" }}</div>
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Skills</span>
+            <div class="profile-value cr-detail-value">{{ profile.skills|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_education %}
-          <div class="profile-row">
-            <span class="profile-label">Education</span>
-            <div class="profile-value">{{ profile.education|default:"—" }}</div>
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Education</span>
+            <div class="profile-value cr-detail-value">{{ profile.education|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_work_experience %}
-          <div class="profile-row">
-            <span class="profile-label">Work Experience</span>
-            <div class="profile-value">{{ profile.work_experience|default:"—" }}</div>
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Work Experience</span>
+            <div class="profile-value cr-detail-value">{{ profile.work_experience|default:"—" }}</div>
           </div>
         {% endif %}
 
         {% if is_owner or profile.show_links %}
-          <div class="profile-row">
-            <span class="profile-label">Links</span>
-            <div class="profile-value">{{ profile.links|default:"—" }}</div>
+          <div class="profile-row cr-detail-row">
+            <span class="profile-label cr-detail-label">Links</span>
+            <div class="profile-value cr-detail-value">{{ profile.links|default:"—" }}</div>
           </div>
         {% endif %}
       </div>
     {% endif %}
 
-    <div class="profile-actions">
+    <div class="profile-actions cr-btn-group">
       <a href="{% url 'jobs:home' %}" class="cr-btn cr-btn-warning">Back To Jobs</a>
     </div>
   </div>

@@ -11,6 +11,7 @@ from .forms import PrivacySettingsForm
 from .forms import RecruiterUserForm, RecruiterProfileForm
 from jobs.geocoding import geocode_us
 from django.contrib import messages
+from django.urls import reverse
 from applications.models import Notification
 from jobs.models import JobPosting
 
@@ -66,7 +67,7 @@ def profile_edit(request):
                         Notification.objects.get_or_create(
                             recipient=request.user,
                             message=f"New Match! '{job.title}' requires your skills.",
-                            link=f"/{job.id}/"
+                            link=reverse("jobs:job_detail", args=[job.id])
                         )
 
             return redirect("users:profile_view")  

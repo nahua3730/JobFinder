@@ -67,7 +67,12 @@
           {% for r in recommendations %}
             <tr class="{% cycle 'lane-road' 'lane-grass' 'lane-river' %}">
               <td style="font-size:1.7rem; font-weight:bold;">
-                {{ r.profile.user.first_name }} {{ r.profile.user.last_name }}
+                <a
+                  href="{% url 'users:profile_detail' r.profile.user.username %}"
+                  class="cr-candidate-name-btn cr-btn cr-btn-secondary cr-btn-sm"
+                >
+                  {{ r.profile.user.first_name }} {{ r.profile.user.last_name }}
+                </a>
               </td>
 
               <td>

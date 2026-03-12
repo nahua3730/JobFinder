@@ -8,46 +8,6 @@
         vertical-align: top;
     }
 
-    .cr-action-group {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        gap: 14px 18px;
-        max-width: 100%;
-    }
-
-    .cr-action-group .cr-btn {
-        transform: none;
-        min-height: 48px;
-        padding: 11px 17px;
-        font-size: 1.45rem;
-        white-space: normal;
-        line-height: 1.1;
-    }
-
-    .cr-action-group .cr-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .cr-action-group .cr-btn:active {
-        transform: translateY(0);
-    }
-
-    .cr-btn-edit {
-        background-color: #ffcc00;
-        color: #000;
-    }
-
-    .cr-btn-secondary {
-        background-color: #4caf50;
-        color: white;
-    }
-
-    .cr-btn-map {
-        background-color: #8e44ad;
-        color: white;
-    }
-
     .cr-badge {
         padding: 4px 10px;
         border: 4px solid #000;
@@ -151,7 +111,7 @@
                         <td>{{ job.location }}</td>
                         <td>{{ job.created_at|date:"M d, Y" }}</td>
                         <td>
-                            <div class="cr-action-group">
+                            <div class="cr-btn-group-table">
                                 <a href="{% url 'jobs:job_applications' job.id %}" class="cr-btn cr-btn-sm">
                                     View
                                 </a>

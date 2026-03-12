@@ -156,6 +156,17 @@
     opacity: 0.85;
   }
 
+  .pipeline-card-instruction {
+    margin-top: 8px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #7b6325;
+    animation: pipelineBlink 1s steps(2, end) infinite;
+    text-align: center;
+    line-height: 1.2;
+  }
+
   .pipeline-card:hover {
     transform: translateY(-3px);
     box-shadow: 0px 6px 0px #777;
@@ -219,6 +230,102 @@
     color: #fff !important;
   }
 
+  html.theme-dark .cr-stage-card {
+    border-color: #1b1f24;
+    box-shadow: 0px 6px 0px #11161b;
+    background: #1a1f25;
+  }
+
+  html.theme-dark .cr-stage-header {
+    border-bottom-color: #1b1f24;
+  }
+
+  html.theme-dark .cr-count {
+    background: #1d232b;
+    color: #eef4ff;
+    border-color: #0d1117;
+  }
+
+  html.theme-dark .lane-applied .cr-stage-header {
+    background-color: #596270;
+    color: #f4f7ff;
+  }
+
+  html.theme-dark .lane-applied .cr-stage-body {
+    background-color: #262d35;
+    color: #eef4ff;
+  }
+
+  html.theme-dark .lane-review .cr-stage-header {
+    background-color: #1976b8;
+    color: #f4fbff;
+  }
+
+  html.theme-dark .lane-review .cr-stage-body {
+    background-color: #162632;
+    color: #e8f5ff;
+  }
+
+  html.theme-dark .lane-interview .cr-stage-header {
+    background-color: #6f3f90;
+    color: #fbf4ff;
+  }
+
+  html.theme-dark .lane-interview .cr-stage-body {
+    background-color: #241d30;
+    color: #f1e8ff;
+  }
+
+  html.theme-dark .lane-offer .cr-stage-header {
+    background-color: #2f8b45;
+    color: #f3fff5;
+  }
+
+  html.theme-dark .lane-offer .cr-stage-body {
+    background-color: #18271d;
+    color: #e9ffed;
+  }
+
+  html.theme-dark .lane-closed .cr-stage-header {
+    background-color: #bb3431;
+    color: #fff5f5;
+  }
+
+  html.theme-dark .lane-closed .cr-stage-body {
+    background-color: #2a1d20;
+    color: #ffe8ea;
+  }
+
+  html.theme-dark .pipeline-card {
+    background: linear-gradient(180deg, rgba(39, 43, 49, 0.98) 0%, rgba(28, 32, 38, 0.98) 100%);
+    border-color: #0f1318 !important;
+    box-shadow: 0px 4px 0px #11161b;
+    color: #eef4ff;
+  }
+
+  html.theme-dark .pipeline-card:hover {
+    box-shadow: 0px 6px 0px #0d1117;
+  }
+
+  html.theme-dark .pipeline-card .fw-semibold {
+    color: #f6f9ff;
+  }
+
+  html.theme-dark .pipeline-card .text-muted,
+  html.theme-dark .pipeline-card .small,
+  html.theme-dark .pipeline-card-handle,
+  html.theme-dark .pipeline-card-instruction {
+    color: #b9c7d8 !important;
+  }
+
+  html.theme-dark .candidate-preview {
+    color: #d6e2f0;
+  }
+
+  html.theme-dark .empty-placeholder {
+    color: rgba(238, 244, 255, 0.78) !important;
+  }
+
   .cr-summary {
     font-size: 1.5rem;
     color: #fff;
@@ -234,104 +341,6 @@
     color: #000;
     padding: 0 2px;
     border-radius: 2px;
-  }
-
-  .candidate-panel-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.32s ease, visibility 0s linear 0.32s;
-    z-index: 1040;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-
-  .candidate-panel-overlay.show {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.32s ease;
-  }
-
-  .candidate-panel {
-    position: fixed;
-    top: 46%;
-    left: 50%;
-    width: min(720px, 92vw);
-    max-width: 92vw;
-    max-height: min(84vh, 900px);
-    background: linear-gradient(180deg, #efe6c2 0%, #e6d7a8 100%);
-    border: 6px solid #3e2723;
-    border-radius: 22px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
-    transform: translate(-50%, calc(-50% + 22px)) scale(0.96);
-    opacity: 0;
-    transition:
-      transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 0.24s ease;
-    will-change: transform, opacity;
-    z-index: 1050;
-    padding: 24px;
-    overflow-y: auto;
-    font-family: 'VT323', monospace;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .candidate-panel.show {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .candidate-panel-header {
-    background: #aad751;
-    border: 6px solid #8cbf3f;
-    border-radius: 16px;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 12px 14px;
-    margin-bottom: 18px;
-    gap: 12px;
-    flex-wrap: nowrap;
-  }
-
-  .candidate-panel-header h4 {
-    font-size: 2rem;
-    margin-bottom: 0;
-    color: #fff;
-    text-shadow: 2px 2px 0px #333;
-  }
-
-  .candidate-panel-header .text-muted {
-    color: #eef7d1 !important;
-    font-size: 1.2rem !important;
-  }
-
-  .candidate-panel hr {
-    border: 0;
-    border-top: 4px solid rgba(62, 39, 35, 0.35);
-    margin: 18px 0;
-  }
-
-  .panel-label {
-    font-size: 1.05rem;
-    text-transform: uppercase;
-    color: #5e4a1d;
-    letter-spacing: 0.04em;
-  }
-
-  .candidate-panel-section {
-    line-height: 1.5;
-    font-size: 1.45rem;
-    background: rgba(255, 255, 255, 0.55);
-    border: 4px solid #3e2723;
-    border-radius: 14px;
-    box-shadow: 0px 4px 0px rgba(62, 39, 35, 0.55);
-    padding: 12px 14px;
   }
 
   .pipeline-card .cr-btn {
@@ -350,37 +359,6 @@
     margin-top: 8px;
   }
 
-  #panelExpandButton {
-    width: 100%;
-  }
-
-  .panel-multiline {
-    white-space: pre-line;
-  }
-
-  .candidate-panel-close {
-    min-width: 0;
-    width: auto !important;
-    min-height: 40px;
-    padding: 6px 12px;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-    margin: 0;
-    line-height: 1;
-  }
-
-  .candidate-panel-identity {
-    min-width: 0;
-    flex: 1 1 auto;
-  }
-
-  .candidate-panel-identity h4,
-  .candidate-panel-identity #panelUsername {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   @media (max-width: 1200px) {
     .pipeline-board {
       flex-wrap: wrap;
@@ -396,33 +374,6 @@
     .pipeline-stage {
       min-width: 100%;
       flex: 0 0 100%;
-    }
-
-    .candidate-panel {
-      width: min(94vw, 520px);
-      max-width: 94vw;
-      max-height: 86vh;
-      padding: 18px 16px 24px;
-    }
-
-    .candidate-panel-header {
-      padding: 10px 12px;
-      gap: 10px;
-    }
-
-    .candidate-panel-header h4 {
-      font-size: 1.7rem;
-    }
-
-    .candidate-panel-close {
-      min-height: 38px;
-      padding: 6px 12px;
-      font-size: 1rem;
-    }
-
-    .candidate-panel-section {
-      padding: 10px 12px;
-      font-size: 1.3rem;
     }
   }
 
@@ -442,6 +393,15 @@
   }
   100% {
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pipelineBlink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0.4;
   }
 }
 .cr-stage-card,
@@ -513,20 +473,11 @@
                     data-job="{{ app.job.title }}"
                     data-applied="{{ app.created_at|timesince }} ago"
                     data-profile-url="{% url 'users:profile_detail' app.applicant.username %}"
-                    data-headline="{{ app.applicant.seeker_profile.headline|default:''|escapejs }}"
-                    data-location="{{ app.applicant.seeker_profile.location|default:''|escapejs }}"
-                    data-commute="{{ app.applicant.seeker_profile.preferred_commute_radius_miles|default:''|escapejs }}"
-                    data-skills="{{ app.applicant.seeker_profile.skills|default:''|escapejs }}"
-                    data-education="{{ app.applicant.seeker_profile.education|default:''|escapejs }}"
-                    data-work="{{ app.applicant.seeker_profile.work_experience|default:''|escapejs }}"
-                    data-projects="{{ app.applicant.seeker_profile.projects|default:''|escapejs }}"
-                    data-links="{{ app.applicant.seeker_profile.links|default:''|escapejs }}"
                     ondragstart="handleDragStart(event)"
                     ondragleave="handleDragLeave(event)"
                     ondragend="handleDragEnd(event)"
-                    onclick="openCandidatePanel(event, this)">
+                    onclick="openCandidateProfile(event, this)">
                 <div class="pipeline-card-main">
-                  <div class="pipeline-card-handle">Drag card</div>
                   <div class="fw-semibold applicant-name-text">
                     {{ app.applicant.first_name }} {{ app.applicant.last_name }}
                   </div>
@@ -547,6 +498,11 @@
                         <strong>Headline:</strong> {{ app.applicant.seeker_profile.headline }}
                       </div>
                     {% endif %}
+                  </div>
+
+                  <div class="pipeline-card-instruction">
+                    <div>Click For Profile</div>
+                    <div>Drag To Move</div>
                   </div>
                 </div>
 
@@ -569,87 +525,6 @@
 
   <div class="mt-3 cr-summary" id="pipelineSummary">
     Showing 0 applicants
-  </div>
-</div>
-
-<div id="candidatePanelOverlay" class="candidate-panel-overlay" onclick="closeCandidatePanel()"></div>
-
-<div id="candidatePanel" class="candidate-panel">
-  <div class="candidate-panel-header d-flex justify-content-between align-items-start">
-    <div class="candidate-panel-identity">
-      <h4 id="panelName" class="mb-1"></h4>
-      <div id="panelUsername" class="text-muted small"></div>
-    </div>
-    <button type="button" class="cr-btn cr-btn-secondary cr-btn-sm candidate-panel-close" aria-label="Close" onclick="closeCandidatePanel()">
-      X
-    </button>
-  </div>
-
-  <hr>
-
-  <div class="candidate-panel-section">
-    <div class="panel-label">Applied for</div>
-    <div id="panelJob" class="fw-semibold"></div>
-  </div>
-
-  <div class="candidate-panel-section mt-3">
-    <div class="panel-label">Applied</div>
-    <div id="panelApplied"></div>
-  </div>
-
-  <div class="candidate-panel-section mt-3">
-    <div class="panel-label">Headline</div>
-    <div id="panelHeadline"></div>
-  </div>
-
-  <div class="candidate-panel-section mt-3">
-    <div class="panel-label">Skills</div>
-    <div id="panelSkills"></div>
-  </div>
-
-  <div id="fullProfileSection" class="mt-4 d-none">
-    <hr>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Location</div>
-      <div id="panelLocation"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Preferred commute radius</div>
-      <div id="panelCommute"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Skills</div>
-      <div id="panelFullSkills" class="panel-multiline"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Education</div>
-      <div id="panelEducation" class="panel-multiline"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Work Experience</div>
-      <div id="panelWork" class="panel-multiline"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Projects</div>
-      <div id="panelProjects" class="panel-multiline"></div>
-    </div>
-
-    <div class="candidate-panel-section mt-3">
-      <div class="panel-label">Links</div>
-      <div id="panelLinks" class="panel-multiline"></div>
-    </div>
-  </div>
-
-  <div class="candidate-panel-section mt-4">
-    <button id="panelExpandButton" class="cr-btn cr-btn-primary" type="button" onclick="toggleFullProfile()">
-      View Full Profile
-    </button>
   </div>
 </div>
 
@@ -782,60 +657,12 @@
     draggedAppId = null;
   }
 
-  function openCandidatePanel(event, card) {
+  function openCandidateProfile(event, card) {
     if (isDraggingCard) return;
     if (event.target.closest("a") || event.target.closest("button")) return;
-
-    const name = card.dataset.name || "—";
-    const username = card.dataset.username || "—";
-    const job = card.dataset.job || "—";
-    const applied = card.dataset.applied || "—";
-    const headline = card.dataset.headline || "—";
-    const location = card.dataset.location || "—";
-    const commute = card.dataset.commute || "—";
-    const skills = card.dataset.skills || "—";
-    const education = card.dataset.education || "—";
-    const work = card.dataset.work || "—";
-    const projects = card.dataset.projects || "—";
-    const links = card.dataset.links || "—";
-
-    document.getElementById("panelName").textContent = name;
-    document.getElementById("panelUsername").textContent = username ? "@" + username : "";
-    document.getElementById("panelJob").textContent = job;
-    document.getElementById("panelApplied").textContent = applied;
-    document.getElementById("panelHeadline").textContent = headline;
-    document.getElementById("panelSkills").textContent = skills;
-    document.getElementById("panelLocation").textContent = location;
-    document.getElementById("panelCommute").textContent = commute ? `${commute} miles` : "—";
-    document.getElementById("panelFullSkills").textContent = skills;
-    document.getElementById("panelEducation").textContent = education;
-    document.getElementById("panelWork").textContent = work;
-    document.getElementById("panelProjects").textContent = projects;
-    document.getElementById("panelLinks").textContent = links;
-    document.getElementById("fullProfileSection").classList.add("d-none");
-    document.getElementById("panelExpandButton").textContent = "View Full Profile";
-
-    document.getElementById("candidatePanel").classList.add("show");
-    document.getElementById("candidatePanelOverlay").classList.add("show");
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeCandidatePanel() {
-    document.getElementById("candidatePanel").classList.remove("show");
-    document.getElementById("candidatePanelOverlay").classList.remove("show");
-    document.body.style.overflow = "";
-  }
-
-  function toggleFullProfile() {
-    const fullSection = document.getElementById("fullProfileSection");
-    const button = document.getElementById("panelExpandButton");
-
-    if (fullSection.classList.contains("d-none")) {
-      fullSection.classList.remove("d-none");
-      button.textContent = "Hide Full Profile";
-    } else {
-      fullSection.classList.add("d-none");
-      button.textContent = "View Full Profile";
+    const profileUrl = card.dataset.profileUrl;
+    if (profileUrl) {
+      window.location.href = profileUrl;
     }
   }
 

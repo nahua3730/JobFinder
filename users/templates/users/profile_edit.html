@@ -4,109 +4,13 @@
 
 {% block content %}
 <style>
-  .profile-edit-card {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 20px;
-  }
-
-  .profile-edit-field {
-    margin-bottom: 20px;
-  }
-
-  .profile-edit-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    color: #5a3320;
-  }
-
-  .profile-edit-card input,
-  .profile-edit-card textarea,
-  .profile-edit-card select {
-    width: 100%;
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-    padding: 12px 14px;
-    border: 4px solid #333;
-    background: #f5f5f5;
-    outline: none;
-    box-sizing: border-box;
-  }
-
-  .profile-edit-card input:focus,
-  .profile-edit-card textarea:focus,
-  .profile-edit-card select:focus {
-    background: #fffde7;
-    border-color: #00a8f3;
-  }
-
-  .profile-edit-card textarea {
-    min-height: 140px;
-    resize: vertical;
-  }
-
-  .profile-edit-help,
-  .profile-edit-error,
-  .profile-edit-tip {
-    font-size: 1.2rem;
-  }
-
-  .profile-edit-help,
-  .profile-edit-tip {
-    color: #666;
-  }
-
-  .profile-edit-error {
-    color: #c0392b;
-    margin-top: 6px;
-  }
-
   .profile-edit-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
     margin-top: 24px;
-  }
-
-  .profile-edit-actions .cr-btn,
-  .profile-edit-top .cr-btn {
-    transform: none;
-    min-height: 50px;
-    padding: 12px 18px;
-    font-size: 1.45rem;
-  }
-
-  .profile-edit-actions .cr-btn::before,
-  .profile-edit-top .cr-btn::before {
-    transform: translateY(6px);
-  }
-
-  .profile-edit-actions .cr-btn:hover,
-  .profile-edit-top .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .profile-edit-actions .cr-btn:hover::before,
-  .profile-edit-top .cr-btn:hover::before {
-    transform: translateY(4px);
-  }
-
-  .profile-edit-actions .cr-btn:active,
-  .profile-edit-top .cr-btn:active {
-    transform: translateY(2px);
-  }
-
-  .profile-edit-actions .cr-btn:active::before,
-  .profile-edit-top .cr-btn:active::before {
-    transform: translateY(2px);
   }
 </style>
 
 <div class="container mt-4 cr-theme">
-  <div class="cr-header profile-edit-top">
+  <div class="cr-header profile-edit-top cr-btn-group">
     <h2 class="cr-title">
       <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="me-3" aria-hidden="true">
         <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
@@ -126,54 +30,54 @@
     <a href="{% url 'users:profile_view' %}" class="cr-btn cr-btn-secondary">Back</a>
   </div>
 
-  <div class="profile-edit-card">
+  <div class="cr-form-card">
     <form method="post" novalidate>
       {% csrf_token %}
 
       {% if form.non_field_errors %}
-        <div class="profile-edit-error" style="margin-bottom: 16px;">{{ form.non_field_errors }}</div>
+        <div class="cr-form-error" style="margin-bottom: 16px;">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <div class="profile-edit-field">
-        <label class="profile-edit-label" for="{{ form.headline.id_for_label }}">Headline</label>
+      <div class="cr-form-field">
+        <label class="cr-form-label" for="{{ form.headline.id_for_label }}">Headline</label>
         {{ form.headline }}
-        {% for error in form.headline.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+        {% for error in form.headline.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
       </div>
 
-      <div class="profile-edit-field">
-        <label class="profile-edit-label" for="{{ form.skills.id_for_label }}">Skills</label>
+      <div class="cr-form-field">
+        <label class="cr-form-label" for="{{ form.skills.id_for_label }}">Skills</label>
         {{ form.skills }}
-        <div class="profile-edit-help">Comma-separated, for example Python, Java, SQL.</div>
-        {% for error in form.skills.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+        <div class="cr-form-help">Comma-separated, for example Python, Java, SQL.</div>
+        {% for error in form.skills.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
       </div>
 
-      <div class="profile-edit-field">
-        <label class="profile-edit-label" for="{{ form.education.id_for_label }}">Education</label>
+      <div class="cr-form-field">
+        <label class="cr-form-label" for="{{ form.education.id_for_label }}">Education</label>
         {{ form.education }}
-        {% for error in form.education.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+        {% for error in form.education.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
       </div>
 
-      <div class="profile-edit-field">
-        <label class="profile-edit-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
+      <div class="cr-form-field">
+        <label class="cr-form-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
         {{ form.work_experience }}
-        {% for error in form.work_experience.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+        {% for error in form.work_experience.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
       </div>
 
-      <div class="profile-edit-field">
-        <label class="profile-edit-label" for="{{ form.links.id_for_label }}">Links</label>
+      <div class="cr-form-field">
+        <label class="cr-form-label" for="{{ form.links.id_for_label }}">Links</label>
         {{ form.links }}
-        <div class="profile-edit-help">LinkedIn, GitHub, or portfolio, one per line.</div>
-        {% for error in form.links.errors %}<div class="profile-edit-error">{{ error }}</div>{% endfor %}
+        <div class="cr-form-help">LinkedIn, GitHub, or portfolio, one per line.</div>
+        {% for error in form.links.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
       </div>
 
-      <div class="profile-edit-actions">
+      <div class="profile-edit-actions cr-btn-group">
         <a href="{% url 'users:profile_view' %}" class="cr-btn cr-btn-warning">Cancel</a>
         <button type="submit" class="cr-btn cr-btn-primary">Save Changes</button>
       </div>
     </form>
   </div>
 
-  <p class="profile-edit-tip" style="margin-top: 14px;">Tip: keep your headline short and your skills specific for better matching.</p>
+  <p class="cr-form-tip" style="margin-top: 14px;">Tip: keep your headline short and your skills specific for better matching.</p>
 </div>
 
 {% endblock %}

@@ -3,69 +3,6 @@
 
 {% block content %}
 <style>
-  .recruiter-profile-card {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    overflow: hidden;
-  }
-
-  .recruiter-profile-row {
-    padding: 18px 20px;
-    border-bottom: 4px solid #d3c39a;
-  }
-
-  .recruiter-profile-row:last-child {
-    border-bottom: 0;
-  }
-
-  .recruiter-profile-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    color: #5a3320;
-  }
-
-  .recruiter-profile-value {
-    font-size: 1.55rem;
-    line-height: 1.35;
-    color: #1f160e;
-    overflow-wrap: anywhere;
-  }
-
-  .recruiter-profile-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  .recruiter-profile-actions .cr-btn {
-    transform: none;
-    min-height: 50px;
-    padding: 12px 18px;
-    font-size: 1.45rem;
-  }
-
-  .recruiter-profile-actions .cr-btn::before {
-    transform: translateY(6px);
-  }
-
-  .recruiter-profile-actions .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .recruiter-profile-actions .cr-btn:hover::before {
-    transform: translateY(4px);
-  }
-
-  .recruiter-profile-actions .cr-btn:active {
-    transform: translateY(2px);
-  }
-
-  .recruiter-profile-actions .cr-btn:active::before {
-    transform: translateY(2px);
-  }
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -86,25 +23,25 @@
       Recruiter Profile
     </h2>
 
-    <div class="recruiter-profile-actions">
+    <div class="recruiter-profile-actions cr-btn-group">
       <a href="{% url 'users:recruiter_profile_edit' %}" class="cr-btn cr-btn-primary">Edit Profile</a>
     </div>
   </div>
 
-  <div class="recruiter-profile-card">
-    <div class="recruiter-profile-row">
-      <span class="recruiter-profile-label">Name</span>
-      <div class="recruiter-profile-value">{{ request.user.get_full_name|default:request.user.username }}</div>
+  <div class="cr-detail-card">
+    <div class="recruiter-profile-row cr-detail-row">
+      <span class="recruiter-profile-label cr-detail-label">Name</span>
+      <div class="recruiter-profile-value cr-detail-value">{{ request.user.get_full_name|default:request.user.username }}</div>
     </div>
 
-    <div class="recruiter-profile-row">
-      <span class="recruiter-profile-label">Title</span>
-      <div class="recruiter-profile-value">{{ profile.title|default:"—" }}</div>
+    <div class="recruiter-profile-row cr-detail-row">
+      <span class="recruiter-profile-label cr-detail-label">Title</span>
+      <div class="recruiter-profile-value cr-detail-value">{{ profile.title|default:"—" }}</div>
     </div>
 
-    <div class="recruiter-profile-row">
-      <span class="recruiter-profile-label">Company</span>
-      <div class="recruiter-profile-value">{{ profile.company_name|default:"—" }}</div>
+    <div class="recruiter-profile-row cr-detail-row">
+      <span class="recruiter-profile-label cr-detail-label">Company</span>
+      <div class="recruiter-profile-value cr-detail-value">{{ profile.company_name|default:"—" }}</div>
     </div>
   </div>
 </div>

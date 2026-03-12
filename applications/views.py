@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.utils import timezone
+from django.urls import reverse
 from django.db.models import Q
 from types import SimpleNamespace
 
@@ -56,7 +57,7 @@ def apply_to_job(request, job_id):
                 Notification.objects.create(
                     recipient=job.recruiter,
                     message=f"New Applicant! {request.user.username} applied for {job.title}.",
-                    link=f"/{job.id}/applications/"
+                    link=reverse("jobs:job_applications", args=[job.id])
                 )
 
             messages.success(request, "Application submitted!")
@@ -258,7 +259,7 @@ def _refresh_saved_search_notifications(recruiter):
             count = len(new_candidate_users)
             title = f'New matches for "{ss.name or "Saved Search"}"'
             body = f"{count} new candidate(s) match your saved search."
-            url = "/candidate-search/?" + _filters_to_querystring(ss.filters)
+            url = reverse("jobs:candidate_search") + "?" + _filters_to_querystring(ss.filters)
 
             RecruiterNotification.objects.create(
                 user=recruiter,
@@ -289,6 +290,10 @@ def saved_searches(request):
         query = (request.POST.get("query") or "").strip()
         location = (request.POST.get("location") or "").strip()
         has_projects = bool(request.POST.get("has_projects"))
+
+        if not (query or location or has_projects):
+            messages.error(request, "Add at least one actual filter before saving a search.")
+            return redirect("applications:saved_searches")
 
         filters = {
             "query": query,

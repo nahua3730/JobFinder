@@ -9,50 +9,9 @@
     align-items: start;
   }
 
-  .saved-panel {
-    background: #fff8dc;
-    border: 6px solid #333;
-    box-shadow: 0px 6px 0px #3e2723;
-    padding: 20px;
-  }
-
-  .saved-panel-title {
-    font-size: 1.8rem;
-    text-transform: uppercase;
-    margin: 0 0 16px;
-    color: #222;
-  }
-
   .saved-form-grid {
     display: grid;
     gap: 16px;
-  }
-
-  .saved-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 1.45rem;
-    text-transform: uppercase;
-    color: #333;
-  }
-
-  .saved-input,
-  .saved-checkbox-row {
-    font-family: 'VT323', monospace;
-    font-size: 1.45rem;
-  }
-
-  .saved-input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 4px solid #333;
-    background: #f5f5f5;
-    outline: none;
-  }
-
-  .saved-input:focus {
-    background: #fffde7;
-    border-color: #00a8f3;
   }
 
   .saved-checkbox-row {
@@ -60,6 +19,8 @@
     align-items: center;
     gap: 10px;
     min-height: 56px;
+    font-family: 'VT323', monospace;
+    font-size: 1.45rem;
   }
 
   .saved-checkbox-row input {
@@ -68,37 +29,7 @@
   }
 
   .saved-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
     margin-top: 20px;
-  }
-
-  .saved-actions .cr-btn {
-    transform: none;
-    min-height: 46px;
-    padding: 12px 18px;
-    font-size: 0.7rem;
-  }
-
-  .saved-actions .cr-btn::before {
-    transform: translateY(6px);
-  }
-
-  .saved-actions .cr-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .saved-actions .cr-btn:hover::before {
-    transform: translateY(4px);
-  }
-
-  .saved-actions .cr-btn:active {
-    transform: translateY(2px);
-  }
-
-  .saved-actions .cr-btn:active::before {
-    transform: translateY(2px);
   }
 
   .saved-table td:last-child {
@@ -170,24 +101,24 @@
   </div>
 
   <div class="saved-layout">
-    <section class="saved-panel">
-      <h3 class="saved-panel-title">Save A Candidate Search</h3>
+      <section class="saved-panel cr-panel cr-form-card">
+      <h3 class="cr-section-title">Save A Candidate Search</h3>
 
       <form method="post" class="saved-form-grid">
         {% csrf_token %}
 
         <div>
-          <label class="saved-label" for="saved-search-name">Name</label>
-          <input id="saved-search-name" class="saved-input" type="text" name="name" placeholder="Python interns in Atlanta">
+          <label class="cr-form-label" for="saved-search-name">Saved Search Name</label>
+          <input id="saved-search-name" class="saved-input" type="text" name="name" placeholder="Label for this search">
         </div>
 
         <div>
-          <label class="saved-label" for="saved-search-query">Query</label>
-          <input id="saved-search-query" class="saved-input" type="text" name="query" placeholder="Name or skills">
+          <label class="cr-form-label" for="saved-search-query">Search Query</label>
+          <input id="saved-search-query" class="saved-input" type="text" name="query" placeholder="Candidate name or skills">
         </div>
 
         <div>
-          <label class="saved-label" for="saved-search-location">Location</label>
+          <label class="cr-form-label" for="saved-search-location">Location</label>
           <input id="saved-search-location" class="saved-input" type="text" name="location" placeholder="City or region">
         </div>
 
@@ -196,7 +127,7 @@
           <span>Only candidates with projects</span>
         </label>
 
-        <div class="saved-actions">
+        <div class="saved-actions cr-btn-group-compact">
           <button type="submit" class="cr-btn cr-btn-primary">Save Search</button>
           <a href="{% url 'jobs:candidate_search' %}" class="cr-btn cr-btn-secondary">Candidate Search</a>
         </div>
@@ -238,7 +169,7 @@
                   </td>
                   <td>{{ s.last_checked_at|default:"never" }}</td>
                   <td>
-                    <div class="saved-actions">
+                    <div class="saved-actions cr-btn-group-compact">
                       <a href="{% url 'applications:run_saved_search' s.id %}" class="cr-btn cr-btn-success cr-btn-sm">Run</a>
                       <a href="{% url 'applications:delete_saved_search' s.id %}" class="cr-btn cr-btn-danger cr-btn-sm">Delete</a>
                     </div>
