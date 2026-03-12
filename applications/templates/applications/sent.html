@@ -1,35 +1,101 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="container py-4">
-  <h2 class="mb-3">Sent</h2>
+{% block title %}Sent{% endblock %}
 
-  {% for m in snet_iterms %}
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="d-flex justify-content-between">
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+  .msg-card {
+    border: 6px solid #333;
+    box-shadow: 0px 6px 0px #3e2723;
+    background: #fff;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .msg-meta {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .msg-body {
+    margin-top: 10px;
+    font-size: 1.4rem;
+    line-height: 1.35;
+  }
+  .msg-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 4px solid #000;
+    background: #ffcc00;
+    color: #000;
+    font-size: 1.2rem;
+    margin-left: 8px;
+  }
+</style>
+
+<div class="container mt-4 cr-theme">
+
+  <div class="cr-header">
+    <div>
+      <h1 class="cr-title">
+        <svg width="64" height="64" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
+          <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
+          <rect x="7" y="3" width="2" height="1" fill="#e53935"/>
+          <rect x="3" y="3" width="8" height="10" fill="#ffffff"/>
+          <rect x="4" y="4" width="2" height="2" fill="#000000"/>
+          <rect x="5" y="8" width="4" height="3" fill="#dddddd"/>
+          <rect x="4" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="8" y="13" width="2" height="2" fill="#ff9800"/>
+          <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
+          <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
+        </svg>
+        SENT
+      </h1>
+      <div class="cr-subtitle">Messages and emails you sent to candidates</div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <a class="cr-btn cr-btn-secondary" href="{% url 'jobs:home' %}">Back</a>
+    </div>
+  </div>
+
+  <div class="cr-panel">
+    {% for m in sent_items %}
+      <div class="msg-card">
+        <div class="msg-meta">
           <div>
             <b>To:</b> {{ m.recipient.username }}
-            {% if m.subject %}<span class="ms-2">| <b>Subject:</b> {{ m.subject }}</span>{% endif %}
-            {% if m.job %}<span class="ms-2">| <b>Job:</b> {{ m.job.title }}</span>{% endif %}
-            <span class="ms-2 badge bg-dark">{{ m.get_delivery_display }}</span>
+            {% if m.subject %} • <b>Subject:</b> {{ m.subject }}{% endif %}
+            {% if m.job %} • <b>Job:</b> {{ m.job.title }}{% endif %}
+
+            <span class="msg-badge">{{ m.get_delivery_display }}</span>
 
             {% if m.delivery == "email" %}
-              <span class="ms-2 badge bg-secondary">{{ m.get_email_status_display }}</span>
-              <span class="ms-2 text-muted">{{ m.to_email }}</span>
+              <span class="msg-badge">{{ m.get_email_status_display }}</span>
+              <span class="text-muted">({{ m.to_email }})</span>
             {% endif %}
           </div>
-          <small class="text-muted">{{ m.created_at }}</small>
+          <div class="text-muted">{{ m.created_at }}</div>
         </div>
-        <hr>
-        <p class="mb-0">{{ m.body }}</p>
+
+        <div class="msg-body">{{ m.body|linebreaksbr }}</div>
 
         {% if m.delivery == "email" and m.email_status == "failed" %}
-          <div class="mt-2 text-danger small">Error: {{ m.error_message }}</div>
+          <div class="text-danger" style="margin-top:10px;">
+            Error: {{ m.error_message }}
+          </div>
         {% endif %}
       </div>
-    </div>
-  {% empty %}
-    <p class="text-muted">No sent messages yet.</p>
-  {% endfor %}
+    {% empty %}
+      <div class="text-muted" style="font-size:1.6rem; text-transform:uppercase;">
+        No sent items yet.
+      </div>
+    {% endfor %}
+  </div>
+
 </div>
 {% endblock %}
