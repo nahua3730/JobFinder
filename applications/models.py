@@ -10,7 +10,8 @@ class Application(models.Model):
         CLOSED = "closed", "Closed"
 
     job = models.ForeignKey("jobs.JobPosting", on_delete=models.CASCADE, related_name="applications")
-    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="applications")
+    applicant = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="applications", null=True,
+    blank=True,)
 
     note = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.APPLIED)

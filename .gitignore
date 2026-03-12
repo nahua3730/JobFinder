@@ -30,3 +30,4 @@ package-lock.json
 # Build / Tailwind output
 dist/
 build/
+*.bak
