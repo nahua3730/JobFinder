@@ -7,6 +7,14 @@
   .profile-edit-actions {
     margin-top: 24px;
   }
+
+  .profile-edit-section {
+    margin-bottom: 28px;
+  }
+
+  .profile-edit-section:last-of-type {
+    margin-bottom: 0;
+  }
 </style>
 
 <div class="container mt-4 cr-theme">
@@ -38,36 +46,87 @@
         <div class="cr-form-error" style="margin-bottom: 16px;">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <div class="cr-form-field">
-        <label class="cr-form-label" for="{{ form.headline.id_for_label }}">Headline</label>
-        {{ form.headline }}
-        {% for error in form.headline.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+      <div class="profile-edit-section">
+        <h3 class="cr-section-title">Profile Basics</h3>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.headline.id_for_label }}">Headline</label>
+          {{ form.headline }}
+          {% for error in form.headline.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
       </div>
 
-      <div class="cr-form-field">
-        <label class="cr-form-label" for="{{ form.skills.id_for_label }}">Skills</label>
-        {{ form.skills }}
-        <div class="cr-form-help">Comma-separated, for example Python, Java, SQL.</div>
-        {% for error in form.skills.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+      <div class="profile-edit-section">
+        <h3 class="cr-section-title">Location</h3>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.street_address.id_for_label }}">Street Address</label>
+          {{ form.street_address }}
+          {% for error in form.street_address.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="cr-form-grid">
+          <div class="cr-form-field">
+            <label class="cr-form-label" for="{{ form.city.id_for_label }}">City</label>
+            {{ form.city }}
+            {% for error in form.city.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="cr-form-field">
+            <label class="cr-form-label" for="{{ form.state.id_for_label }}">State</label>
+            {{ form.state }}
+            {% for error in form.state.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="cr-form-field">
+            <label class="cr-form-label" for="{{ form.zip_code.id_for_label }}">ZIP Code</label>
+            {{ form.zip_code }}
+            {% for error in form.zip_code.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.preferred_commute_radius_miles.id_for_label }}">Preferred Commute Radius</label>
+          {{ form.preferred_commute_radius_miles }}
+          <div class="cr-form-help">How far you are willing to commute, in miles.</div>
+          {% for error in form.preferred_commute_radius_miles.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
       </div>
 
-      <div class="cr-form-field">
-        <label class="cr-form-label" for="{{ form.education.id_for_label }}">Education</label>
-        {{ form.education }}
-        {% for error in form.education.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
-      </div>
+      <div class="profile-edit-section">
+        <h3 class="cr-section-title">Experience</h3>
 
-      <div class="cr-form-field">
-        <label class="cr-form-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
-        {{ form.work_experience }}
-        {% for error in form.work_experience.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
-      </div>
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.skills.id_for_label }}">Skills</label>
+          {{ form.skills }}
+          <div class="cr-form-help">Comma-separated, for example Python, Java, SQL.</div>
+          {% for error in form.skills.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
 
-      <div class="cr-form-field">
-        <label class="cr-form-label" for="{{ form.links.id_for_label }}">Links</label>
-        {{ form.links }}
-        <div class="cr-form-help">LinkedIn, GitHub, or portfolio, one per line.</div>
-        {% for error in form.links.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.education.id_for_label }}">Education</label>
+          {{ form.education }}
+          {% for error in form.education.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.work_experience.id_for_label }}">Work Experience</label>
+          {{ form.work_experience }}
+          {% for error in form.work_experience.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.projects.id_for_label }}">Projects</label>
+          {{ form.projects }}
+          {% for error in form.projects.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="cr-form-field">
+          <label class="cr-form-label" for="{{ form.links.id_for_label }}">Links</label>
+          {{ form.links }}
+          <div class="cr-form-help">LinkedIn, GitHub, or portfolio, one per line.</div>
+          {% for error in form.links.errors %}<div class="cr-form-error">{{ error }}</div>{% endfor %}
+        </div>
       </div>
 
       <div class="profile-edit-actions cr-btn-group">
