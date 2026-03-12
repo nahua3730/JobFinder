@@ -66,7 +66,8 @@
         {% if is_owner or profile.show_location %}
           <div class="profile-row cr-detail-row">
             <span class="profile-label cr-detail-label">Location</span>
-            <div class="profile-value cr-detail-value">{{ profile.location|default:"—" }}</div>
+            <div class="profile-value cr-detail-value profile-preline">{% if profile.street_address %}{{ profile.street_address }}{% if profile.location %}
+{{ profile.location }}{% endif %}{% else %}{{ profile.location|default:"—" }}{% endif %}</div>
           </div>
         {% endif %}
 
