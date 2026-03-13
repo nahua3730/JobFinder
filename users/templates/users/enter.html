@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Enter Game{% endblock %}
+{% block title %}Welcome{% endblock %}
 
 {% block content %}
 <style>
@@ -719,7 +719,7 @@
   <div class="enter-shell">
     <div class="enter-machine">
 
-      <div class="enter-marquee">Cross The Road • Find The Job • Start Your Journey</div>
+      <div class="enter-marquee">Cross The Road • Find The Job • Start Your Search</div>
 
       <div class="enter-header">
         <h1 class="enter-title">
@@ -737,7 +737,7 @@
           </svg>
           GT Job Search
         </h1>
-        <p class="enter-subtitle-instruction press-start">Press and hold the center brick to unlock the board</p>
+        <p class="enter-subtitle-instruction press-start">Press and hold the center brick to open GT Job Search</p>
       </div>
 
       <div class="enter-stage">
@@ -753,7 +753,7 @@
           <div class="brick-row">
             <div class="brick brick-solid" aria-hidden="true"></div>
 
-            <div class="brick question-brick" id="questionBrick" tabindex="0" role="button" aria-label="Long press to start">
+            <div class="brick question-brick" id="questionBrick" tabindex="0" role="button" aria-label="Long press to continue">
               <div class="question-mark">?</div>
             </div>
 
@@ -781,7 +781,7 @@
           </div>
 
           <div class="hold-wrap">
-            <div class="hold-label press-start" id="holdLabel">Hit the Brick to Start</div>
+            <div class="hold-label press-start" id="holdLabel">Hold to Continue</div>
             <div class="hold-bar">
               <div class="hold-bar-fill" id="holdFill"></div>
             </div>
@@ -789,11 +789,11 @@
 
           <div class="enter-actions" id="enterActions">
             <a href="{% url 'users:signup' %}" class="cr-btn cr-btn-primary">
-              Start as New Player
+              Create Profile
             </a>
 
             <a href="{% url 'users:login' %}" class="cr-btn cr-btn-secondary">
-              Returning Player
+              Sign In
             </a>
 
             <a href="{% url 'jobs:home' %}" class="cr-btn guest-action">
@@ -801,8 +801,8 @@
             </a>
           </div>
 
-          <div class="enter-ready press-start" id="enterReady">Player 1 Ready</div>
-          <div class="enter-hint">Press and hold the center brick until the board unlocks.</div>
+          <div class="enter-ready press-start" id="enterReady">Ready To Continue</div>
+          <div class="enter-hint">Press and hold the center brick to continue into GT Job Search.</div>
         </div>
       </div>
 
@@ -832,7 +832,7 @@
     startTime = 0;
     holdFill.style.width = "0%";
     brick.classList.remove("long-pressing");
-    holdLabel.textContent = "Hit the Block to Start";
+    holdLabel.textContent = "Hold to Continue";
   }
 
   function completeHold() {
@@ -841,8 +841,8 @@
     clearInterval(pressTimer);
     brick.classList.remove("long-pressing");
     holdFill.style.width = "100%";
-    holdLabel.textContent = "Level Clear!";
-    enterReady.textContent = "Board Unlocked";
+    holdLabel.textContent = "Ready!";
+    enterReady.textContent = "Portal Open";
 
     coinPop.classList.remove("show");
     void coinPop.offsetWidth;

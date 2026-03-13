@@ -354,7 +354,7 @@
   }
 
   .signup-card::before {
-    content: "NEW GAME";
+    content: "NEW ACCOUNT";
     position: absolute;
     top: 8px;
     left: 14px;
@@ -365,7 +365,7 @@
   }
 
   .signup-card::after {
-    content: "CREATE PLAYER";
+    content: "CREATE PROFILE";
     position: absolute;
     top: 8px;
     right: 14px;
@@ -739,7 +739,7 @@
     <div class="cr-theme arcade-machine">
 
       <div class="signup-banner">
-        <span class="label">New Player</span>
+        <span class="label">New Account</span>
         <span>Create Your Profile</span>
       </div>
 
@@ -759,16 +759,16 @@
                 <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
                 <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
               </svg>
-              Create Player
+              Create Profile
             </div>
 
-            <p class="signup-subtitle">Choose your path and begin the journey</p>
-            <p class="signup-subtitle-2">Build your profile and unlock the board</p>
+            <p class="signup-subtitle">Choose your path and get started</p>
+            <p class="signup-subtitle-2">Build your profile to start applying</p>
           </div>
         </div>
 
         <div class="signup-corner-decor" aria-hidden="true">
-          <div class="signup-coin">1UP</div>
+          <div class="signup-coin">NEW</div>
           <svg class="signup-mini-chicken" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="6" width="2" height="2" fill="#ff9800"/>
             <rect x="5" y="1" width="4" height="2" fill="#e53935"/>
@@ -787,12 +787,12 @@
       <div class="lane-road signup-role-lane"></div>
 
       <div class="signup-role-select">
-        <div class="signup-role-title">Choose Your Class</div>
+        <div class="signup-role-title">Choose Your Role</div>
 
         <div class="role-toggle-shell">
           <div class="role-label-box active" id="jobseekerLabelBox">
             <div class="role-name">Job Seeker</div>
-            <div class="role-desc">Search jobs and level up your career</div>
+            <div class="role-desc">Search jobs and grow your career</div>
           </div>
 
           <div class="role-toggle-wrap">
@@ -811,12 +811,12 @@
               </div>
             </div>
 
-            <div class="role-toggle-status" id="roleStatusText">Current Class: Job Seeker</div>
+            <div class="role-toggle-status" id="roleStatusText">Selected Role: Job Seeker</div>
           </div>
 
           <div class="role-label-box" id="recruiterLabelBox">
             <div class="role-name">Recruiter</div>
-            <div class="role-desc">Post jobs and manage the player queue</div>
+            <div class="role-desc">Post jobs and manage applicants</div>
           </div>
         </div>
       </div>
@@ -888,7 +888,7 @@
 
             <div class="signup-field-full">
               <div class="password-checklist-block">
-                <div class="password-title">Mission Objectives</div>
+                <div class="password-title">Password Requirements</div>
 
                 <div class="password-rules" id="passwordRules">
                   <div class="password-rule" data-rule="length">At least 8 characters</div>
@@ -897,30 +897,30 @@
                   <div class="password-rule" data-rule="match">Passwords must match</div>
                 </div>
 
-                <div id="levelClearBanner" class="level-clear-banner">Level Clear!</div>
+                <div id="levelClearBanner" class="level-clear-banner">Ready To Submit!</div>
               </div>
             </div>
           </div>
 
           <div class="signup-actions">
             <button type="submit" class="cr-btn cr-btn-primary press-start signup-primary">
-              Start Game
+              Create Profile
             </button>
 
             <a href="{% url 'users:login' %}" class="cr-btn cr-btn-secondary">
-              Returning Player
+              Sign In
             </a>
           </div>
         </form>
 
         <div class="signup-help" id="signupHelpText">
-          Create a job seeker profile and begin your journey
+          Create a job seeker profile to start your search
         </div>
 
         <div class="signup-footer-hint">
-          <span class="signup-chip">Class Select</span>
-          <span class="signup-chip">Profile Save</span>
-          <span class="signup-chip">Next Level: Login</span>
+          <span class="signup-chip">Role Select</span>
+          <span class="signup-chip">Profile Setup</span>
+          <span class="signup-chip">Next: Sign In</span>
         </div>
       </div>
 
@@ -952,10 +952,10 @@
 
     if (recruiter) {
       signupHelpText.textContent = "Create a recruiter profile and manage your hiring pipeline";
-      roleStatusText.textContent = "Current Class: Recruiter";
+      roleStatusText.textContent = "Selected Role: Recruiter";
     } else {
-      signupHelpText.textContent = "Create a job seeker profile and begin your journey";
-      roleStatusText.textContent = "Current Class: Job Seeker";
+      signupHelpText.textContent = "Create a job seeker profile and start applying";
+      roleStatusText.textContent = "Selected Role: Job Seeker";
     }
   }
 

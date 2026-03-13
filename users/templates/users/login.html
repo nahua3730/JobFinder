@@ -175,7 +175,7 @@
   }
 
   .login-card::before {
-    content: "SECURE GATE";
+    content: "ACCOUNT ACCESS";
     position: absolute;
     top: 10px;
     left: 18px;
@@ -186,7 +186,7 @@
   }
 
   .login-card::after {
-    content: "PLAYER 1";
+    content: "SAVED PROFILE";
     position: absolute;
     top: 10px;
     right: 18px;
@@ -548,11 +548,11 @@
     <div class="cr-theme arcade-machine">
 
       <div class="login-highscore">
-        <span class="label">High Score</span>
-        <span>999999</span>
+        <span class="label">Account Access</span>
+        <span>Secure Sign In</span>
       </div>
 
-      <div class="login-insert-coin press-start">Insert Coin</div>
+      <div class="login-insert-coin press-start">Press Start</div>
 
       <div class="login-header-wrap">
         <div class="cr-header cr-header-start">
@@ -570,12 +570,12 @@
                 <rect x="11" y="4" width="2" height="9" fill="#cccccc"/>
                 <rect x="3" y="13" width="8" height="1" fill="#cccccc"/>
               </svg>
-              Player Login
+              Account Login
             </div>
 
             <div class="login-marquee">
-              <p class="login-subtitle press-start">Returning player access</p>
-              <p class="login-subtitle-2">Load your profile and resume the journey</p>
+              <p class="login-subtitle press-start">Sign in to access your saved profile</p>
+              <p class="login-subtitle-2">Continue your job search, applications, and saved work</p>
             </div>
           </div>
         </div>
@@ -605,28 +605,28 @@
 
           <div class="login-actions">
             <button type="submit" class="cr-btn cr-btn-primary press-start login-primary">
-              Continue
+              Sign In
             </button>
 
             <a href="{% url 'users:signup' %}" class="cr-btn cr-btn-secondary">
-              New Player
+              Create Profile
             </a>
           </div>
         </form>
 
         <div class="login-help">
-          Search jobs and continue your journey
+          Sign in to continue your job search
         </div>
 
         <div class="login-footer-hint">
-          <span class="login-chip">Secure Gate</span>
-          <span class="login-chip">Profile Save</span>
-          <span class="login-chip">Next Level: Job Search</span>
+          <span class="login-chip">Secure Login</span>
+          <span class="login-chip">Saved Profile</span>
+          <span class="login-chip">Next: Job Search</span>
         </div>
       </div>
 
       <div class="login-bonus">
-        Continue your journey across the board
+        Continue where you left off
       </div>
 
     </div>
